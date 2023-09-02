@@ -1,6 +1,7 @@
 package com.stockify.usermanagementservice.service;
 
 import com.stockify.usermanagementservice.dto.UserRequest;
+import com.stockify.usermanagementservice.dto.deleteRequest;
 import com.stockify.usermanagementservice.model.BusinessUser;
 import com.stockify.usermanagementservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +47,9 @@ public class userService {
         }
 
 
+    }
+
+    public void deleteUser(deleteRequest deleteRequest) {
+        userRepository.deleteById(deleteRequest.getId());
     }
 }

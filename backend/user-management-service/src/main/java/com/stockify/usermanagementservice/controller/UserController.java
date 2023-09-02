@@ -1,6 +1,7 @@
 package com.stockify.usermanagementservice.controller;
 
 import com.stockify.usermanagementservice.dto.UserRequest;
+import com.stockify.usermanagementservice.dto.deleteRequest;
 import com.stockify.usermanagementservice.service.userService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,5 +19,10 @@ public class UserController {
     public boolean addUser(@RequestBody UserRequest userRequest){
         return userService.addUser(userRequest);
 
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
+    public void deleteUser(@RequestBody deleteRequest deleteRequest) {
+        userService.deleteUser(deleteRequest);
     }
 }
