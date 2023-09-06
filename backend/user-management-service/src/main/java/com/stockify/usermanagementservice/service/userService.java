@@ -1,13 +1,18 @@
 package com.stockify.usermanagementservice.service;
 
+import com.stockify.usermanagementservice.dto.BusinessUserDto;
+import com.stockify.usermanagementservice.dto.UpdateRequest;
 import com.stockify.usermanagementservice.dto.UserRequest;
 import com.stockify.usermanagementservice.dto.deleteRequest;
 import com.stockify.usermanagementservice.model.BusinessUser;
 import com.stockify.usermanagementservice.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +56,33 @@ public class userService {
 
     public void deleteUser(deleteRequest deleteRequest) {
         userRepository.deleteById(deleteRequest.getId());
+    }
+
+    public boolean updateUser(UpdateRequest updateRequest) {
+        try {
+            BusinessUser user = userRepository.getReferenceById(updateRequest.getId());
+            user.setRole_id(updateRequest.getRole_id());
+            userRepository.save(user);
+        }
+        catch (EntityNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public List<BusinessUserDto> getAllUsers() {
+        // TODO: Find users in a company instead of all
+        List<BusinessUser> users = userRepository.findAll();
+
+        // TODO: Get the users name from the user service/table with user id
+        // need a company and role repository or change the datatype (int -> string)
+        List<BusinessUserDto> userDtos = users.stream().map(user -> BusinessUserDto.builder() // currently without the names
+                .id(user.getId())
+                .role_id(user.getRole_id())
+                .company_id(user.getCompany_id())
+                .build()
+        ).toList();
+        return userDtos;
     }
 }
