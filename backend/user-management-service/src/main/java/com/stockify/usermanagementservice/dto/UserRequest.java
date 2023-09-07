@@ -7,7 +7,7 @@ public class UserRequest {
     private String first_name;
     private String last_name;
 //    private int role_id;
-    private int company_id;
+    private int companyId;
 
     private Role role;
 
@@ -35,12 +35,12 @@ public class UserRequest {
 //        this.role_id = role_id;
 //    }
 
-    public int getCompany_id() {
-        return company_id;
+    public int getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany_id(int company_id) {
-        this.company_id = company_id;
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
     public Role getRole() {

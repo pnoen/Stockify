@@ -1,9 +1,6 @@
 package com.stockify.usermanagementservice.service;
 
-import com.stockify.usermanagementservice.dto.BusinessUserDto;
-import com.stockify.usermanagementservice.dto.UpdateRequest;
-import com.stockify.usermanagementservice.dto.UserRequest;
-import com.stockify.usermanagementservice.dto.deleteRequest;
+import com.stockify.usermanagementservice.dto.*;
 import com.stockify.usermanagementservice.model.BusinessUser;
 import com.stockify.usermanagementservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,11 +37,11 @@ public class userService {
             BusinessUser user = BusinessUser.builder()
                     //.id(id)
 //                    .role_id(userRequest.getRole_id())
-                    .company_id(userRequest.getCompany_id())
+                    .companyId(userRequest.getCompanyId())
                     .role(userRequest.getRole())
                     .build();
             userRepository.save(user);
-            log.info("BusinessUser {} is saved", user.getCompany_id());
+            log.info("BusinessUser {} is saved", user.getCompanyId());
             return true;
         }
         else{
@@ -76,15 +73,14 @@ public class userService {
     }
 
 
-    public List<BusinessUserDto> getAllUsers() {
-        // TODO: Find users in a company instead of all
-        List<BusinessUser> users = userRepository.findAll();
+    public List<BusinessUserDto> getBusinessUsers(GetBusinessUsersRequest getBusinessUsersRequest) {
+        List<BusinessUser> users = userRepository.findByCompanyId(getBusinessUsersRequest.getCompanyId());
 
         // TODO: Get the users name from the user service/table with user id
         List<BusinessUserDto> userDtos = users.stream().map(user -> BusinessUserDto.builder() // currently without the names
                 .id(user.getId())
 //                .role_id(user.getRole_id())
-                .company_id(user.getCompany_id())
+                .companyId(user.getCompanyId())
                 .role(user.getRole())
                 .build()
         ).toList();

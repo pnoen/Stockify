@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class BusinessUserDto {
     private int id;
 //    private int role_id;
-    private int company_id;
+    private int companyId;
     private Role role;
 }

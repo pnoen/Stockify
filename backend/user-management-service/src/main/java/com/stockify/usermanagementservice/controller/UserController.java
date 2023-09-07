@@ -1,9 +1,6 @@
 package com.stockify.usermanagementservice.controller;
 
-import com.stockify.usermanagementservice.dto.BusinessUserDto;
-import com.stockify.usermanagementservice.dto.UpdateRequest;
-import com.stockify.usermanagementservice.dto.UserRequest;
-import com.stockify.usermanagementservice.dto.deleteRequest;
+import com.stockify.usermanagementservice.dto.*;
 import com.stockify.usermanagementservice.service.userService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,9 +33,9 @@ public class UserController {
         return userService.updateUser(updateRequest);
     }
 
-    @GetMapping("/getAllUsers")
+    @GetMapping("/getBusinessUsers")
     @ResponseStatus(HttpStatus.OK)
-    public List<BusinessUserDto> getAllUsers() {
-        return userService.getAllUsers();
+    public List<BusinessUserDto> getBusinessUsers(@RequestBody GetBusinessUsersRequest getBusinessUsersRequest) {
+        return userService.getBusinessUsers(getBusinessUsersRequest);
     }
 }
