@@ -30,7 +30,7 @@ public class UserController {
         userService.deleteUser(deleteRequest);
     }
 
-    @PostMapping("/updateUser")
+    @PutMapping("/updateUser")
     @ResponseStatus(HttpStatus.OK)
     public boolean updateUser(@RequestBody UpdateRequest updateRequest) {
         return userService.updateUser(updateRequest);

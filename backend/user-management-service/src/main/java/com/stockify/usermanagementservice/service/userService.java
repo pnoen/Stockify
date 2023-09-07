@@ -39,8 +39,9 @@ public class userService {
 
             BusinessUser user = BusinessUser.builder()
                     //.id(id)
-                    .role_id(userRequest.getRole_id())
+//                    .role_id(userRequest.getRole_id())
                     .company_id(userRequest.getCompany_id())
+                    .role(userRequest.getRole())
                     .build();
             userRepository.save(user);
             log.info("BusinessUser {} is saved", user.getCompany_id());
@@ -59,9 +60,13 @@ public class userService {
     }
 
     public boolean updateUser(UpdateRequest updateRequest) {
+        if (updateRequest.getRole() == null) {
+            return false;
+        }
+
         try {
             BusinessUser user = userRepository.getReferenceById(updateRequest.getId());
-            user.setRole_id(updateRequest.getRole_id());
+            user.setRole(updateRequest.getRole());
             userRepository.save(user);
         }
         catch (EntityNotFoundException e) {
@@ -76,11 +81,11 @@ public class userService {
         List<BusinessUser> users = userRepository.findAll();
 
         // TODO: Get the users name from the user service/table with user id
-        // need a company and role repository or change the datatype (int -> string)
         List<BusinessUserDto> userDtos = users.stream().map(user -> BusinessUserDto.builder() // currently without the names
                 .id(user.getId())
-                .role_id(user.getRole_id())
+//                .role_id(user.getRole_id())
                 .company_id(user.getCompany_id())
+                .role(user.getRole())
                 .build()
         ).toList();
         return userDtos;

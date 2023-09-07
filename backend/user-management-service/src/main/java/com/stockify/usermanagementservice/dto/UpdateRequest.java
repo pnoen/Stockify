@@ -1,5 +1,6 @@
 package com.stockify.usermanagementservice.dto;
 
+import com.stockify.usermanagementservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class UpdateRequest {
     private int id;
-    private int role_id;
+    private Role role;
 }
