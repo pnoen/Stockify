@@ -82,7 +82,7 @@ public class MainController {
 
     // Just with email
 //    @GetMapping("/getUserId")
-//    public String getUserIdByFirstNameAndLastName(
+//    public int getUserIdByFirstNameAndLastName(
 //            @RequestParam String firstName,
 //            @RequestParam String lastName,
 //            @RequestParam String email
@@ -91,15 +91,15 @@ public class MainController {
 //
 //        if (userOptional.isPresent()) {
 //            User user = userOptional.get();
-//            return String.valueOf(user.getId());
+//            return user.getId();
 //        } else {
-//            return "user not found";
+//            return -1;
 //        }
 //    }
 
     // Get user id with first name, last name and email
     @PostMapping("/getUserId")
-    public String getUserIdByFirstNameAndLastName(
+    public int getUserIdByFirstNameAndLastName(
             @RequestParam String firstName,
             @RequestParam String lastName,
             @RequestParam String email
@@ -109,11 +109,11 @@ public class MainController {
         if (userByEmail.isPresent()) {
             User existingUser = userByEmail.get();
             if (existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName)) {
-                return String.valueOf(existingUser.getId());
+                return existingUser.getId();
             }
         }
 
-        return "User not found";
+        return -1;
     }
 
     // Just with email

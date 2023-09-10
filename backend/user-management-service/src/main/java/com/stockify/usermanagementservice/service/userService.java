@@ -18,22 +18,21 @@ public class userService {
     private final WebClient webClient;
     public boolean addUser(UserRequest userRequest) {
 
-        Boolean result = true;
-//        Boolean result = webClient.get()
-//                .uri("http://localhost:8082/api/......")
-//                .retrieve()
-//                .bodyToMono(Boolean.class)
-//                .block();
+        Boolean result = webClient.post()
+                .uri(String.format("http://localhost:8080/account/checkUserExist?firstName=%s&lastName=%s&email=%s", userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail()))
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
 
         if(result) {
-//            int id = webClient.get()
-//                    .uri("http://localhost:8082/api/...")
-//                    .retrieve()
-//                    .bodyToMono(Integer.class)
-//                    .block();
+            int id = webClient.post()
+                    .uri(String.format("http://localhost:8080/account/getUserId?firstName=%s&lastName=%s&email=%s", userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail()))
+                    .retrieve()
+                    .bodyToMono(Integer.class)
+                    .block();
 
             BusinessUser user = BusinessUser.builder()
-                    //.id(id)
+                    .id(id)
                     .role_id(userRequest.getRole_id())
                     .company_id(userRequest.getCompany_id())
                     .build();
