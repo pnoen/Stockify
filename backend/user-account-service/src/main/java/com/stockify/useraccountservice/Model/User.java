@@ -28,6 +28,9 @@ public class User {
         this.business = business;
     }
 
+    // Getter for the id
+    public int getId() { return id; }
+
     // Getter for first name
     public String getFirstName() {
         return firstName;

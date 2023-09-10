@@ -1,12 +1,11 @@
 package com.stockify.useraccountservice.Controller;
 
-import com.stockify.useraccountservice.UserRepository;
+import com.stockify.useraccountservice.Repository.UserRepository;
 import com.stockify.useraccountservice.Model.User;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -80,4 +79,72 @@ public class MainController {
 
         return "User does not exist!";
     }
+
+    // Just with email
+//    @GetMapping("/getUserId")
+//    public String getUserIdByFirstNameAndLastName(
+//            @RequestParam String firstName,
+//            @RequestParam String lastName,
+//            @RequestParam String email
+//    ) {
+//        Optional<User> userOptional = userRepository.findByEmail(email);
+//
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            return String.valueOf(user.getId());
+//        } else {
+//            return "user not found";
+//        }
+//    }
+
+    // Get user id with first name, last name and email
+    @PostMapping("/getUserId")
+    public String getUserIdByFirstNameAndLastName(
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email
+    ) {
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+
+        if (userByEmail.isPresent()) {
+            User existingUser = userByEmail.get();
+            if (existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName)) {
+                return String.valueOf(existingUser.getId());
+            }
+        }
+
+        return "User not found";
+    }
+
+    // Just with email
+//    @GetMapping("/checkUserExist")
+//    public Boolean checkUserExist(
+//            @RequestParam String email
+//    ) {
+//        Optional<User> userExists = userRepository.findByEmail(email);
+//
+//        if (userExists.isPresent()) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
+
+    // Check user exist with first name, last name and email
+    @PostMapping("/checkUserExist")
+    public Boolean checkUserExist(
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email
+    ) {
+        Optional<User> userExistsByEmail = userRepository.findByEmail(email);
+
+        if (userExistsByEmail.isPresent()) {
+            User existingUser = userExistsByEmail.get();
+            return existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName);
+        }
+
+        return false;
+    }
+
 }
