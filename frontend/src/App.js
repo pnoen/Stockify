@@ -1,20 +1,16 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import LoginPage from "./features/LoginPage";
-import OrderPage from "./features/OrderManagement";
 import SignupPage from "./features/SignupPage";
+import CustomerNavigation from "./components/Navigation/components/CustomerNavigation";
+import Navigation from "./components/Navigation";
+import OrdersPage from "./features/OrderManagement/components/OrdersPage";
 export const AuthContext = createContext();
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken");
-    console.log(token);
-    if (token) {
-      setIsAuthenticated(true);
-    }
     setIsLoading(false);
   }, []);
 
@@ -23,7 +19,8 @@ const App = () => {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ setIsLoading }}>
+      <Navigation />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
@@ -31,7 +28,7 @@ const App = () => {
           path="/orders"
           element={
             <ProtectedRoute>
-              <OrderPage />
+              <OrdersPage />
             </ProtectedRoute>
           }
         />
@@ -39,9 +36,11 @@ const App = () => {
     </AuthContext.Provider>
   );
 };
+
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  // console.log(isAuthenticated);
+  const token = localStorage.getItem("userToken");
+  const isAuthenticated = Boolean(token);
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

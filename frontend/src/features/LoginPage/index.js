@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -13,6 +13,7 @@ import { green } from "@mui/material/colors";
 import logo from "../../assets/logo.png"; // Import your logo here
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,6 +30,8 @@ export default function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
+    localStorage.setItem("userToken", "XXX");
+    navigate("/orders", { replace: true });
   };
 
   return (
