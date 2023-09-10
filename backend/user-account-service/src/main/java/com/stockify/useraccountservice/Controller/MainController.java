@@ -7,13 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping(path ="/account")
 public class MainController {
 
@@ -29,6 +25,11 @@ public class MainController {
             @RequestParam String confirmPassword,
             @RequestParam String business
     ) {
+
+        // Make sure required fields are not empty
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            return "Error: All fields are required.";
+        }
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
@@ -58,8 +59,25 @@ public class MainController {
 
     // Login an existing user
     @PostMapping("/login")
-    public String login(@RequestParam User user) {
+    public String login(
+            @RequestParam String email,
+            @RequestParam String password
+    ) {
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
-        return "Invalid email or password!";
+        // Check user exists
+        if (existingUser.isPresent()) {
+            User user = existingUser.orElse(new User());
+
+            // Check password matches
+            if (password.equals(user.getPassword())) {
+                // Move onto the next page
+                return "User registered successfully!";
+            } else {
+                return "Incorrect password!";
+            }
+        }
+
+        return "User does not exist!";
     }
 }
