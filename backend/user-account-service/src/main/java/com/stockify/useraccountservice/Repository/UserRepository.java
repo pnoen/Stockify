@@ -8,9 +8,6 @@ import com.stockify.useraccountservice.Model.User;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
 
+    Optional<User> findById(int id);
     Optional<User> findByEmail(String email);
-
-    Optional<User> findByFirstName(String firstName);
-
-    Optional<User> findByLastName(String lastName);
 }
