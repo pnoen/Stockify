@@ -150,7 +150,7 @@ public class MainController {
     }
 
     // Get list of user ids and return list of users
-    @PostMapping("/getUsers")
+    @GetMapping("/getUsers")
     public List<User> getUsers(
             @RequestParam List<Integer> userIds
     ) {
