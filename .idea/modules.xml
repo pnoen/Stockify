@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ELEC5619-Stockify.iml" filepath="$PROJECT_DIR$/.idea/ELEC5619-Stockify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Stockify.iml" filepath="$PROJECT_DIR$/.idea/modules/Stockify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Stockify.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Stockify.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Stockify.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Stockify.test.iml" />
     </modules>
   </component>
 </project>

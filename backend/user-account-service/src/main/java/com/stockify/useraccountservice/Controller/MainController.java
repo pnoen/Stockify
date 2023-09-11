@@ -5,6 +5,8 @@ import com.stockify.useraccountservice.Model.User;
 
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,8 +62,13 @@ public class MainController {
     @PostMapping("/login")
     public String login(
             @RequestParam String email,
-            @RequestParam String password
+            @RequestParam String password,
+            HttpServletRequest request
     ) {
+        // Get the session of the request and store data in the session
+        HttpSession session = request.getSession();
+        session.setAttribute("current_user_email", email);
+
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         // Check user exists
@@ -71,13 +78,25 @@ public class MainController {
             // Check password matches
             if (password.equals(user.getPassword())) {
                 // Move onto the next page
-                return "User registered successfully!";
+                return "User logged in successfully!";
             } else {
                 return "Incorrect password!";
             }
         }
 
         return "User does not exist!";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        // Check if the session is new or doesn't contain attributes indicating a logged-in user
+        if (session.isNew() || session.getAttribute("current_user_email") == null) {
+            return "Error: No active session or user not logged in!";
+        }
+
+        // Invalidate the session
+        session.invalidate();
+        return "User logged out and session cleared!";
     }
 
     // Just with email
@@ -146,5 +165,4 @@ public class MainController {
 
         return false;
     }
-
 }
