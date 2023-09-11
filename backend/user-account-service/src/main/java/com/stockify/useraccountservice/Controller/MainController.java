@@ -147,4 +147,22 @@ public class MainController {
         return false;
     }
 
+    // Get list of user ids and return list of users
+    @PostMapping("/getUsers")
+    public List<User> getUsers(
+            @RequestParam List<String> userIds
+    ) {
+        List<User> userList = new ArrayList<>();
+
+        for (String userId : userIds) {
+            Optional<User> userOptional = userRepository.findById(userId);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                userList.add(user);
+            }
+        }
+
+        return userList;
+    }
 }
