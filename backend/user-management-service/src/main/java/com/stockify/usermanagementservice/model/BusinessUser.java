@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class BusinessUser {
 
     @Id
-    @GeneratedValue
     private int id;
 //    private int role_id;
     private Role role;
