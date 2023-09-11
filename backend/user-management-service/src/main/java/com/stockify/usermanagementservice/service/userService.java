@@ -6,10 +6,16 @@ import com.stockify.usermanagementservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @Service
 @RequiredArgsConstructor
@@ -75,14 +81,37 @@ public class userService {
     public List<BusinessUserDto> getBusinessUsers(GetBusinessUsersRequest getBusinessUsersRequest) {
         List<BusinessUser> users = userRepository.findByCompanyId(getBusinessUsersRequest.getCompanyId());
 
-        // TODO: Get the users name from the user service/table with user id
-        List<BusinessUserDto> userDtos = users.stream().map(user -> BusinessUserDto.builder() // currently without the names
-                .id(user.getId())
-//                .role_id(user.getRole_id())
-                .companyId(user.getCompanyId())
-                .role(user.getRole())
-                .build()
-        ).toList();
-        return userDtos;
+        List<Integer> userIds = users.stream()
+                .map(user -> user.getId())
+                .toList();
+
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
+        uriBuilder.queryParam("userIds", userIds.stream()
+                .map(id -> String.valueOf(id))
+                .collect(Collectors.joining(","))
+        );
+        URI uri = uriBuilder.build().encode().toUri();
+
+        List<UserDetailsDto> result = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<UserDetailsDto>>() {})
+                .block();
+
+        return users.stream().map(user -> {
+            UserDetailsDto userDetails = result.stream()
+                    .filter(res -> res.getId() == user.getId())
+                    .toList()
+                    .get(0);
+
+            return BusinessUserDto.builder()
+                    .id(user.getId())
+                    .companyId(user.getCompanyId())
+                    .role(user.getRole())
+                    .firstName(userDetails.getFirstName())
+                    .lastName(userDetails.getLastName())
+                    .email(userDetails.getEmail())
+                    .build();
+        }).toList();
     }
 }
