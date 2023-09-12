@@ -4,6 +4,8 @@ import com.stockify.useraccountservice.Repository.UserRepository;
 import com.stockify.useraccountservice.Model.User;
 
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -147,4 +149,22 @@ public class MainController {
         return false;
     }
 
+    // Get list of user ids and return list of users
+    @GetMapping("/getUsers")
+    public List<User> getUsers(
+            @RequestParam List<Integer> userIds
+    ) {
+        List<User> userList = new ArrayList<>();
+
+        for (int userId : userIds) {
+            Optional<User> userOptional = userRepository.findById(userId);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                userList.add(user);
+            }
+        }
+
+        return userList;
+    }
 }
