@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { loginUser } from "./api";
 import {
   Box,
   TextField,
@@ -27,11 +28,17 @@ export default function LoginPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    localStorage.setItem("userToken", "XXX");
-    navigate("/orders", { replace: true });
+    try {
+      const result = await loginUser(formData.email, formData.password);
+      console.log("Login successful:", result);
+      localStorage.setItem("userToken", "XXX"); 
+      navigate("/orders", { replace: true });
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+
+    }
   };
 
   return (
