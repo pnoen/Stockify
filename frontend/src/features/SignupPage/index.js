@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { registerUser } from "./api";
 import {
   Box,
   TextField,
@@ -17,11 +18,13 @@ import { green } from "@mui/material/colors";
 import logo from "../../assets/logo.png"; // Import your logo here
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     isBusiness: false,
     businessName: "",
   });
@@ -34,9 +37,16 @@ export default function SignupPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+    try {
+      const result = await registerUser(formData);
+      if (result === 200) {
+        navigate("/login", { replace: true });
+      }
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+    }
   };
 
   return (
@@ -125,6 +135,18 @@ export default function SignupPage() {
               type="password"
               id="password"
               value={formData.password}
+              onChange={handleInputChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              value={formData.confirmPassword}
               onChange={handleInputChange}
             />
             <FormControl component="fieldset" sx={{ mt: 2 }}>

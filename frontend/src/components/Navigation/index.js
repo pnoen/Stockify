@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import CustomerNavigation from "./components/CustomerNavigation";
 import SupplierNavigation from "./components/SupplierNavigation";
-import { checkIfSupplier } from "./api";
+import { checkIfBusiness } from "./api";
 
 const Navigation = () => {
-  const [isSupplier, setIsSupplier] = useState(false);
+  const [isBusiness, setisBusiness] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      //   const result = await checkIfSupplier();
-      setIsSupplier(false);
-    };
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    const businessCheck = await checkIfBusiness();
+    if (businessCheck === 200) {
+      setisBusiness(true);
+    } else {
+      setisBusiness(false);
+    }
+  };
 
   if (
     location.pathname === "/login" ||
@@ -22,9 +23,10 @@ const Navigation = () => {
     location.pathname === "/"
   ) {
     return null;
+  } else {
+    fetchData();
+    return isBusiness ? <SupplierNavigation /> : <CustomerNavigation />;
   }
-
-  return isSupplier ? <SupplierNavigation /> : <CustomerNavigation />;
 };
 
 export default Navigation;

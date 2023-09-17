@@ -15,6 +15,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(path ="/account")
 public class MainController {
 
@@ -80,6 +81,7 @@ public class MainController {
             if (password.equals(user.getPassword())) {
                 response.setStatusCode(200); // You can use appropriate HTTP status codes
                 response.setMessage("User logged in successfully!");
+                response.setUserToken(email);
             } else {
                 response.setStatusCode(401); // Unauthorized status code
                 response.setMessage("Incorrect password!");
@@ -157,5 +159,33 @@ public class MainController {
             return ResponseEntity.ok(new UserIdsResponse(404, new ArrayList<>()));
         }
     }
+
+    @GetMapping("/checkIfBusiness")
+    public ResponseEntity<ApiResponse> checkIfBusiness(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        ApiResponse response = new ApiResponse();
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            boolean isBusiness = user.getBusiness() != null && !user.getBusiness().isEmpty();
+
+            if (isBusiness) {
+                response.setStatusCode(200); // OK status code
+                response.setMessage("User is a business.");
+            } else {
+                response.setStatusCode(204); // No Content status code
+                response.setMessage("User is not a business.");
+            }
+
+        } else {
+            response.setStatusCode(404); // Not Found status code
+            response.setMessage("User does not exist!");
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }
