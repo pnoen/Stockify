@@ -1,5 +1,11 @@
 package com.stockify.useraccountservice.Controller;
 
+import com.stockify.useraccountservice.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.stockify.useraccountservice.Repository.UserRepository;
 import com.stockify.useraccountservice.Model.User;
 
@@ -7,8 +13,6 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path ="/account")
@@ -18,33 +22,32 @@ public class MainController {
     private UserRepository userRepository;
 
     @PostMapping("/register")
-    public String register(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String confirmPassword,
-            @RequestParam String business
-    ) {
+    public ResponseEntity<ApiResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+        String firstName = registrationRequest.getFirstName();
+        String lastName = registrationRequest.getLastName();
+        String email = registrationRequest.getEmail();
+        String password = registrationRequest.getPassword();
+        String confirmPassword = registrationRequest.getConfirmPassword();
+        String business = registrationRequest.getBusiness();
 
         // Make sure required fields are not empty
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            return "Error: All fields are required.";
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
         }
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         // Check email
         if (existingUser.isPresent()) {
-            return "Email already exists.";
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Email already exists."));
         }
 
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
-            return "Passwords do not match";
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Passwords do not match."));
         }
 
-        // Create new user object
+        // Create a new user object
         User newUser = new User();
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
@@ -55,105 +58,88 @@ public class MainController {
         // Save the new user
         userRepository.save(newUser);
 
-        return "User registered successfully!";
+        return ResponseEntity.ok(new ApiResponse(200, "User registered successfully."));
     }
+
 
     // Login an existing user
     @PostMapping("/login")
-    public String login(
-            @RequestParam String email,
-            @RequestParam String password
-    ) {
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        // Check user exists
-        if (existingUser.isPresent()) {
-            User user = existingUser.orElse(new User());
+        ApiResponse response = new ApiResponse();
 
-            // Check password matches
+        // Check if the user exists
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // Check if the password matches
             if (password.equals(user.getPassword())) {
-                // Move onto the next page
-                return "User registered successfully!";
+                response.setStatusCode(200); // You can use appropriate HTTP status codes
+                response.setMessage("User logged in successfully!");
             } else {
-                return "Incorrect password!";
+                response.setStatusCode(401); // Unauthorized status code
+                response.setMessage("Incorrect password!");
             }
+        } else {
+            response.setStatusCode(404); // Not Found status code
+            response.setMessage("User does not exist!");
         }
 
-        return "User does not exist!";
+        return ResponseEntity.ok(response);
     }
 
-    // Just with email
-//    @GetMapping("/getUserId")
-//    public int getUserIdByFirstNameAndLastName(
-//            @RequestParam String firstName,
-//            @RequestParam String lastName,
-//            @RequestParam String email
-//    ) {
-//        Optional<User> userOptional = userRepository.findByEmail(email);
-//
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            return user.getId();
-//        } else {
-//            return -1;
-//        }
-//    }
+
 
     // Get user id with first name, last name and email
     @PostMapping("/getUserId")
-    public int getUserIdByFirstNameAndLastName(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email
-    ) {
+    public ResponseEntity<ApiResponse> getUserIdByFirstNameAndLastName(@RequestBody NameEmailRequest request) {
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String email = request.getEmail();
+
         Optional<User> userByEmail = userRepository.findByEmail(email);
 
         if (userByEmail.isPresent()) {
             User existingUser = userByEmail.get();
             if (existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName)) {
-                return existingUser.getId();
+                return ResponseEntity.ok(new ApiResponse(200, String.valueOf(existingUser.getId())));
             }
         }
 
-        return -1;
+        return ResponseEntity.ok(new ApiResponse(404, "-1"));
     }
 
-    // Just with email
-//    @GetMapping("/checkUserExist")
-//    public Boolean checkUserExist(
-//            @RequestParam String email
-//    ) {
-//        Optional<User> userExists = userRepository.findByEmail(email);
-//
-//        if (userExists.isPresent()) {
-//            return true;
-//        }
-//
-//        return false;
-//    }
 
     // Check user exist with first name, last name and email
     @PostMapping("/checkUserExist")
-    public Boolean checkUserExist(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email
-    ) {
+    public ResponseEntity<ApiResponse> checkUserExist(@RequestBody NameEmailRequest request) {
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String email = request.getEmail();
+
         Optional<User> userExistsByEmail = userRepository.findByEmail(email);
 
         if (userExistsByEmail.isPresent()) {
             User existingUser = userExistsByEmail.get();
-            return existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName);
+            boolean userExists = existingUser.getFirstName().equals(firstName) && existingUser.getLastName().equals(lastName);
+            return ResponseEntity.ok(new ApiResponse(200, String.valueOf(userExists)));
         }
 
-        return false;
+        return ResponseEntity.ok(new ApiResponse(404, "false"));
     }
+
 
     // Get list of user ids and return list of users
     @GetMapping("/getUsers")
-    public List<User> getUsers(
-            @RequestParam List<Integer> userIds
-    ) {
+    public ResponseEntity<UserIdsResponse> getUsers(@RequestBody UserIdsRequest request) {
+        if (request.getUserIds() == null){
+            return ResponseEntity.ok(new UserIdsResponse(404, new ArrayList<>()));
+        }
+        List<Integer> userIds = request.getUserIds();
         List<User> userList = new ArrayList<>();
 
         for (int userId : userIds) {
@@ -165,6 +151,11 @@ public class MainController {
             }
         }
 
-        return userList;
+        if (!userList.isEmpty()) {
+            return ResponseEntity.ok(new UserIdsResponse(200, userList));
+        } else {
+            return ResponseEntity.ok(new UserIdsResponse(404, new ArrayList<>()));
+        }
     }
+
 }
