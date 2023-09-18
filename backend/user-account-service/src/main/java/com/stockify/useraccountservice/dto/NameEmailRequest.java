@@ -5,7 +5,7 @@ public class NameEmailRequest {
     private String lastName;
     private String email;
 
-    // getters and setters
+
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;

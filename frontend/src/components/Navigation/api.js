@@ -1,11 +1,19 @@
-import axios from 'axios';
+import axios from "axios";
+import config from "../../config.json";
 
-export const checkIfSupplier = async () => {
+export const checkIfBusiness = async () => {
+  const email = localStorage.getItem("userToken");
+  const url = `${config.userManagementServiceUrl}/account/checkIfBusiness?email=${email}`;
+  const data = {
+    email,
+  };
+
   try {
-    const response = await axios.get('http://localhost:8080/user/isSupplier');
-    return response.data; // Assuming the response is a boolean
+    const response = await axios.get(url, data);
+    const statusCode = response.data.statusCode;
+    return statusCode;
   } catch (error) {
-    console.error('Failed to check if user is a supplier:', error);
-    return false;
+    console.error("An error occurred while logging in:", error);
+    throw error;
   }
 };

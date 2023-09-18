@@ -32,12 +32,11 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const result = await loginUser(formData.email, formData.password);
-      console.log("Login successful:", result);
-      localStorage.setItem("userToken", "XXX"); 
-      navigate("/orders", { replace: true });
+      if (result === 200) {
+        navigate("/orders", { replace: true });
+      }
     } catch (error) {
       console.error("An error occurred during login:", error);
-
     }
   };
 

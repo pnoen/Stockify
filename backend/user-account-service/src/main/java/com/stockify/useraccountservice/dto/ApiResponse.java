@@ -3,6 +3,7 @@ package com.stockify.useraccountservice.dto;
 public class ApiResponse {
     private int statusCode;
     private String message;
+    private String userToken;
 
     public ApiResponse() {
 
@@ -11,6 +12,14 @@ public class ApiResponse {
     public ApiResponse(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+    }
+
+    public String getUserToken() {
+        return userToken;
     }
 
     public int getStatusCode() {
