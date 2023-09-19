@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final userService userService;
+    private userService userService;
 
     @PostMapping("/addUser")
     @ResponseStatus(HttpStatus.CREATED)
