@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import {
-  AppBar,
   Toolbar,
   Typography,
   Drawer,
   List,
   ListItem,
   ListItemIcon,
+  ListItemButton,
   ListItemText,
   Divider,
   Collapse,
-  Badge,
   Box,
-  IconButton,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -20,12 +18,25 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import logo from "../../../assets/logo.png"; // Import your logo here
+import { useNavigate } from "react-router-dom";
 
 export default function SupplierNavigation() {
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [openDropdowns, setOpenDropdowns] = useState({
+    profile: false,
+    admin: false,
+  });
+  const navigate = useNavigate();
 
-  const handleProfileClick = () => {
-    setProfileOpen(!profileOpen);
+  const handleDropdownClick = (dropdown) => {
+    setOpenDropdowns({
+      ...openDropdowns,
+      [dropdown]: !openDropdowns[dropdown],
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -38,9 +49,6 @@ export default function SupplierNavigation() {
           "& .MuiDrawer-paper": {
             width: 250,
             boxSizing: "border-box",
-            backgroundColor: "#FFFFFF",
-            color: "#000000",
-            borderRight: "2px solid #7FFFD4",
           },
         }}
       >
@@ -55,33 +63,50 @@ export default function SupplierNavigation() {
             <Typography variant="h6">Stockify</Typography>
           </ListItem>
           <Divider />
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem button>
+          </ListItemButton>
+          <ListItemButton>
             <ListItemIcon>
               <ShoppingCartIcon />
             </ListItemIcon>
             <ListItemText primary="Orders" />
-          </ListItem>
-          <ListItem button onClick={handleProfileClick}>
+          </ListItemButton>
+          <ListItemButton onClick={() => handleDropdownClick("admin")}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Admin" />
+            {openDropdowns.admin ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openDropdowns.admin} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton sx={{ paddingLeft: 4 }}>
+                <ListItemText primary="Businesses" />
+              </ListItemButton>
+              <ListItemButton sx={{ paddingLeft: 4 }}>
+                <ListItemText primary="Users" />
+              </ListItemButton>
+            </List>
+          </Collapse>
+          <ListItemButton onClick={() => handleDropdownClick("profile")}>
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
             <ListItemText primary="Profile" />
-            {profileOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={profileOpen} timeout="auto" unmountOnExit>
+            {openDropdowns.profile ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openDropdowns.profile} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button style={{ paddingLeft: 32 }}>
+              <ListItemButton sx={{ paddingLeft: 4 }}>
                 <ListItemText primary="Settings" />
-              </ListItem>
-              <ListItem button style={{ paddingLeft: 32 }}>
+              </ListItemButton>
+              <ListItemButton sx={{ paddingLeft: 4 }} onClick={handleLogout}>
                 <ListItemText primary="Logout" />
-              </ListItem>
+              </ListItemButton>
             </List>
           </Collapse>
         </List>

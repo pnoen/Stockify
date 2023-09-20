@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -17,7 +17,7 @@ import logo from "../../../assets/logo.png"; // Import your logo here
 
 export default function CustomerNavigation() {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [adminAnchorEl, setAdminAnchorEl] = React.useState(null);
+  const [adminAnchorEl, setAdminAnchorEl] = useState(null);
   const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const adminOpen = Boolean(adminAnchorEl);
@@ -88,7 +88,7 @@ export default function CustomerNavigation() {
           onClose={handleAdminClose}
         >
           <MenuItem onClick={handleAdminClose} component={Link} to="/users">
-            Users
+            businesses
           </MenuItem>
         </Menu>
       </Toolbar>
