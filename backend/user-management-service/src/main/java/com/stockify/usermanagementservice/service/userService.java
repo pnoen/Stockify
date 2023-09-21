@@ -6,7 +6,10 @@ import com.stockify.usermanagementservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,19 +28,41 @@ public class userService {
     private final UserRepository userRepository;
     private final WebClient webClient;
     public boolean addUser(UserRequest userRequest) {
+        UserCheckRequest request = new UserCheckRequest(userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail());
+        Boolean result = false;
 
-        Boolean result = webClient.post()
-                .uri(String.format("http://localhost:8080/account/checkUserExist?firstName=%s&lastName=%s&email=%s", userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail()))
+        ResponseEntity<ApiCallResponse> responseEntity = webClient.post()
+                .uri("http://localhost:8080/account/checkUserExist")
+                .bodyValue(request)
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .toEntity(ApiCallResponse.class)
                 .block();
 
+        if (responseEntity != null && responseEntity.hasBody()) {
+            ApiCallResponse response = responseEntity.getBody();
+
+            if (response != null) {
+                String message = response.getMessage();
+                 result = Boolean.parseBoolean(message);
+            }
+        }
+
         if(result) {
-            int id = webClient.post()
-                    .uri(String.format("http://localhost:8080/account/getUserId?firstName=%s&lastName=%s&email=%s", userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail()))
+            int id = -1;
+            responseEntity = webClient.post()
+                    .uri("http://localhost:8080/account/getUserId")
+                    .bodyValue(request)
                     .retrieve()
-                    .bodyToMono(Integer.class)
+                    .toEntity(ApiCallResponse.class)
                     .block();
+
+            if (responseEntity != null) {
+                ApiCallResponse apiResponse = responseEntity.getBody();
+
+                if (apiResponse != null) {
+                    id = Integer.parseInt(apiResponse.getMessage());
+                }
+            }
 
             BusinessUser user = BusinessUser.builder()
                     .id(id)
@@ -92,12 +117,13 @@ public class userService {
         );
         URI uri = uriBuilder.build().encode().toUri();
 
-        List<UserDetailsDto> result = webClient.get()
+        UserIdResponse responseEntity = webClient.get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserDetailsDto>>() {})
+                .bodyToMono(UserIdResponse.class)
                 .block();
 
+        List<UserDetailsDto> result = responseEntity.getUsers();
         return users.stream().map(user -> {
             UserDetailsDto userDetails = result.stream()
                     .filter(res -> res.getId() == user.getId())
