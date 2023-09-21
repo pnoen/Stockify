@@ -20,32 +20,13 @@ const App = () => {
 
   return (
     <AuthContext.Provider value={{ setIsLoading }}>
-      <Navigation />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <OrdersPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/*" element={<Navigation />} />
       </Routes>
     </AuthContext.Provider>
   );
-};
-
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("userToken");
-  const isAuthenticated = Boolean(token);
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
 };
 
 export default App;
