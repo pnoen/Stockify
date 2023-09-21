@@ -56,14 +56,14 @@ public class OrderItemController {
 
     // Get a list of all the order items with the given order id
     @GetMapping("/getAllByOrderId")
-    public ResponseEntity<OrderItemListResponse> getAllOrders(@RequestBody OrderIdRequest orderIdRequest) {
-        return ResponseEntity.ok(new OrderItemListResponse(200, orderItemRepository.findAllByOrderId(orderIdRequest.getOrderId())));
+    public ResponseEntity<OrderItemListResponse> getAllOrders(@RequestParam int orderId) {
+        return ResponseEntity.ok(new OrderItemListResponse(200, orderItemRepository.findAllByOrderId(orderId)));
     }
 
     // Get an order item by the orderItem ID
     @GetMapping("/getOrderItemById")
-    public ResponseEntity<OrderItemResponse> getOrderById(@RequestBody OrderItemIdRequest orderItemIdRequest) {
-        Optional<OrderItem> orderItemOptional = orderItemRepository.findById(orderItemIdRequest.getOrderItemId());
+    public ResponseEntity<OrderItemResponse> getOrderById(@RequestParam int orderItemId) {
+        Optional<OrderItem> orderItemOptional = orderItemRepository.findById(orderItemId);
 
         if (orderItemOptional.isPresent()) {
             OrderItem orderItem = orderItemOptional.get();

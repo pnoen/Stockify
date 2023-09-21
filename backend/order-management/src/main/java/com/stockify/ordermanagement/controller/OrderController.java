@@ -69,8 +69,8 @@ public class OrderController {
 
     // Get an order by its ID
     @GetMapping("/getOrderById")
-    public ResponseEntity<OrderResponse> getOrderById(@RequestBody OrderIdRequest orderIdRequest) {
-        Optional<Order> orderOptional = orderRepository.findById(orderIdRequest.getOrderId());
+    public ResponseEntity<OrderResponse> getOrderById(@RequestParam int orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
