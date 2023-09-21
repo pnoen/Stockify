@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class GetCustomerResponse {
-    private List<Integer> customers;
+    private List<CustomerDto> customers;
     private String message;
 }

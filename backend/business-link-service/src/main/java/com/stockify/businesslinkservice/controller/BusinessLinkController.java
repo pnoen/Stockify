@@ -1,5 +1,6 @@
 package com.stockify.businesslinkservice.controller;
 
+import com.stockify.businesslinkservice.dto.CustomerDto;
 import com.stockify.businesslinkservice.dto.LinkRequest;
 import com.stockify.businesslinkservice.dto.GetCustomerResponse;
 import com.stockify.businesslinkservice.service.BusinessLinkService;
@@ -30,9 +31,9 @@ public class BusinessLinkController {
 
     @GetMapping("/getCustomers")
     public ResponseEntity<GetCustomerResponse> getCustomers(@RequestParam int businessCode) {
-        List<Integer> customers = businessLinkService.getCustomers(businessCode);
+        List<CustomerDto> customers = businessLinkService.getCustomers(businessCode);
 
-        if (customers.isEmpty()) {
+        if (customers == null || customers.isEmpty()) {
             GetCustomerResponse res = GetCustomerResponse.builder()
                     .customers(new ArrayList<>())
                     .message("No customers found.")
