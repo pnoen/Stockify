@@ -1,6 +1,6 @@
 package com.stockify.businesslinkservice.service;
 
-import com.stockify.businesslinkservice.dto.CreateLinkRequest;
+import com.stockify.businesslinkservice.dto.LinkRequest;
 import com.stockify.businesslinkservice.model.BusinessLink;
 import com.stockify.businesslinkservice.repository.BusinessLinkRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class BusinessLinkService {
 
     private final BusinessLinkRepository businessLinkRepository;
 
-    public String createLink(CreateLinkRequest createLinkRequest) {
+    public String createLink(LinkRequest linkRequest) {
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndCustomerId(
-                createLinkRequest.getBusinessCode(),
-                createLinkRequest.getCustomerId()
+                linkRequest.getBusinessCode(),
+                linkRequest.getCustomerId()
         );
 
         if (!businessLinks.isEmpty()) {
@@ -28,8 +28,8 @@ public class BusinessLinkService {
         }
 
         BusinessLink businessLink = BusinessLink.builder()
-                .businessCode(createLinkRequest.getBusinessCode())
-                .customerId(createLinkRequest.getCustomerId())
+                .businessCode(linkRequest.getBusinessCode())
+                .customerId(linkRequest.getCustomerId())
                 .build();
         businessLinkRepository.save(businessLink);
 
@@ -42,5 +42,22 @@ public class BusinessLinkService {
         return businessLinks.stream()
                 .map(businessLink -> businessLink.getCustomerId())
                 .toList();
+    }
+
+    public String removeLink(LinkRequest linkRequest) {
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndCustomerId(
+                linkRequest.getBusinessCode(),
+                linkRequest.getCustomerId()
+        );
+
+        if (businessLinks.isEmpty()) {
+            return "Link doesn't exist.";
+        }
+
+        businessLinkRepository.deleteByBusinessCodeAndCustomerId(
+                linkRequest.getBusinessCode(),
+                linkRequest.getCustomerId()
+        );
+        return null;
     }
 }

@@ -1,8 +1,9 @@
 package com.stockify.businesslinkservice.controller;
 
-import com.stockify.businesslinkservice.dto.CreateLinkRequest;
+import com.stockify.businesslinkservice.dto.LinkRequest;
 import com.stockify.businesslinkservice.dto.GetCustomerResponse;
 import com.stockify.businesslinkservice.service.BusinessLinkService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class BusinessLinkController {
     private final BusinessLinkService businessLinkService;
 
     @PostMapping("/createLink")
-    public ResponseEntity<String> createLink(@RequestBody CreateLinkRequest createLinkRequest) {
-        String msg = businessLinkService.createLink(createLinkRequest);
+    public ResponseEntity<String> createLink(@RequestBody LinkRequest linkRequest) {
+        String msg = businessLinkService.createLink(linkRequest);
         if (msg != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
@@ -43,6 +44,16 @@ public class BusinessLinkController {
                 .customers(customers)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @DeleteMapping("/removeLink")
+    @Transactional
+    public ResponseEntity<String> removeLink(@RequestBody LinkRequest linkRequest) {
+        String msg = businessLinkService.removeLink(linkRequest);
+        if (msg != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
 
