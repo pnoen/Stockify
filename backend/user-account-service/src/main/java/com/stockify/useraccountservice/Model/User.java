@@ -17,15 +17,26 @@ public class User {
     private String email;
     private String password;
     private String business;
+    private int businessCode;
+
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String password, String business) {
+    public User(String firstName, String lastName, String email, String password, String business, Integer businessCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.business = business;
+        this.businessCode = businessCode;
+    }
+
+    public int getBusinessCode() {
+        return businessCode;
+    }
+
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 
     // Getter for the id

@@ -103,19 +103,31 @@ public class userService {
     }
 
 
-    public List<BusinessUserDto> getBusinessUsers(GetBusinessUsersRequest getBusinessUsersRequest) {
-        List<BusinessUser> users = userRepository.findByCompanyId(getBusinessUsersRequest.getCompanyId());
+    public List<BusinessUserDto> getBusinessUsers(String email) {
+
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinessCode");
+        uriBuilder.queryParam("email", email);
+        URI uri = uriBuilder.build().encode().toUri();
+
+        int businessCode = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
+
+        List<BusinessUser> users = userRepository.findByCompanyId(businessCode);
 
         List<Integer> userIds = users.stream()
                 .map(user -> user.getId())
                 .toList();
 
-        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
+
+        uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
         uriBuilder.queryParam("userIds", userIds.stream()
                 .map(id -> String.valueOf(id))
                 .collect(Collectors.joining(","))
         );
-        URI uri = uriBuilder.build().encode().toUri();
+        uri = uriBuilder.build().encode().toUri();
 
         UserIdResponse responseEntity = webClient.get()
                 .uri(uri)

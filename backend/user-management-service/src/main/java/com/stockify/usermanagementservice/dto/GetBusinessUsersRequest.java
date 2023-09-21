@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetBusinessUsersRequest {
-    private int companyId;
+//    private int companyId;
+    private String email;
 }

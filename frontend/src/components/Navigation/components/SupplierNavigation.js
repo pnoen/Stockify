@@ -18,7 +18,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import logo from "../../../assets/logo.png"; // Import your logo here
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SupplierNavigation() {
   const [openDropdowns, setOpenDropdowns] = useState({
@@ -69,7 +69,7 @@ export default function SupplierNavigation() {
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component={Link} to="/orders">
             <ListItemIcon>
               <ShoppingCartIcon />
             </ListItemIcon>
@@ -87,7 +87,11 @@ export default function SupplierNavigation() {
               <ListItemButton sx={{ paddingLeft: 4 }}>
                 <ListItemText primary="Businesses" />
               </ListItemButton>
-              <ListItemButton sx={{ paddingLeft: 4 }}>
+              <ListItemButton
+                sx={{ paddingLeft: 4 }}
+                component={Link}
+                to="/users"
+              >
                 <ListItemText primary="Users" />
               </ListItemButton>
             </List>

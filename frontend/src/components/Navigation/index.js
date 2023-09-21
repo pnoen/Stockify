@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Routes, Route, Navigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import CustomerNavigation from "./components/CustomerNavigation";
 import SupplierNavigation from "./components/SupplierNavigation";
 import { checkIfBusiness } from "./api";
 import OrdersPage from "../../features/OrderManagement/components/OrdersPage/index";
+import UserManagementPage from "../../features/UserManagement";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
     sx={{
-      marginLeft: isBusiness ? "10%" : "0%",
-      width: isBusiness ? "90%" : "100%",
+      marginLeft: isBusiness ? "13%" : "0%",
+      width: isBusiness ? "87%" : "100%",
+      backgroundColor: "#b1fac5",
+      minHeight: "100vh",
     }}
   >
     {children}
@@ -62,12 +65,21 @@ const Navigation = () => {
     <>
       {isBusiness ? <SupplierNavigation /> : <CustomerNavigation />}
       <LayoutWrapper isBusiness={isBusiness}>
+        <CssBaseline />
         <Routes>
           <Route
             path="/orders"
             element={
               <ProtectedRoute>
                 <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <UserManagementPage />
               </ProtectedRoute>
             }
           />

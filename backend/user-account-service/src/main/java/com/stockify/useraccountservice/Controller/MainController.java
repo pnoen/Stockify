@@ -1,8 +1,8 @@
 package com.stockify.useraccountservice.Controller;
 
 import com.stockify.useraccountservice.dto.*;
+import com.stockify.useraccountservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +21,7 @@ public class MainController {
 
     @Autowired
     private UserRepository userRepository;
+    private UserService userService = new UserService();
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody RegistrationRequest registrationRequest) {
@@ -30,6 +31,11 @@ public class MainController {
         String password = registrationRequest.getPassword();
         String confirmPassword = registrationRequest.getConfirmPassword();
         String business = registrationRequest.getBusiness();
+        int businessCode = 0;
+        if(business != null){
+            businessCode = userService.generateUniqueBusinessCode();
+
+        }
 
         // Make sure required fields are not empty
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -55,6 +61,8 @@ public class MainController {
         newUser.setEmail(email);
         newUser.setPassword(password);
         newUser.setBusiness(business);
+        newUser.setBusinessCode(businessCode);
+
 
         // Save the new user
         userRepository.save(newUser);
@@ -183,6 +191,24 @@ public class MainController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/getBusinessCode")
+    public int getBusinessCode(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        ApiResponse response = new ApiResponse();
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getBusinessCode();
+
+
+        } else {
+            return -1;
+        }
+
+    }
+
 
 
 }
