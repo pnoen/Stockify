@@ -190,6 +190,24 @@ public class MainController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/getBusinessCode")
+    public int getBusinessCode(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        ApiResponse response = new ApiResponse();
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getBusinessCode();
+
+
+        } else {
+            return -1;
+        }
+
+    }
+
 
 
 }
