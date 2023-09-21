@@ -43,10 +43,10 @@ export default function OrdersPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginTop: "2vh",
+        paddingTop: "5vh",
       }}
     >
-      <div style={{ maxWidth: "80%", width: "100%" }}>
+      <div style={{ maxWidth: "90%", width: "100%" }}>
         <Typography variant="h4" gutterBottom>
           Orders
         </Typography>

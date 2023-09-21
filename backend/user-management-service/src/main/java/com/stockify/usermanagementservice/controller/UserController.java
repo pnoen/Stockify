@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/getBusinessUsers")
     @ResponseStatus(HttpStatus.OK)
-    public List<BusinessUserDto> getBusinessUsers(@RequestBody GetBusinessUsersRequest getBusinessUsersRequest) {
-        return userService.getBusinessUsers(getBusinessUsersRequest);
+    public List<BusinessUserDto> getBusinessUsers(@RequestParam String email) {
+        return userService.getBusinessUsers(email);
     }
 }
