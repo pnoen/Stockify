@@ -1,8 +1,6 @@
 package com.stockify.businesslinkservice.service;
 
-import com.stockify.businesslinkservice.dto.CustomerDto;
-import com.stockify.businesslinkservice.dto.LinkRequest;
-import com.stockify.businesslinkservice.dto.UserIdsResponse;
+import com.stockify.businesslinkservice.dto.*;
 import com.stockify.businesslinkservice.model.BusinessLink;
 import com.stockify.businesslinkservice.repository.BusinessLinkRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +52,7 @@ public class BusinessLinkService {
 
         UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
         uriBuilder.queryParam("userIds", customerIds.stream()
-                .map(id -> String.valueOf(id))
+                .map(code -> String.valueOf(code))
                 .collect(Collectors.joining(","))
         );
         URI uri = uriBuilder.build().encode().toUri();
@@ -66,6 +64,29 @@ public class BusinessLinkService {
                 .block();
 
         return responseEntity.getUsers();
+    }
+
+    public List<BusinessDto> getBusinesses(int customerId) {
+        List<BusinessLink> businessLinks = businessLinkRepository.findByCustomerId(customerId);
+
+        List<Integer> businessCodes = businessLinks.stream()
+                .map(businessLink -> businessLink.getBusinessCode())
+                .toList();
+
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinesses");
+        uriBuilder.queryParam("businessCodes", businessCodes.stream()
+                .map(id -> String.valueOf(id))
+                .collect(Collectors.joining(","))
+        );
+        URI uri = uriBuilder.build().encode().toUri();
+
+        BusinessesResponse responseEntity = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(BusinessesResponse.class)
+                .block();
+
+        return responseEntity.getBusinesses();
     }
 
     public String removeLink(LinkRequest linkRequest) {

@@ -1,8 +1,6 @@
 package com.stockify.businesslinkservice.controller;
 
-import com.stockify.businesslinkservice.dto.CustomerDto;
-import com.stockify.businesslinkservice.dto.LinkRequest;
-import com.stockify.businesslinkservice.dto.GetCustomerResponse;
+import com.stockify.businesslinkservice.dto.*;
 import com.stockify.businesslinkservice.service.BusinessLinkService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,19 +28,37 @@ public class BusinessLinkController {
     }
 
     @GetMapping("/getCustomers")
-    public ResponseEntity<GetCustomerResponse> getCustomers(@RequestParam int businessCode) {
+    public ResponseEntity<GetCustomersResponse> getCustomers(@RequestParam int businessCode) {
         List<CustomerDto> customers = businessLinkService.getCustomers(businessCode);
 
         if (customers == null || customers.isEmpty()) {
-            GetCustomerResponse res = GetCustomerResponse.builder()
+            GetCustomersResponse res = GetCustomersResponse.builder()
                     .customers(new ArrayList<>())
                     .message("No customers found.")
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
-        GetCustomerResponse res = GetCustomerResponse.builder()
+        GetCustomersResponse res = GetCustomersResponse.builder()
                 .customers(customers)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @GetMapping("/getBusinesses")
+    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam int customerId) {
+        List<BusinessDto> businesses = businessLinkService.getBusinesses(customerId);
+
+        if (businesses == null || businesses.isEmpty()) {
+            GetBusinessesResponse res = GetBusinessesResponse.builder()
+                    .businesses(new ArrayList<>())
+                    .message("No businesses found.")
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+        }
+
+        GetBusinessesResponse res = GetBusinessesResponse.builder()
+                .businesses(businesses)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }

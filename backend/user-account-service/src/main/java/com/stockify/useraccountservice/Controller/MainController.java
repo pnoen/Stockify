@@ -209,6 +209,26 @@ public class MainController {
 
     }
 
+    @GetMapping("/getBusinesses")
+    public ResponseEntity<BusinessesResponse> getBusinesses(@RequestParam List<Integer> businessCodes) {
+        List<BusinessDto> businesses = new ArrayList<>();
+
+        for (int businessCode : businessCodes) {
+            Optional<User> userOptional = userRepository.findByBusinessCode(businessCode);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                businesses.add(new BusinessDto(user.getBusinessCode(), user.getBusiness()));
+            }
+        }
+
+        if (!businesses.isEmpty()) {
+            return ResponseEntity.ok(new BusinessesResponse(200, businesses));
+        } else {
+            return ResponseEntity.ok(new BusinessesResponse(404, new ArrayList<>()));
+        }
+    }
+
 
 
 }

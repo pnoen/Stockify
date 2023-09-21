@@ -10,5 +10,7 @@ public interface BusinessLinkRepository extends JpaRepository<BusinessLink, Inte
 
     List<BusinessLink> findByBusinessCode(int businessCode);
 
+    List<BusinessLink> findByCustomerId(int customerId);
+
     void deleteByBusinessCodeAndCustomerId(int businessCode, int customerId);
 }
