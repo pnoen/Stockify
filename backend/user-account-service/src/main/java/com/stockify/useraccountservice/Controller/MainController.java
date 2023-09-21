@@ -137,11 +137,7 @@ public class MainController {
 
     // Get list of user ids and return list of users
     @GetMapping("/getUsers")
-    public ResponseEntity<UserIdsResponse> getUsers(@RequestBody UserIdsRequest request) {
-        if (request.getUserIds() == null){
-            return ResponseEntity.ok(new UserIdsResponse(404, new ArrayList<>()));
-        }
-        List<Integer> userIds = request.getUserIds();
+    public ResponseEntity<UserIdsResponse> getUsers(@RequestParam List<Integer> userIds) {
         List<User> userList = new ArrayList<>();
 
         for (int userId : userIds) {
@@ -152,6 +148,7 @@ public class MainController {
                 userList.add(user);
             }
         }
+
 
         if (!userList.isEmpty()) {
             return ResponseEntity.ok(new UserIdsResponse(200, userList));
