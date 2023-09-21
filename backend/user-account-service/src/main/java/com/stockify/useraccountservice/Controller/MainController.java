@@ -32,8 +32,9 @@ public class MainController {
         String confirmPassword = registrationRequest.getConfirmPassword();
         String business = registrationRequest.getBusiness();
         int businessCode = 0;
-        if(!business.equals(null)){
+        if(business != null){
             businessCode = userService.generateUniqueBusinessCode();
+
         }
 
         // Make sure required fields are not empty
@@ -60,7 +61,7 @@ public class MainController {
         newUser.setEmail(email);
         newUser.setPassword(password);
         newUser.setBusiness(business);
-        newUser.setBusinessCode(businessCode);
+
 
         // Save the new user
         userRepository.save(newUser);
