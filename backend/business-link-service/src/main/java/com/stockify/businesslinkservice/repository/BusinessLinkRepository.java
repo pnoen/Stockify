@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface BusinessLinkRepository extends JpaRepository<BusinessLink, Integer> {
     List<BusinessLink> findByBusinessCodeAndCustomerId(int businessCode, int customerId);
+
+    List<BusinessLink> findByBusinessCode(int businessCode);
 }

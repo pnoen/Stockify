@@ -36,4 +36,11 @@ public class BusinessLinkService {
         return null;
     }
 
+    public List<Integer> getCustomers(int businessCode) {
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCode(businessCode);
+
+        return businessLinks.stream()
+                .map(businessLink -> businessLink.getCustomerId())
+                .toList();
+    }
 }
