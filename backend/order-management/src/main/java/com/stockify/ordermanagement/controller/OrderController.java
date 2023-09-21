@@ -55,7 +55,7 @@ public class OrderController {
 
     // Get a list of all the orders
     @GetMapping("/getAll")
-    public List<Order> getAllOrders() {
+    public ResponseEntity<OrderListResponse> getAllOrders() {
         List<Order> orderList = new ArrayList<>();
 
         Iterable<Order> orders = orderRepository.findAll();
@@ -64,19 +64,19 @@ public class OrderController {
             orderList.add(o);
         }
 
-        return orderList;
+        return ResponseEntity.ok(new OrderListResponse(200, orderList));
     }
 
     // Get an order by its ID
     @GetMapping("/getOrderById")
-    public Order getOrderById(@RequestBody OrderIdRequest orderIdRequest) {
+    public ResponseEntity<OrderResponse> getOrderById(@RequestBody OrderIdRequest orderIdRequest) {
         Optional<Order> orderOptional = orderRepository.findById(orderIdRequest.getOrderId());
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            return order;
+            return ResponseEntity.ok(new OrderResponse(200, order));
         } else {
-            return null;
+            return ResponseEntity.ok(new OrderResponse(404, null));
         }
     }
 }
