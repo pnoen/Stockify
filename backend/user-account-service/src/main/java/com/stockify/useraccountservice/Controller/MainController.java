@@ -61,6 +61,7 @@ public class MainController {
         newUser.setEmail(email);
         newUser.setPassword(password);
         newUser.setBusiness(business);
+        newUser.setBusinessCode(businessCode);
 
 
         // Save the new user

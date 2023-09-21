@@ -139,7 +139,7 @@ export default function LoginPage() {
           style={{ maxHeight: "100%", maxWidth: "100%" }}
         />
         <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-          Tockify
+          tockify
         </Typography>
       </Grid>
     </Grid>

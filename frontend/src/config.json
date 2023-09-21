@@ -1,3 +1,4 @@
 {
-  "userManagementServiceUrl": "http://localhost:8080"
+  "userManagementServiceUrl": "http://localhost:8080",
+  "businessServiceUrl": "http://localhost:8081"
 }

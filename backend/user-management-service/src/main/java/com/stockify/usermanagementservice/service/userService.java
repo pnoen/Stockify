@@ -103,10 +103,10 @@ public class userService {
     }
 
 
-    public List<BusinessUserDto> getBusinessUsers(GetBusinessUsersRequest getBusinessUsersRequest) {
+    public List<BusinessUserDto> getBusinessUsers(String email) {
 
         UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinessCode");
-        uriBuilder.queryParam("email", getBusinessUsersRequest.getEmail());
+        uriBuilder.queryParam("email", email);
         URI uri = uriBuilder.build().encode().toUri();
 
         int businessCode = webClient.get()
