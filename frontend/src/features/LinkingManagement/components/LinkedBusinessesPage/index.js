@@ -16,6 +16,7 @@ import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getLinkedBusinesses } from "./api";
 import LinkBusinessModal from "./components/LinkBusinessModal";
+import UnlinkBusinessModal from "./components/UnlinkBusinessModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -112,6 +113,10 @@ export default function LinkedBusinessesPage() {
         <LinkBusinessModal
           open={isLinkBusinessModalOpen}
           onClose={() => setIsLinkBusinessModalOpen(false)}
+        />
+        <UnlinkBusinessModal
+          open={isUninkBusinessModalOpen}
+          onClose={() => setIsUnlinkBusinessModalOpen(false)}
         />
       </div>
     </div>

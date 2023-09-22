@@ -4,7 +4,7 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class RemoveLinkRequest {
+public class RemoveUserLinkRequest {
     @NonNull
     private Integer businessCode;
 

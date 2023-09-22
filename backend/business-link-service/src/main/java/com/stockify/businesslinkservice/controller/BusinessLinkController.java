@@ -79,10 +79,20 @@ public class BusinessLinkController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @DeleteMapping("/removeLink")
+    @DeleteMapping("/removeUserLink")
     @Transactional
-    public ResponseEntity<String> removeLink(@RequestBody RemoveLinkRequest removeLinkRequest) {
-        String msg = businessLinkService.removeLink(removeLinkRequest);
+    public ResponseEntity<String> removeUserLink(@RequestBody RemoveUserLinkRequest removeUserLinkRequest) {
+        String msg = businessLinkService.removeUserLink(removeUserLinkRequest);
+        if (msg != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @DeleteMapping("/removeBusinessLink")
+    @Transactional
+    public ResponseEntity<String> removeBusinessLink(@RequestBody BusinessLinkRequest removeBusinessLinkRequest) {
+        String msg = businessLinkService.removeBusinessLink(removeBusinessLinkRequest);
         if (msg != null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
         }

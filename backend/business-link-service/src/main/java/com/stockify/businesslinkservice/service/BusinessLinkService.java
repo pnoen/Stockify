@@ -160,10 +160,10 @@ public class BusinessLinkService {
         return responseEntity.getBusinesses();
     }
 
-    public String removeLink(RemoveLinkRequest removeLinkRequest) {
+    public String removeUserLink(RemoveUserLinkRequest removeUserLinkRequest) {
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
-                removeLinkRequest.getBusinessCode(),
-                removeLinkRequest.getUserId()
+                removeUserLinkRequest.getBusinessCode(),
+                removeUserLinkRequest.getUserId()
         );
 
         if (businessLinks.isEmpty()) {
@@ -171,8 +171,39 @@ public class BusinessLinkService {
         }
 
         businessLinkRepository.deleteByBusinessCodeAndUserId(
-                removeLinkRequest.getBusinessCode(),
-                removeLinkRequest.getUserId()
+                removeUserLinkRequest.getBusinessCode(),
+                removeUserLinkRequest.getUserId()
+        );
+        return null;
+    }
+
+    public String removeBusinessLink(BusinessLinkRequest removeBusinessLinkRequest) {
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUserIdByEmail");
+        uriBuilder.queryParam("email", removeBusinessLinkRequest.getEmail());
+        URI uri = uriBuilder.build().encode().toUri();
+
+        int userId = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
+
+        if (userId == -1) {
+            return "Unable to find user.";
+        }
+
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
+                removeBusinessLinkRequest.getBusinessCode(),
+                userId
+        );
+
+        if (businessLinks.isEmpty()) {
+            return "Link doesn't exist.";
+        }
+
+        businessLinkRepository.deleteByBusinessCodeAndUserId(
+                removeBusinessLinkRequest.getBusinessCode(),
+                userId
         );
         return null;
     }

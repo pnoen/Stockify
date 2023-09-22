@@ -10,15 +10,15 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, removeUserLink } from "./api";
-import { getLinkedUsers } from "../../api";
-import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
+import { getBusinessCode, removeBusinessLink, removeUserLink } from "./api";
+import { getLinkedBusinesses } from "../../api";
+import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar";
 
-export default function UnlinkUserModal({ open, onClose }) {
-  const [users, setUsers] = useState([]);
+export default function UnlinkBusinessModal({ open, onClose }) {
+  const [businesses, setBusinesses] = useState([]);
   const [link, setLink] = useState({
-    businesscode: null,
-    userId: "",
+    businessCode: "",
+    email: "",
   });
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -26,10 +26,10 @@ export default function UnlinkUserModal({ open, onClose }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersList = await getLinkedUsers();
-        setUsers(usersList.users);
+        const businessesList = await getLinkedBusinesses();
+        setBusinesses(businessesList.businesses);
       } catch (error) {
-        console.error("An error occurred while fetching users:", error);
+        console.error("An error occurred while fetching businesses:", error);
       }
     };
     fetchData();
@@ -42,7 +42,7 @@ export default function UnlinkUserModal({ open, onClose }) {
         ? link
         : { ...link, businessCode: await getBusinessCode() };
 
-      const statusCode = await removeUserLink(updatedLink);
+      const statusCode = await removeBusinessLink(updatedLink);
       if (statusCode >= 200 && statusCode < 300) {
         setSnackBarMessage("Removed link successfully!");
         setSnackBarOpen(true);
@@ -76,15 +76,20 @@ export default function UnlinkUserModal({ open, onClose }) {
           </Typography>
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth required margin="normal">
-              <InputLabel id="user-label">User</InputLabel>
+              <InputLabel id="business-label">Business</InputLabel>
               <Select
-                labelId="user-label"
-                value={link.userId}
-                onChange={(e) => setLink({ ...link, userId: e.target.value })}
+                labelId="business-label"
+                value={link.businessCode}
+                onChange={(e) =>
+                  setLink({ ...link, businessCode: e.target.value })
+                }
               >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.email}
+                {businesses.map((business) => (
+                  <MenuItem
+                    key={business.businessCode}
+                    value={business.businessCode}
+                  >
+                    {business.businessName}
                   </MenuItem>
                 ))}
               </Select>

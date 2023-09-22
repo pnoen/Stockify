@@ -14,14 +14,15 @@ export const getBusinessCode = async () => {
   }
 };
 
-export const removeUserLink = async (link) => {
-  const url = `${config.businessLinkServiceUrl}/api/businessLink/removeUserLink`;
+export const removeBusinessLink = async (link) => {
+  const email = localStorage.getItem("userToken");
+  const url = `${config.businessLinkServiceUrl}/api/businessLink/removeBusinessLink`;
 
   try {
     const response = await axios.delete(url, {
       data: {
         businessCode: link.businessCode,
-        userId: link.userId,
+        email: email,
       },
     });
     return response.status;
