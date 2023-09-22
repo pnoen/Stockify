@@ -97,7 +97,7 @@ export default function SupplierNavigation() {
               <ListItemButton
                 sx={{ paddingLeft: 4 }}
                 component={Link}
-                to="/linkedUsers"
+                to="/links"
               >
                 <ListItemText primary="Linked Users" />
               </ListItemButton>

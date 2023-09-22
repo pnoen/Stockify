@@ -90,6 +90,9 @@ export default function CustomerNavigation() {
           <MenuItem onClick={handleAdminClose} component={Link} to="/users">
             businesses
           </MenuItem>
+          <MenuItem onClick={handleAdminClose} component={Link} to="/links">
+            Linked Businesses
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
