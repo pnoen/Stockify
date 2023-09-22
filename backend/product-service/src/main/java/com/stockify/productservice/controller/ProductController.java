@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
@@ -34,12 +36,22 @@ public class ProductController {
     }
 
     @GetMapping("/getInventory")
-    public ResponseEntity<InventoryResponse> getInventory(@RequestParam int id) {
-        return productService.getInventory(id);
+    public ResponseEntity<InventoryResponse> getInventory(@RequestParam int businessCode) {
+        return productService.getInventory(businessCode);
     }
 
     @PostMapping("/edit")
     public ResponseEntity<ApiResponse> editProduct(@RequestBody EditProductRequest editProductRequest) {
         return productService.editProduct(editProductRequest);
+    }
+
+    @GetMapping("/getProducts")
+    public ResponseEntity<ProductListSpecificResponse> getProductsList(@RequestParam List<Integer> ids) {
+        return productService.getProductListSpecific(ids);
+    }
+
+    @GetMapping("/getProductsBusinessList")
+    public ResponseEntity<ProductListSpecificResponse> getProductListBusinessCode(@RequestParam List<Integer> businessCodes) {
+        return productService.getProductListBusinessCodes(businessCodes);
     }
 }

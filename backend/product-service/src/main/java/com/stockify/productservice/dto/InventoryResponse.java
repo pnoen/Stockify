@@ -1,23 +1,24 @@
 package com.stockify.productservice.dto;
+import com.stockify.productservice.model.Product;
 
 import java.util.List;
 
 public class InventoryResponse {
 
-    private List<Inventory> inventory;
+    private List<Product> product;
     private int statusCode;
 
-    public InventoryResponse(int statusCode, List<Inventory> inventory) {
-        this.inventory = inventory;
+    public InventoryResponse(int statusCode, List<Product> product) {
+        this.product = product;
         this.statusCode = statusCode;
     }
 
-    public List<Inventory> getInventory() {
-        return inventory;
+    public List<Product> getProduct() {
+        return product;
     }
 
-    public void setInventory(List<Inventory> inventory) {
-        this.inventory = inventory;
+    public void setProduct(List<Product> product) {
+        this.product = product;
     }
 
     public int getStatusCode() {

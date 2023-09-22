@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,7 @@ public class ProductServiceTests {
         addRequest.setDescription("Description");
         addRequest.setPrice((float)2.5);
         addRequest.setQuantity(10);
-        addRequest.setCompanyID(1);
+        addRequest.setBusinessCode(10000);
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -56,7 +57,7 @@ public class ProductServiceTests {
         addRequest.setDescription("Description");
         addRequest.setPrice((float)0);
         addRequest.setQuantity(10);
-        addRequest.setCompanyID(1);
+        addRequest.setBusinessCode(10000);
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -70,7 +71,7 @@ public class ProductServiceTests {
         addRequest.setDescription("Description");
         addRequest.setPrice((float)2);
         addRequest.setQuantity(0);
-        addRequest.setCompanyID(1);
+        addRequest.setBusinessCode(10000);
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -84,7 +85,7 @@ public class ProductServiceTests {
         addRequest.setDescription("Description");
         addRequest.setPrice((float)2);
         addRequest.setQuantity(1);
-        addRequest.setCompanyID(1);
+        addRequest.setBusinessCode(10000);
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -98,7 +99,7 @@ public class ProductServiceTests {
         addRequest.setDescription("");
         addRequest.setPrice((float)2);
         addRequest.setQuantity(2);
-        addRequest.setCompanyID(1);
+        addRequest.setBusinessCode(10000);
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -112,7 +113,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(20000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -143,7 +144,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(20000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -200,7 +201,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setPrice((float)2.5);
         product.setQuantity(10);
-        product.setCompanyID(1);
+        product.setBusinessCode(1);
         List<Product> productList = new ArrayList<>();
         productList.add(product);
 
@@ -222,25 +223,25 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setPrice((float)2.5);
         product.setQuantity(10);
-        product.setCompanyID(1);
+        product.setBusinessCode(1);
         List<Product> productList = new ArrayList<>();
         productList.add(product);
-        when(productRepository.findByCompanyID(2)).thenReturn(productList);
+        when(productRepository.findByBusinessCode(2)).thenReturn(productList);
         ResponseEntity<InventoryResponse> response = productService.getInventory(2);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().getInventory().size());
-        assertEquals(2.5, response.getBody().getInventory().get(0).getPrice());
-        assertEquals(10, response.getBody().getInventory().get(0).getQuantity());
-        assertEquals("ProductName", response.getBody().getInventory().get(0).getName());
+        assertEquals(1, response.getBody().getProduct().size());
+        assertEquals(2.5, response.getBody().getProduct().get(0).getPrice());
+        assertEquals(10, response.getBody().getProduct().get(0).getQuantity());
+        assertEquals("ProductName", response.getBody().getProduct().get(0).getName());
     }
 
     @Test
     public void testInvalidGetInventoryList() {
         List<Product> productList = new ArrayList<>();
-        when(productRepository.findByCompanyID(2)).thenReturn(productList);
-        ResponseEntity<InventoryResponse> response = productService.getInventory(2);
+        when(productRepository.findByBusinessCode(10000)).thenReturn(productList);
+        ResponseEntity<InventoryResponse> response = productService.getInventory(10000);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(new ArrayList<>(), response.getBody().getInventory());
+        assertEquals(new ArrayList<>(), response.getBody().getProduct());
     }
 
     @Test
@@ -275,7 +276,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -300,7 +301,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -329,7 +330,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -359,7 +360,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -389,7 +390,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -419,7 +420,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -449,7 +450,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -479,7 +480,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -509,7 +510,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -539,7 +540,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -569,7 +570,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -599,7 +600,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -629,7 +630,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -659,7 +660,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -689,7 +690,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -719,7 +720,7 @@ public class ProductServiceTests {
         product.setQuantity(20);
         product.setName("Product");
         product.setDescription("Description");
-        product.setCompanyID(2);
+        product.setBusinessCode(10000);
         product.setPrice(20);
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
@@ -732,6 +733,105 @@ public class ProductServiceTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Product Edited successfully.", response.getBody().getMessage());
 
+    }
+
+    @Test
+    public void testValidGetProductS(){
+        List<Integer> ls = new ArrayList<>();
+        ls.add(500);
+        ls.add(501);
+
+        Product product = new Product();
+        product.setId(2);
+        product.setQuantity(20);
+        product.setName("Product");
+        product.setDescription("Description");
+        product.setBusinessCode(10000);
+        product.setPrice(20);
+
+        Optional<Product> optionalProduct = Optional.ofNullable(product);
+
+        when(productRepository.findById(any(Integer.class))).thenReturn(optionalProduct);
+        ResponseEntity<ProductListSpecificResponse> response = productService.getProductListSpecific(ls);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testInvalidGetProductSEmpty(){
+        List<Integer> ls = new ArrayList<>();
+
+        Product product = new Product();
+        product.setId(2);
+        product.setQuantity(20);
+        product.setName("Product");
+        product.setDescription("Description");
+        product.setBusinessCode(10000);
+        product.setPrice(20);
+
+        Optional<Product> optionalProduct = Optional.ofNullable(product);
+
+        when(productRepository.findById(any(Integer.class))).thenReturn(optionalProduct);
+        ResponseEntity<ProductListSpecificResponse> response = productService.getProductListSpecific(ls);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testInvalidGetProductSNotFound(){
+        List<Integer> ls = new ArrayList<>();
+        ls.add(500);
+        ls.add(501);
+
+        Product product = new Product();
+        Optional<Product> optionalProduct = Optional.empty();
+        when(productRepository.findById(any(Integer.class))).thenReturn(optionalProduct);
+        ResponseEntity<ProductListSpecificResponse> response = productService.getProductListSpecific(ls);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testInvalidGetFromBusinessCodes(){
+        List<Integer> ls = new ArrayList<>();
+        List<Product> productls = new ArrayList<>();
+
+        Product product = new Product();
+        product.setId(2);
+        product.setQuantity(20);
+        product.setName("Product");
+        product.setDescription("Description");
+        product.setBusinessCode(10000);
+        product.setPrice(20);
+
+        Optional<Product> optionalProduct = Optional.ofNullable(product);
+
+        ls.add(10000);
+
+        when(productRepository.findByBusinessCode(any(Integer.class))).thenReturn(productls);
+        ResponseEntity<ProductListSpecificResponse> response = productService.getProductListBusinessCodes(ls);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(new ArrayList<>(), response.getBody().getProducts());
+    }
+    @Test
+    public void testValidGetFromBusinessCodes(){
+        List<Integer> ls = new ArrayList<>();
+        List<Product> productls = new ArrayList<>();
+
+        Product product = new Product();
+        product.setId(2);
+        product.setQuantity(20);
+        product.setName("Product");
+        product.setDescription("Description");
+        product.setBusinessCode(10000);
+        product.setPrice(20);
+        productls.add(product);
+
+        Optional<Product> optionalProduct = Optional.ofNullable(product);
+
+        ls.add(10000);
+
+        when(productRepository.findByBusinessCode(any(Integer.class))).thenReturn(productls);
+        ResponseEntity<ProductListSpecificResponse> response = productService.getProductListBusinessCodes(ls);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Product", response.getBody().getProducts().get(0).getName());
     }
 
 

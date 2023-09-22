@@ -21,7 +21,7 @@ public class Product {
     private String description;
     private int quantity;
     private float price;
-    private int companyID;
+    private int businessCode;
 
     public int getId() {
         return id;
@@ -63,11 +63,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getCompanyID() {
-        return companyID;
+    public int getBusinessCode() {
+        return businessCode;
     }
 
-    public void setCompanyID(int companyID) {
-        this.companyID = companyID;
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 }

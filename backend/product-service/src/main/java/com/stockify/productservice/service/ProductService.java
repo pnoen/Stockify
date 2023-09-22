@@ -22,7 +22,7 @@ public class ProductService {
         String description = addRequest.getDescription();
         int quantity = addRequest.getQuantity();
         float price = addRequest.getPrice();
-        int companyID = addRequest.getCompanyID();
+        int businessCode = addRequest.getBusinessCode();
 
         if(name.isEmpty() || description.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
@@ -36,7 +36,7 @@ public class ProductService {
                 .description(description)
                 .price(price)
                 .quantity(quantity)
-                .companyID(companyID)
+                .businessCode(businessCode)
                 .build();
         productRepository.save(product);
         return ResponseEntity.ok(new ApiResponse(200, "Product Added successfully."));
@@ -86,17 +86,14 @@ public class ProductService {
 
     }
 
-    public ResponseEntity<InventoryResponse> getInventory(int id) {
-        List<Inventory> inventoryList = new ArrayList<>();
-        List<Product> productList = productRepository.findByCompanyID(id);
-        for(Product product: productList) {
-            inventoryList.add(new Inventory(product.getName(), product.getId(), product.getQuantity(), product.getPrice()));
-        }
+    public ResponseEntity<InventoryResponse> getInventory(int businessCode) {
 
-        if(inventoryList.isEmpty()) {
+        List<Product> productList = productRepository.findByBusinessCode(businessCode);
+
+        if(productList.isEmpty()) {
             return ResponseEntity.badRequest().body(new InventoryResponse(404, new ArrayList<>()));
         }
-        return ResponseEntity.ok(new InventoryResponse(200, inventoryList));
+        return ResponseEntity.ok(new InventoryResponse(200, productList));
     }
 
     public ResponseEntity<ApiResponse> editProduct(EditProductRequest editProductRequest) {
@@ -134,6 +131,34 @@ public class ProductService {
         }
         return ResponseEntity.ok(new ApiResponse(200, "Product Edited successfully."));
 
+    }
+
+    public ResponseEntity<ProductListSpecificResponse> getProductListSpecific(List<Integer> ids) {
+        List<Product> productList = new ArrayList<>();
+        for(int id: ids) {
+            Optional<Product> product = productRepository.findById(id);
+            if(!product.isPresent()){
+                return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+            }productList.add(product.get());
+
+        }
+        if(productList.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+        }
+        return ResponseEntity.ok(new ProductListSpecificResponse(200, productList));
+
+    }
+
+    public ResponseEntity<ProductListSpecificResponse> getProductListBusinessCodes (List<Integer> businessCodes) {
+        List<Product> productList = new ArrayList<>();
+        for(int businessCode: businessCodes) {
+            List<Product> productls = productRepository.findByBusinessCode(businessCode);
+            productList.addAll(productls);
+        }
+        if(productList.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+        }
+        return ResponseEntity.ok(new ProductListSpecificResponse(200, productList));
     }
 
 }
