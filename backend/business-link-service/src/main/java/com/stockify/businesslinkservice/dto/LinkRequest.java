@@ -9,5 +9,5 @@ public class LinkRequest {
     private Integer businessCode;
 
     @NonNull
-    private Integer customerId;
+    private Integer userId;
 }

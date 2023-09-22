@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BusinessLinkRepository extends JpaRepository<BusinessLink, Integer> {
-    List<BusinessLink> findByBusinessCodeAndCustomerId(int businessCode, int customerId);
+    List<BusinessLink> findByBusinessCodeAndUserId(int businessCode, int userId);
 
     List<BusinessLink> findByBusinessCode(int businessCode);
 
-    List<BusinessLink> findByCustomerId(int customerId);
+    List<BusinessLink> findByUserId(int userId);
 
-    void deleteByBusinessCodeAndCustomerId(int businessCode, int customerId);
+    void deleteByBusinessCodeAndUserId(int businessCode, int userId);
 }

@@ -25,33 +25,33 @@ public class BusinessLinkService {
     private final WebClient webClient;
 
     public String createLink(LinkRequest linkRequest) {
-        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndCustomerId(
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
                 linkRequest.getBusinessCode(),
-                linkRequest.getCustomerId()
+                linkRequest.getUserId()
         );
 
         if (!businessLinks.isEmpty()) {
-            return "Link already exists between business and customer.";
+            return "Link already exists between business and user.";
         }
 
         BusinessLink businessLink = BusinessLink.builder()
                 .businessCode(linkRequest.getBusinessCode())
-                .customerId(linkRequest.getCustomerId())
+                .userId(linkRequest.getUserId())
                 .build();
         businessLinkRepository.save(businessLink);
 
         return null;
     }
 
-    public List<CustomerDto> getCustomers(int businessCode) {
+    public List<UserDto> getUsers(int businessCode) {
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCode(businessCode);
 
-        List<Integer> customerIds =  businessLinks.stream()
-                .map(businessLink -> businessLink.getCustomerId())
+        List<Integer> userIds =  businessLinks.stream()
+                .map(businessLink -> businessLink.getUserId())
                 .toList();
 
         UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
-        uriBuilder.queryParam("userIds", customerIds.stream()
+        uriBuilder.queryParam("userIds", userIds.stream()
                 .map(code -> String.valueOf(code))
                 .collect(Collectors.joining(","))
         );
@@ -66,8 +66,8 @@ public class BusinessLinkService {
         return responseEntity.getUsers();
     }
 
-    public List<BusinessDto> getBusinesses(int customerId) {
-        List<BusinessLink> businessLinks = businessLinkRepository.findByCustomerId(customerId);
+    public List<BusinessDto> getBusinesses(int userId) {
+        List<BusinessLink> businessLinks = businessLinkRepository.findByUserId(userId);
 
         List<Integer> businessCodes = businessLinks.stream()
                 .map(businessLink -> businessLink.getBusinessCode())
@@ -90,18 +90,18 @@ public class BusinessLinkService {
     }
 
     public String removeLink(LinkRequest linkRequest) {
-        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndCustomerId(
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
                 linkRequest.getBusinessCode(),
-                linkRequest.getCustomerId()
+                linkRequest.getUserId()
         );
 
         if (businessLinks.isEmpty()) {
             return "Link doesn't exist.";
         }
 
-        businessLinkRepository.deleteByBusinessCodeAndCustomerId(
+        businessLinkRepository.deleteByBusinessCodeAndUserId(
                 linkRequest.getBusinessCode(),
-                linkRequest.getCustomerId()
+                linkRequest.getUserId()
         );
         return null;
     }

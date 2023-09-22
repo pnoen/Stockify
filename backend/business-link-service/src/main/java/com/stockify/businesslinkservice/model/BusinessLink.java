@@ -17,5 +17,5 @@ public class BusinessLink {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private int businessCode;
-    private int customerId;
+    private int userId;
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserIdsResponse {
-    private List<CustomerDto> users;
+    private List<UserDto> users;
     private int statusCode;
 
 }

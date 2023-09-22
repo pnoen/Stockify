@@ -27,27 +27,27 @@ public class BusinessLinkController {
         return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
-    @GetMapping("/getCustomers")
-    public ResponseEntity<GetCustomersResponse> getCustomers(@RequestParam int businessCode) {
-        List<CustomerDto> customers = businessLinkService.getCustomers(businessCode);
+    @GetMapping("/getUsers")
+    public ResponseEntity<GetUsersResponse> getUsers(@RequestParam int businessCode) {
+        List<UserDto> users = businessLinkService.getUsers(businessCode);
 
-        if (customers == null || customers.isEmpty()) {
-            GetCustomersResponse res = GetCustomersResponse.builder()
-                    .customers(new ArrayList<>())
-                    .message("No customers found.")
+        if (users == null || users.isEmpty()) {
+            GetUsersResponse res = GetUsersResponse.builder()
+                    .users(new ArrayList<>())
+                    .message("No users found.")
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
-        GetCustomersResponse res = GetCustomersResponse.builder()
-                .customers(customers)
+        GetUsersResponse res = GetUsersResponse.builder()
+                .users(users)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/getBusinesses")
-    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam int customerId) {
-        List<BusinessDto> businesses = businessLinkService.getBusinesses(customerId);
+    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam int userId) {
+        List<BusinessDto> businesses = businessLinkService.getBusinesses(userId);
 
         if (businesses == null || businesses.isEmpty()) {
             GetBusinessesResponse res = GetBusinessesResponse.builder()

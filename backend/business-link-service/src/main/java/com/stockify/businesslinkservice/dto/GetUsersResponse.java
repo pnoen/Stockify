@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-public class GetCustomersResponse {
-    private List<CustomerDto> customers;
+public class GetUsersResponse {
+    private List<UserDto> users;
     private String message;
 }
