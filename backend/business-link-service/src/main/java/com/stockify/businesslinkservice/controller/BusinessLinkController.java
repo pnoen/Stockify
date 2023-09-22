@@ -23,6 +23,9 @@ public class BusinessLinkController {
     public ResponseEntity<String> createBusinessLink(@RequestBody BusinessLinkRequest businessLinkRequest) {
         String msg = businessLinkService.createBusinessLink(businessLinkRequest);
         if (msg != null) {
+            if (msg.equals("Unable to find user.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("");

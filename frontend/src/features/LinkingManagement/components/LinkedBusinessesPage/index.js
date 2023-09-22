@@ -15,6 +15,7 @@ import {
 import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getLinkedBusinesses } from "./api";
+import LinkBusinessModal from "./components/LinkBusinessModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -27,7 +28,8 @@ export default function LinkedBusinessesPage() {
   const classes = useStyles();
   const [businesses, setBusinesses] = useState([]);
   const [isLinkBusinessModalOpen, setIsLinkBusinessModalOpen] = useState(false);
-  const [isUninkBusinessModalOpen, setIsUnlinkBusinessModalOpen] = useState(false);
+  const [isUninkBusinessModalOpen, setIsUnlinkBusinessModalOpen] =
+    useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,13 +87,21 @@ export default function LinkedBusinessesPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell className="table-header-cell">Business Code</TableCell>
-                <TableCell className="table-header-cell">Business Name</TableCell>
+                <TableCell className="table-header-cell">
+                  Business Code
+                </TableCell>
+                <TableCell className="table-header-cell">
+                  Business Name
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {businesses.map((business) => (
-                <TableRow hover key={business.businessCode} style={{ cursor: "pointer" }}>
+                <TableRow
+                  hover
+                  key={business.businessCode}
+                  style={{ cursor: "pointer" }}
+                >
                   <TableCell>{business.businessCode}</TableCell>
                   <TableCell>{business.businessName}</TableCell>
                 </TableRow>
@@ -99,6 +109,10 @@ export default function LinkedBusinessesPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LinkBusinessModal
+          open={isLinkBusinessModalOpen}
+          onClose={() => setIsLinkBusinessModalOpen(false)}
+        />
       </div>
     </div>
   );
