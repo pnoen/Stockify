@@ -43,19 +43,29 @@ public class BusinessLinkService {
         return null;
     }
 
-    public List<UserDto> getUsers(int businessCode) {
+    public List<UserDto> getUsers(String email) {
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinessCode");
+        uriBuilder.queryParam("email", email);
+        URI uri = uriBuilder.build().encode().toUri();
+
+        int businessCode = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
+
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCode(businessCode);
 
         List<Integer> userIds =  businessLinks.stream()
                 .map(businessLink -> businessLink.getUserId())
                 .toList();
 
-        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
+        uriBuilder = fromHttpUrl("http://localhost:8080/account/getUsers");
         uriBuilder.queryParam("userIds", userIds.stream()
                 .map(code -> String.valueOf(code))
                 .collect(Collectors.joining(","))
         );
-        URI uri = uriBuilder.build().encode().toUri();
+        uri = uriBuilder.build().encode().toUri();
 
         UserIdsResponse responseEntity = webClient.get()
                 .uri(uri)

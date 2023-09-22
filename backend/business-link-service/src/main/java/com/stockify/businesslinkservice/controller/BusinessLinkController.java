@@ -28,8 +28,8 @@ public class BusinessLinkController {
     }
 
     @GetMapping("/getUsers")
-    public ResponseEntity<GetUsersResponse> getUsers(@RequestParam int businessCode) {
-        List<UserDto> users = businessLinkService.getUsers(businessCode);
+    public ResponseEntity<GetUsersResponse> getUsers(@RequestParam String email) {
+        List<UserDto> users = businessLinkService.getUsers(email);
 
         if (users == null || users.isEmpty()) {
             GetUsersResponse res = GetUsersResponse.builder()

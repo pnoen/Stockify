@@ -6,6 +6,7 @@ import SupplierNavigation from "./components/SupplierNavigation";
 import { checkIfBusiness } from "./api";
 import OrdersPage from "../../features/OrderManagement/components/OrdersPage/index";
 import UserManagementPage from "../../features/UserManagement";
+import LinkedUsersPage from "../../features/LinkedUsersPage";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -80,6 +81,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <UserManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/linkedUsers"
+            element={
+              <ProtectedRoute>
+                <LinkedUsersPage />
               </ProtectedRoute>
             }
           />
