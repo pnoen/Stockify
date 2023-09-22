@@ -208,7 +208,11 @@ public class MainController {
         }
 
     }
+    @GetMapping("/getUserDetails")
+    public User getUserDetails(@RequestParam int userId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+        return existingUser.orElseGet(User::new);
 
+    }
 
-
-}
+    }
