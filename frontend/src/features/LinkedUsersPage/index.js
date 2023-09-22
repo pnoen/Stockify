@@ -16,6 +16,8 @@ import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getLinkedUsers } from "./api";
 import LinkUserModal from "./components/LinkUserModal";
+import UnlinkUserModal from "./components/UnlinkUserModal";
+
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -27,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
 export default function LinkedUsersPage() {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
-  const [isLinkUserModalOpen, setisLinkUserModalOpen] = useState(false);
+  const [isLinkUserModalOpen, setIsLinkUserModalOpen] = useState(false);
+  const [isUnlinkUserModalOpen, setIsUnlinkUserModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +69,7 @@ export default function LinkedUsersPage() {
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
-              onClick={() => setisLinkUserModalOpen(true)}
+              onClick={() => setIsLinkUserModalOpen(true)}
             >
               Link User
             </Button>
@@ -74,7 +77,7 @@ export default function LinkedUsersPage() {
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#ce595f" }}
-              onClick={() => console.log("unlink")}
+              onClick={() => setIsUnlinkUserModalOpen(true)}
             >
               Unlink User
             </Button>
@@ -105,7 +108,11 @@ export default function LinkedUsersPage() {
         </Paper>
         <LinkUserModal
           open={isLinkUserModalOpen}
-          onClose={() => setisLinkUserModalOpen(false)}
+          onClose={() => setIsLinkUserModalOpen(false)}
+        />
+        <UnlinkUserModal
+          open={isUnlinkUserModalOpen}
+          onClose={() => setIsUnlinkUserModalOpen(false)}
         />
       </div>
     </div>
