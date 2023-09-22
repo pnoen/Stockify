@@ -43,6 +43,43 @@ public class BusinessLinkService {
         return null;
     }
 
+    public String createUserLink(UserLinkRequest userLinkRequest) {
+        UserIdRequest userIdRequest = UserIdRequest.builder()
+                .firstName(userLinkRequest.getFirstName())
+                .lastName(userLinkRequest.getLastName())
+                .email(userLinkRequest.getEmail())
+                .build();
+
+        ApiCallResponse responseEntity = webClient.post()
+                .uri("http://localhost:8080/account/getUserId")
+                .bodyValue(userIdRequest)
+                .retrieve()
+                .bodyToMono(ApiCallResponse.class)
+                .block();
+
+        int userId = Integer.parseInt(responseEntity.getMessage());
+        if (userId == -1) {
+            return "Unable to find user.";
+        }
+
+        List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
+                userLinkRequest.getBusinessCode(),
+                userId
+        );
+
+        if (!businessLinks.isEmpty()) {
+            return "Link already exists between business and user.";
+        }
+
+        BusinessLink businessLink = BusinessLink.builder()
+                .businessCode(userLinkRequest.getBusinessCode())
+                .userId(userId)
+                .build();
+        businessLinkRepository.save(businessLink);
+
+        return null;
+    }
+
     public List<UserDto> getUsers(String email) {
         UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinessCode");
         uriBuilder.queryParam("email", email);
@@ -56,7 +93,7 @@ public class BusinessLinkService {
 
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCode(businessCode);
 
-        List<Integer> userIds =  businessLinks.stream()
+        List<Integer> userIds = businessLinks.stream()
                 .map(businessLink -> businessLink.getUserId())
                 .toList();
 

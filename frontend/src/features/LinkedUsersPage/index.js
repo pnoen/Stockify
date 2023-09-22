@@ -15,6 +15,7 @@ import {
 import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getLinkedUsers } from "./api";
+import LinkUserModal from "./components/LinkUserModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LinkedUsersPage() {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
+  const [isLinkUserModalOpen, setisLinkUserModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +66,7 @@ export default function LinkedUsersPage() {
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
-              onClick={() => console.log("link")}
+              onClick={() => setisLinkUserModalOpen(true)}
             >
               Link User
             </Button>
@@ -101,6 +103,10 @@ export default function LinkedUsersPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LinkUserModal
+          open={isLinkUserModalOpen}
+          onClose={() => setisLinkUserModalOpen(false)}
+        />
       </div>
     </div>
   );

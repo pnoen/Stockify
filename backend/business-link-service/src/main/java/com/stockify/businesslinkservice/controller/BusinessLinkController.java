@@ -28,6 +28,18 @@ public class BusinessLinkController {
         return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
+    @PostMapping("createUserLink")
+    public ResponseEntity<String> createUserLink(@RequestBody UserLinkRequest userLinkRequest) {
+        String msg = businessLinkService.createUserLink(userLinkRequest);
+        if (msg != null) {
+            if (msg.equals("Unable to find user.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("");
+    }
+
     @GetMapping("/getUsers")
     public ResponseEntity<GetUsersResponse> getUsers(@RequestParam String email) {
         List<UserDto> users = businessLinkService.getUsers(email);
