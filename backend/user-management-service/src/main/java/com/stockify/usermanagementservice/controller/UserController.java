@@ -2,7 +2,7 @@ package com.stockify.usermanagementservice.controller;
 
 import com.stockify.usermanagementservice.dto.*;
 import com.stockify.usermanagementservice.service.userService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/businessUser")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserController {
 
     private userService userService;

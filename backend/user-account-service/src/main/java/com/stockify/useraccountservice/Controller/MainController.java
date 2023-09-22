@@ -196,8 +196,6 @@ public class MainController {
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        ApiResponse response = new ApiResponse();
-
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             return user.getBusinessCode();
@@ -212,6 +210,27 @@ public class MainController {
     public User getUserDetails(@RequestParam int userId) {
         Optional<User> existingUser = userRepository.findById(userId);
         return existingUser.orElseGet(User::new);
+
+    }
+
+    @PostMapping("/updateUserBusinessCode")
+    public ResponseEntity<ApiResponse> updateUserBusinessCode(@RequestBody UpdateBusinessRequest updateBusinessRequest) {
+        Optional<User> existingUser = userRepository.findByEmail(updateBusinessRequest.getEmail());
+        System.out.println();
+        User user;
+        if (existingUser.isPresent()) {
+             user = existingUser.get();
+             user.setBusinessCode(updateBusinessRequest.getBusinessCode());
+             userRepository.save(user);
+            return ResponseEntity.ok(new ApiResponse(200, "User successfully added to business"));
+        }else{
+            return ResponseEntity.ok(new ApiResponse(400, "Error: User add unsuccessful"));
+        }
+
+
+
+
+
 
     }
 
