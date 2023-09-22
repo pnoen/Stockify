@@ -1,10 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import LoginPage from "./features/LoginPage";
 import SignupPage from "./features/SignupPage";
-import CustomerNavigation from "./components/Navigation/components/CustomerNavigation";
 import Navigation from "./components/Navigation";
-import OrdersPage from "./features/OrderManagement/components/OrdersPage";
 
 export const AuthContext = createContext();
 
