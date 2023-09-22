@@ -4,14 +4,19 @@ import com.stockify.usermanagementservice.model.Role;
 
 public class UserRequest {
 
-    private String first_name;
-    private String last_name;
-//    private int role_id;
-    private int companyId;
-
+    private String firstName;
+    private String lastName;
     private Role role;
-
+    private int businessCode;
     private String email;
+
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
+    }
+
+    public int getBusinessCode() {
+        return businessCode;
+    }
 
     public String getEmail() {
         return email;
@@ -21,37 +26,22 @@ public class UserRequest {
         this.email = email;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-//    public int getRole_id() {
-//        return role_id;
-//    }
-//
-//    public void setRole_id(int role_id) {
-//        this.role_id = role_id;
-//    }
-
-    public int getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(int companyId) {
-        this.companyId = companyId;
-    }
 
     public Role getRole() {
         return role;

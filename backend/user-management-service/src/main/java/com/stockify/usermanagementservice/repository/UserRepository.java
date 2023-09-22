@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<BusinessUser, Integer> {
-    List<BusinessUser> findByCompanyId(int companyId);
+    List<BusinessUser> findByBusinessCode(int businessCode);
 }

@@ -6,9 +6,6 @@ import com.stockify.usermanagementservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,7 +25,7 @@ public class userService {
     private final UserRepository userRepository;
     private final WebClient webClient;
     public boolean addUser(UserRequest userRequest) {
-        UserCheckRequest request = new UserCheckRequest(userRequest.getFirst_name(), userRequest.getLast_name(), userRequest.getEmail());
+        UserCheckRequest request = new UserCheckRequest(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail());
         Boolean result = false;
 
         ResponseEntity<ApiCallResponse> responseEntity = webClient.post()
@@ -63,15 +60,15 @@ public class userService {
                     id = Integer.parseInt(apiResponse.getMessage());
                 }
             }
-
+            System.out.println(userRequest.getBusinessCode());
             BusinessUser user = BusinessUser.builder()
                     .id(id)
 //                    .role_id(userRequest.getRole_id())
-                    .companyId(userRequest.getCompanyId())
+                    .businessCode(userRequest.getBusinessCode())
                     .role(userRequest.getRole())
                     .build();
             userRepository.save(user);
-            log.info("BusinessUser {} is saved", user.getCompanyId());
+            log.info("BusinessUser {} is saved", user.getBusinessCode());
             return true;
         }
         else{
@@ -115,7 +112,7 @@ public class userService {
                 .bodyToMono(Integer.class)
                 .block();
 
-        List<BusinessUser> users = userRepository.findByCompanyId(businessCode);
+        List<BusinessUser> users = userRepository.findByBusinessCode(businessCode);
 
         List<Integer> userIds = users.stream()
                 .map(user -> user.getId())
@@ -144,7 +141,7 @@ public class userService {
 
             return BusinessUserDto.builder()
                     .id(user.getId())
-                    .companyId(user.getCompanyId())
+                    .businessCode(user.getBusinessCode())
                     .role(user.getRole())
                     .firstName(userDetails.getFirstName())
                     .lastName(userDetails.getLastName())

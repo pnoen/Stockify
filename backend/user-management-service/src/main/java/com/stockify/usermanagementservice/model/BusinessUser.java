@@ -16,15 +16,15 @@ public class BusinessUser {
 //    private int role_id;
     private Role role;
 
-    public int getCompanyId() {
-        return companyId;
+    public int getBusinessCode() {
+        return businessCode;
     }
 
-    public void setCompanyId(int companyId) {
-        this.companyId = companyId;
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 
-    private int companyId;
+    private int businessCode;
 
     public int getId() {
         return id;

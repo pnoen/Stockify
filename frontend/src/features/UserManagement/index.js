@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import "./styles.css";
 import { getUsers } from "./api";
+import AddUserModal from "./components/AddUserModal";
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState([]);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +31,7 @@ export default function UserManagementPage() {
     };
     fetchData();
   }, []);
+
   return (
     <div
       style={{
@@ -55,6 +58,7 @@ export default function UserManagementPage() {
               variant="contained"
               color="primary"
               style={{ marginRight: "8px" }}
+              onClick={() => setIsAddUserModalOpen(true)} // Open AddUserModal when button is clicked
             >
               Add User
             </Button>
@@ -93,6 +97,10 @@ export default function UserManagementPage() {
             </TableBody>
           </Table>
         </Paper>
+        <AddUserModal
+          open={isAddUserModalOpen}
+          onClose={() => setIsAddUserModalOpen(false)} // Close AddUserModal
+        />
       </div>
     </div>
   );
