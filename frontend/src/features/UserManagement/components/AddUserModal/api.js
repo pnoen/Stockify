@@ -23,7 +23,7 @@ export const addUser = async (user) => {
       role: user.role,
       businessCode: user.businessCode,
     });
-    return response.data;
+    return response.status;
   } catch (error) {
     console.error("An error occurred while adding the user:", error);
     throw error;
@@ -36,7 +36,6 @@ export const getBusinessCode = async () => {
 
   try {
     const response = await axios.get(url);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("An error occurred while logging in:", error);

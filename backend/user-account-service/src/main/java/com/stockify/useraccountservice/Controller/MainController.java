@@ -208,6 +208,12 @@ public class MainController {
         }
 
     }
+    @GetMapping("/getUserDetails")
+    public User getUserDetails(@RequestParam int userId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+        return existingUser.orElseGet(User::new);
+
+    }
 
     @GetMapping("/getBusinesses")
     public ResponseEntity<BusinessesResponse> getBusinesses(@RequestParam List<Integer> businessCodes) {
@@ -228,7 +234,5 @@ public class MainController {
             return ResponseEntity.ok(new BusinessesResponse(404, new ArrayList<>()));
         }
     }
-
-
 
 }

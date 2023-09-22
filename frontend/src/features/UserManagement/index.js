@@ -15,10 +15,23 @@ import {
 import "./styles.css";
 import { getUsers } from "./api";
 import AddUserModal from "./components/AddUserModal";
+import EditUserModal from "./components/EditUserModal";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  boldText: {
+    fontWeight: "bold",
+    fontFamily: "Your Nice Font, sans-serif", // Replace "Your Nice Font" with the desired font
+  },
+}));
 
 export default function UserManagementPage() {
+  const classes = useStyles();
   const [users, setUsers] = useState([]);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,20 +63,16 @@ export default function UserManagementPage() {
             marginBottom: "16px",
           }}
         >
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom className={classes.boldText}>
             Users
           </Typography>
           <Box>
             <Button
               variant="contained"
-              color="primary"
-              style={{ marginRight: "8px" }}
-              onClick={() => setIsAddUserModalOpen(true)} // Open AddUserModal when button is clicked
+              style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
+              onClick={() => setIsAddUserModalOpen(true)}
             >
               Add User
-            </Button>
-            <Button variant="contained" color="secondary">
-              Delete User
             </Button>
           </Box>
         </div>
@@ -84,7 +93,10 @@ export default function UserManagementPage() {
                 <TableRow
                   hover
                   key={user.id}
-                  onClick={() => console.log("Row clicked:", user.id)}
+                  onClick={() => {
+                    setSelectedUserId(user.id);
+                    setIsEditUserModalOpen(true);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <TableCell>{user.id}</TableCell>
@@ -99,7 +111,15 @@ export default function UserManagementPage() {
         </Paper>
         <AddUserModal
           open={isAddUserModalOpen}
-          onClose={() => setIsAddUserModalOpen(false)} // Close AddUserModal
+          onClose={() => setIsAddUserModalOpen(false)}
+        />
+        <EditUserModal
+          open={isEditUserModalOpen}
+          onClose={() => {
+            setIsEditUserModalOpen(false);
+            setSelectedUserId(null);
+          }}
+          userId={selectedUserId}
         />
       </div>
     </div>

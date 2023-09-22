@@ -1,58 +1,67 @@
 import React, { useState, useEffect } from "react";
 import {
   Modal,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
   Box,
   Typography,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
 } from "@mui/material";
-import { getRoles, addUser, getBusinessCode } from "./api";
+import { getUserDetails, updateUser, deleteUser } from "./api";
+import { getRoles } from "../AddUserModal/api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function AddUserModal({ open, onClose }) {
+export default function EditUserModal({ open, onClose, userId }) {
   const [roles, setRoles] = useState([]);
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    role: "",
-    businessCode: null,
-  });
+  const [user, setUser] = useState({ role: "" });
+  const [firstName, setFirstName] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchData = async () => {
       try {
+        const userDetails = await getUserDetails(userId);
         const rolesList = await getRoles();
 
+        setFirstName(userDetails.firstName);
+        // setUser({ firstName: userDetails.firstName, role: userDetails.role });
         setRoles(rolesList);
       } catch (error) {
-        console.error("An error occurred while fetching roles:", error);
+        console.error("An error occurred while fetching data:", error);
       }
     };
-    fetchRoles();
-  }, []);
+
+    if (userId) fetchData();
+  }, [userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedUser = user.businessCode
-        ? user
-        : { ...user, businessCode: await getBusinessCode() };
-
-      const statusCode = await addUser(updatedUser);
+      const statusCode = await updateUser(userId, user);
       if (statusCode >= 200 && statusCode < 300) {
-        setSnackBarMessage("User added successfully!");
+        setSnackBarMessage("Role updated successfully!");
         setSnackBarOpen(true);
       }
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const statusCode = await deleteUser(userId);
+      if (statusCode >= 200 && statusCode < 300) {
+        setSnackBarMessage("User deleted successfully!");
+        setSnackBarOpen(true);
+      }
+      onClose();
+    } catch (error) {
+      console.error("An error occurred while deleting the user:", error);
     }
   };
 
@@ -75,35 +84,15 @@ export default function AddUserModal({ open, onClose }) {
       <Modal open={open} onClose={onClose}>
         <Box sx={{ ...modalStyle, p: 3 }}>
           <Typography variant="h6" align="center" marginBottom={2}>
-            Add User Form
+            Edit {firstName}'s Role
           </Typography>
           <form onSubmit={handleSubmit}>
-            <TextField
-              label="First Name"
-              required
-              value={user.firstName}
-              onChange={(e) => setUser({ ...user, firstName: e.target.value })}
-              margin="normal"
+            <FormControl
               fullWidth
-            />
-            <TextField
-              label="Last Name"
               required
-              value={user.lastName}
-              onChange={(e) => setUser({ ...user, lastName: e.target.value })}
               margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Email"
-              required
-              type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
-              margin="normal"
-              fullWidth
-            />
-            <FormControl fullWidth required margin="normal">
+              style={{ minWidth: "200px" }}
+            >
               <InputLabel id="role-label">Role</InputLabel>
               <Select
                 labelId="role-label"
@@ -117,11 +106,23 @@ export default function AddUserModal({ open, onClose }) {
                 ))}
               </Select>
             </FormControl>
-            <Box
-              sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
-            >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
+
+            <Box display="flex" justifyContent="space-between" mt={2}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                style={{ marginRight: "8px" }}
+              >
+                Update
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                sx={{ backgroundColor: "#e66e6e" }}
+                onClick={handleDelete}
+              >
+                Delete User
               </Button>
             </Box>
           </form>
