@@ -12,6 +12,7 @@ import {
   Checkbox,
   ButtonBase,
 } from "@mui/material";
+import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getLinkedUsers } from "./api";
 
@@ -28,13 +29,9 @@ export default function LinkedUsersPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      
-
-
       try {
         const usersList = await getLinkedUsers();
-        setUsers(usersList);
-        console.log(users);
+        setUsers(usersList.users);
       } catch (error) {
         console.error("An error occurred while fetching linked users:", error);
       }
@@ -58,13 +55,52 @@ export default function LinkedUsersPage() {
             justifyContent: "space-between",
             alignItems: "center",
             marginBottom: "16px",
-            background:"red"
           }}
         >
           <Typography variant="h3" gutterBottom className={classes.boldText}>
             Linked Users
           </Typography>
+          <Box>
+            <Button
+              variant="contained"
+              style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
+              onClick={() => console.log("link")}
+            >
+              Link User
+            </Button>
+
+            <Button
+              variant="contained"
+              style={{ marginRight: "8px", backgroundColor: "#ce595f" }}
+              onClick={() => console.log("unlink")}
+            >
+              Unlink User
+            </Button>
+          </Box>
         </div>
+
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell className="table-header-cell">User ID</TableCell>
+                <TableCell className="table-header-cell">First Name</TableCell>
+                <TableCell className="table-header-cell">Last Name</TableCell>
+                <TableCell className="table-header-cell">Email</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow hover key={user.id} style={{ cursor: "pointer" }}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>{user.firstName}</TableCell>
+                  <TableCell>{user.lastName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
       </div>
     </div>
   );
