@@ -24,10 +24,24 @@ public class BusinessLinkService {
     private final BusinessLinkRepository businessLinkRepository;
     private final WebClient webClient;
 
-    public String createLink(LinkRequest linkRequest) {
+    public String createBusinessLink(BusinessLinkRequest businessLinkRequest) {
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUserIdByEmail");
+        uriBuilder.queryParam("email", businessLinkRequest.getEmail());
+        URI uri = uriBuilder.build().encode().toUri();
+
+        int userId = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
+
+        if (userId == -1) {
+            return "Unable to find user.";
+        }
+
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
-                linkRequest.getBusinessCode(),
-                linkRequest.getUserId()
+                businessLinkRequest.getBusinessCode(),
+                userId
         );
 
         if (!businessLinks.isEmpty()) {
@@ -35,8 +49,8 @@ public class BusinessLinkService {
         }
 
         BusinessLink businessLink = BusinessLink.builder()
-                .businessCode(linkRequest.getBusinessCode())
-                .userId(linkRequest.getUserId())
+                .businessCode(businessLinkRequest.getBusinessCode())
+                .userId(userId)
                 .build();
         businessLinkRepository.save(businessLink);
 
@@ -113,19 +127,29 @@ public class BusinessLinkService {
         return responseEntity.getUsers();
     }
 
-    public List<BusinessDto> getBusinesses(int userId) {
+    public List<BusinessDto> getBusinesses(String email) {
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUserIdByEmail");
+        uriBuilder.queryParam("email", email);
+        URI uri = uriBuilder.build().encode().toUri();
+
+        int userId = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
+
         List<BusinessLink> businessLinks = businessLinkRepository.findByUserId(userId);
 
         List<Integer> businessCodes = businessLinks.stream()
                 .map(businessLink -> businessLink.getBusinessCode())
                 .toList();
 
-        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinesses");
+        uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinesses");
         uriBuilder.queryParam("businessCodes", businessCodes.stream()
                 .map(id -> String.valueOf(id))
                 .collect(Collectors.joining(","))
         );
-        URI uri = uriBuilder.build().encode().toUri();
+        uri = uriBuilder.build().encode().toUri();
 
         BusinessesResponse responseEntity = webClient.get()
                 .uri(uri)
@@ -136,10 +160,10 @@ public class BusinessLinkService {
         return responseEntity.getBusinesses();
     }
 
-    public String removeLink(LinkRequest linkRequest) {
+    public String removeLink(RemoveLinkRequest removeLinkRequest) {
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(
-                linkRequest.getBusinessCode(),
-                linkRequest.getUserId()
+                removeLinkRequest.getBusinessCode(),
+                removeLinkRequest.getUserId()
         );
 
         if (businessLinks.isEmpty()) {
@@ -147,8 +171,8 @@ public class BusinessLinkService {
         }
 
         businessLinkRepository.deleteByBusinessCodeAndUserId(
-                linkRequest.getBusinessCode(),
-                linkRequest.getUserId()
+                removeLinkRequest.getBusinessCode(),
+                removeLinkRequest.getUserId()
         );
         return null;
     }

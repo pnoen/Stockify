@@ -19,9 +19,9 @@ public class BusinessLinkController {
 
     private final BusinessLinkService businessLinkService;
 
-    @PostMapping("/createLink")
-    public ResponseEntity<String> createLink(@RequestBody LinkRequest linkRequest) {
-        String msg = businessLinkService.createLink(linkRequest);
+    @PostMapping("/createBusinessLink")
+    public ResponseEntity<String> createBusinessLink(@RequestBody BusinessLinkRequest businessLinkRequest) {
+        String msg = businessLinkService.createBusinessLink(businessLinkRequest);
         if (msg != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
@@ -59,8 +59,8 @@ public class BusinessLinkController {
     }
 
     @GetMapping("/getBusinesses")
-    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam int userId) {
-        List<BusinessDto> businesses = businessLinkService.getBusinesses(userId);
+    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam String email) {
+        List<BusinessDto> businesses = businessLinkService.getBusinesses(email);
 
         if (businesses == null || businesses.isEmpty()) {
             GetBusinessesResponse res = GetBusinessesResponse.builder()
@@ -78,8 +78,8 @@ public class BusinessLinkController {
 
     @DeleteMapping("/removeLink")
     @Transactional
-    public ResponseEntity<String> removeLink(@RequestBody LinkRequest linkRequest) {
-        String msg = businessLinkService.removeLink(linkRequest);
+    public ResponseEntity<String> removeLink(@RequestBody RemoveLinkRequest removeLinkRequest) {
+        String msg = businessLinkService.removeLink(removeLinkRequest);
         if (msg != null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
         }

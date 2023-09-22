@@ -4,10 +4,10 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class LinkRequest {
+public class BusinessLinkRequest {
     @NonNull
     private Integer businessCode;
 
     @NonNull
-    private Integer userId;
+    private String email;
 }
