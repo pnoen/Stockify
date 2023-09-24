@@ -5,6 +5,7 @@ import com.stockify.invoiceservice.dto.InvoiceIdRequest;
 import com.stockify.invoiceservice.dto.InvoiceRequest;
 import com.stockify.invoiceservice.model.Invoice;
 import com.stockify.invoiceservice.repository.InvoiceRepository;
+import com.stockify.invoiceservice.service.InvoiceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +19,18 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+    private InvoiceService invoiceService = new InvoiceService();
 
      @PostMapping("/create")
      public ResponseEntity<ApiResponse> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
          int orderId = invoiceRequest.getOrderId();
+         String invoiceContent = invoiceService.generateInvoiceContent(orderId);
 
          Invoice newInvoice = new Invoice();
          newInvoice.setOrderId(orderId);
+         newInvoice.setInvoiceContent(invoiceContent);
 
          invoiceRepository.save(newInvoice);
-
-         // The actual creation of the invoice:
 
          return ResponseEntity.ok(new ApiResponse(200, "Invoice created successfully."));
      }

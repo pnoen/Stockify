@@ -9,6 +9,7 @@ public class Invoice {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private int orderId;
+    private String invoiceContent;
 
     public int getId() {
         return id;
@@ -21,4 +22,8 @@ public class Invoice {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+
+    public String getInvoiceContent() { return invoiceContent; }
+
+    public void setInvoiceContent(String invoiceContent) { this.invoiceContent = invoiceContent; }
 }
