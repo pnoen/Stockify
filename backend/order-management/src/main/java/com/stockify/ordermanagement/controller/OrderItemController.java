@@ -30,7 +30,7 @@ public class OrderItemController {
         int quantitySuffixId = orderItemRequest.getQuantitySuffixId();
         float quantity = orderItemRequest.getQuantity();
         LocalDate lastUpdated = orderItemRequest.getLastUpdated();
-        double price = orderItemRequest.getPrice();
+        double price = Double.parseDouble(String.format("%.2f", orderItemRequest.getPrice()));
 
         OrderItem newOrderItem = new OrderItem();
         newOrderItem.setOrderId(orderId);

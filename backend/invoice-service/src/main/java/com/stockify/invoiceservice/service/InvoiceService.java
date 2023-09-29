@@ -98,13 +98,13 @@ public class InvoiceService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         // Line 7: Order date
-        sb.append("Customer ID: ");
+        sb.append("Order Date: ");
         String orderDate = order.getOrderDate().format(formatter);
         sb.append(orderDate);
         sb.append("\n");
 
         // Line 8: Order completion date
-        sb.append("Customer ID: ");
+        sb.append("Completion Date: ");
         String completionDate = order.getCompletionDate().format(formatter);
         sb.append(completionDate);
         sb.append("\n");
@@ -114,7 +114,7 @@ public class InvoiceService {
 
         // Line 10: Total cost
         sb.append("Total cost: ");
-        String totalCost = String.valueOf(order.getTotalCost());
+        String totalCost = String.format("%.2f", order.getTotalCost());
         sb.append(totalCost);
         sb.append("\n");
 
@@ -127,7 +127,8 @@ public class InvoiceService {
             String itemId = String.valueOf(o.getId());
             sb.append(itemId);
             sb.append("     Product Price: ");
-            String itemPrice = String.valueOf(o.getPrice());
+            String itemPrice = String.format("%.2f", o.getPrice() * o.getQuantity());
+            sb.append(itemPrice);
             sb.append("\n");
         }
 

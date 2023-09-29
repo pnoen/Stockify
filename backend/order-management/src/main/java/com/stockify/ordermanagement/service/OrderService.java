@@ -39,9 +39,9 @@ public class OrderService {
         double total = 0.0;
 
         for (OrderItem o:orderItemList) {
-            total += o.getPrice();
+            total += o.getPrice() * o.getQuantity();
         }
 
-        return total;
+        return Double.parseDouble(String.format("%.2f", total));
     }
 }

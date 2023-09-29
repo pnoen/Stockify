@@ -91,7 +91,7 @@ public class OrderController {
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
 
-            double newTotalCost = order.getTotalCost() + orderCostUpdateRequest.getPrice(); // Replace with the new value you want
+            double newTotalCost = Double.parseDouble(String.format("%.2f", (order.getTotalCost() + orderCostUpdateRequest.getPrice()))); // Replace with the new value you want
             order.setTotalCost(newTotalCost);
 
             orderRepository.save(order);

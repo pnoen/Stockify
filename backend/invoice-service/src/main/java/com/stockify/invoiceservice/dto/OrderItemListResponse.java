@@ -8,6 +8,9 @@ public class OrderItemListResponse {
     private List<OrderItem> orderItemList;
     private int statusCode;
 
+    public OrderItemListResponse() {
+    }
+
     public OrderItemListResponse(int statusCode, List<OrderItem> orderItemList) {
         this.orderItemList = orderItemList;
         this.statusCode = statusCode;
