@@ -1,6 +1,6 @@
-package com.stockify.ordermanagement.dto;
+package com.stockify.invoiceservice.dto;
 
-import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.invoiceservice.model.OrderItem;
 
 import java.util.List;
 

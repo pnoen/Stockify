@@ -1,4 +1,4 @@
-package com.stockify.ordermanagement.model;
+package com.stockify.invoiceservice.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
