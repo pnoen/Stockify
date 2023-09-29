@@ -3,6 +3,7 @@ package com.stockify.invoiceservice.controller;
 import com.stockify.invoiceservice.dto.ApiResponse;
 import com.stockify.invoiceservice.dto.InvoiceIdRequest;
 import com.stockify.invoiceservice.dto.InvoiceRequest;
+import com.stockify.invoiceservice.dto.InvoiceResponse;
 import com.stockify.invoiceservice.model.Invoice;
 import com.stockify.invoiceservice.repository.InvoiceRepository;
 import com.stockify.invoiceservice.service.InvoiceService;
@@ -44,6 +45,18 @@ public class InvoiceController {
              return ResponseEntity.ok(new ApiResponse(200, "Invoice deleted successfully."));
          } else {
              return ResponseEntity.badRequest().body(new ApiResponse(404, "Invoice does not exist."));
+         }
+     }
+
+     @GetMapping("/getInvoiceById")
+     public ResponseEntity<InvoiceResponse> getInvoiceById(@RequestParam int invoiceId) {
+         Optional<Invoice> invoiceOptional = invoiceRepository.findById(invoiceId);
+
+         if (invoiceOptional.isPresent()) {
+             Invoice invoice = invoiceOptional.get();
+             return ResponseEntity.ok(new InvoiceResponse(200, invoice));
+         } else {
+             return ResponseEntity.badRequest().body(new InvoiceResponse(404, null));
          }
      }
 }

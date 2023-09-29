@@ -7,6 +7,10 @@ public class InvoiceResponse {
     private Invoice invoice;
     private int statusCode;
 
+    // Added default constructor for JSON deserialization
+    public InvoiceResponse() {
+    }
+
     public InvoiceResponse(int statusCode, Invoice invoice) {
         this.invoice = invoice;
         this.statusCode = statusCode;

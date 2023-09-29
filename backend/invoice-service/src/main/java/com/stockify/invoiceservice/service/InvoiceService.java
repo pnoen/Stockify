@@ -67,13 +67,13 @@ public class InvoiceService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         // Line 7: Order date
-        sb.append("Customer ID: ");
+        sb.append("Order Date: ");
         String orderDate = order.getOrderDate().format(formatter);
         sb.append(orderDate);
         sb.append("\n");
 
         // Line 8: Order completion date
-        sb.append("Customer ID: ");
+        sb.append("Completion Date: ");
         String completionDate = order.getCompletionDate().format(formatter);
         sb.append(completionDate);
         sb.append("\n");

@@ -1,6 +1,7 @@
 package com.stockify.invoiceservice.dto;
 
-public class InvoiceIdRequest {
+public class InvoiceEmailRequest {
+
     private int invoiceId;
 
     public int getInvoiceId() {

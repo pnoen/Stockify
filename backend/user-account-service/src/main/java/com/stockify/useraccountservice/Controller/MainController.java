@@ -215,6 +215,17 @@ public class MainController {
 
     }
 
+    @GetMapping("/getUserEmail")
+    public ResponseEntity<UserEmailResponse> getUserEmail(@RequestParam int userId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+
+        if (existingUser.isPresent()) {
+            return ResponseEntity.ok(new UserEmailResponse(200, existingUser.get().getEmail()));
+        } else {
+            return ResponseEntity.ok(new UserEmailResponse(404, null));
+        }
+    }
+
     @GetMapping("/getBusinesses")
     public ResponseEntity<BusinessesResponse> getBusinesses(@RequestParam List<Integer> businessCodes) {
         List<BusinessDto> businesses = new ArrayList<>();
