@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="users" uuid="b3e13d35-0357-485f-acae-adaa061dc4c3">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>f1dc8290-41aa-497e-b5da-d1f0ca8713d2</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/backend/user-account-service/src/main/java/Group12/Stockify/users.db</jdbc-url>

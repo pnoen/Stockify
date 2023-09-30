@@ -14,6 +14,27 @@ public class InvoiceService {
 
     private final WebClient webClient = WebClient.create("http://localhost:8081");
 
+    public boolean updateInvoiceIdInOrder(int orderId, int invoiceId) {
+        InvoiceIdInOrderRequest invoiceIdInOrderRequest = new InvoiceIdInOrderRequest(invoiceId, orderId);
+
+        ResponseEntity<BooleanResponse> responseEntity = webClient.post()
+                .uri("/order/setInvoiceIdToOrder")
+                .bodyValue(invoiceIdInOrderRequest)
+                .retrieve()
+                .toEntity(BooleanResponse.class)
+                .block();
+
+        if (responseEntity != null && responseEntity.hasBody()) {
+            BooleanResponse booleanResponse = responseEntity.getBody();
+
+            if (booleanResponse != null) {
+                return booleanResponse.getSuccess();
+            }
+        }
+
+        return false;
+    }
+
     public String generateInvoiceContent(int orderId) {
 
         Order order = getOrder(orderId);

@@ -26,7 +26,6 @@ public class OrderController {
         int organisation = orderRequest.getOrganisation();
         int customerId = orderRequest.getCustomerId();
         int supplierId = orderRequest.getSupplierId();
-        int invoiceId = orderRequest.getInvoiceId();
         LocalDate orderDate = orderRequest.getOrderDate();
         LocalDate completionDate = orderRequest.getCompletionDate();
 
@@ -34,7 +33,6 @@ public class OrderController {
         newOrder.setOrganisation(organisation);
         newOrder.setCustomerId(customerId);
         newOrder.setSupplierId(supplierId);
-        newOrder.setInvoiceId(invoiceId);
         newOrder.setOrderDate(orderDate);
         newOrder.setCompletionDate(completionDate);
 
@@ -99,6 +97,23 @@ public class OrderController {
             return ResponseEntity.ok(new ApiResponse(200, "Order total cost edited successfully."));
         } else {
             return ResponseEntity.ok(new ApiResponse(404, "Order does not exist"));
+        }
+    }
+    
+    @PostMapping("setInvoiceIdToOrder")
+    public ResponseEntity<BooleanResponse> setInvoiceIdToOrder(@RequestBody InvoiceIdRequest invoiceIdRequest) {
+        Optional<Order> orderOptional = orderRepository.findById(invoiceIdRequest.getOrderId());
+
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+
+            order.setInvoiceId(invoiceIdRequest.getInvoiceId());
+
+            orderRepository.save(order);
+
+            return ResponseEntity.ok(new BooleanResponse(200, true));
+        } else {
+            return ResponseEntity.ok(new BooleanResponse(404, false));
         }
     }
 }

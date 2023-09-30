@@ -20,12 +20,21 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
-    private InvoiceService invoiceService = new InvoiceService();
+    private final InvoiceService invoiceService = new InvoiceService();
 
      @PostMapping("/create")
      public ResponseEntity<ApiResponse> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
          int orderId = invoiceRequest.getOrderId();
          String invoiceContent = invoiceService.generateInvoiceContent(orderId);
+
+         Optional<Invoice> invoiceOptional = invoiceRepository.findByOrderId(orderId);
+
+         if (invoiceOptional.isPresent()) {
+             Invoice invoice = invoiceOptional.get();
+             invoice.setInvoiceContent(invoiceContent);
+             invoiceRepository.save(invoice);
+             return ResponseEntity.ok(new ApiResponse(200, "Invoice edited successfully."));
+         }
 
          Invoice newInvoice = new Invoice();
          newInvoice.setOrderId(orderId);
@@ -33,7 +42,16 @@ public class InvoiceController {
 
          invoiceRepository.save(newInvoice);
 
-         return ResponseEntity.ok(new ApiResponse(200, "Invoice created successfully."));
+         invoiceOptional = invoiceRepository.findByOrderId(orderId);
+
+         if (invoiceOptional.isPresent()) {
+             Invoice invoice = invoiceOptional.get();
+             if (invoiceService.updateInvoiceIdInOrder(orderId, invoice.getId())) {
+                 return ResponseEntity.ok(new ApiResponse(200, "Invoice created successfully."));
+             }
+         }
+
+         return ResponseEntity.badRequest().body(new ApiResponse(404, "Invoice could not be created."));
      }
 
      @DeleteMapping("/delete")
