@@ -147,6 +147,9 @@ public class InvoiceService {
             sb.append("Product ID: ");
             String itemId = String.valueOf(o.getId());
             sb.append(itemId);
+            sb.append("     Product Quantity: ");
+            String itemQuantity = String.format("%.2f", o.getQuantity());
+            sb.append(itemQuantity);
             sb.append("     Product Price: ");
             String itemPrice = String.format("%.2f", o.getPrice() * o.getQuantity());
             sb.append(itemPrice);
