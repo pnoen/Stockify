@@ -235,4 +235,17 @@ public class MainController {
         }
     }
 
+    @GetMapping("/getUserIdByEmail")
+    public int getUserIdByEmail(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getId();
+        } else {
+            return -1;
+        }
+    }
+
 }

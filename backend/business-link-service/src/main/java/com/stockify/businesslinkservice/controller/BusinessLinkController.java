@@ -12,24 +12,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/businessLink")
 @RequiredArgsConstructor
 public class BusinessLinkController {
 
     private final BusinessLinkService businessLinkService;
 
-    @PostMapping("/createLink")
-    public ResponseEntity<String> createLink(@RequestBody LinkRequest linkRequest) {
-        String msg = businessLinkService.createLink(linkRequest);
+    @PostMapping("/createBusinessLink")
+    public ResponseEntity<String> createBusinessLink(@RequestBody BusinessLinkRequest businessLinkRequest) {
+        String msg = businessLinkService.createBusinessLink(businessLinkRequest);
         if (msg != null) {
+            if (msg.equals("Unable to find user.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("");
+    }
+
+    @PostMapping("createUserLink")
+    public ResponseEntity<String> createUserLink(@RequestBody UserLinkRequest userLinkRequest) {
+        String msg = businessLinkService.createUserLink(userLinkRequest);
+        if (msg != null) {
+            if (msg.equals("Unable to find user.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
     @GetMapping("/getUsers")
-    public ResponseEntity<GetUsersResponse> getUsers(@RequestParam int businessCode) {
-        List<UserDto> users = businessLinkService.getUsers(businessCode);
+    public ResponseEntity<GetUsersResponse> getUsers(@RequestParam String email) {
+        List<UserDto> users = businessLinkService.getUsers(email);
 
         if (users == null || users.isEmpty()) {
             GetUsersResponse res = GetUsersResponse.builder()
@@ -46,8 +62,8 @@ public class BusinessLinkController {
     }
 
     @GetMapping("/getBusinesses")
-    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam int userId) {
-        List<BusinessDto> businesses = businessLinkService.getBusinesses(userId);
+    public ResponseEntity<GetBusinessesResponse> getBusinesses(@RequestParam String email) {
+        List<BusinessDto> businesses = businessLinkService.getBusinesses(email);
 
         if (businesses == null || businesses.isEmpty()) {
             GetBusinessesResponse res = GetBusinessesResponse.builder()
@@ -63,10 +79,20 @@ public class BusinessLinkController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @DeleteMapping("/removeLink")
+    @DeleteMapping("/removeUserLink")
     @Transactional
-    public ResponseEntity<String> removeLink(@RequestBody LinkRequest linkRequest) {
-        String msg = businessLinkService.removeLink(linkRequest);
+    public ResponseEntity<String> removeUserLink(@RequestBody RemoveUserLinkRequest removeUserLinkRequest) {
+        String msg = businessLinkService.removeUserLink(removeUserLinkRequest);
+        if (msg != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @DeleteMapping("/removeBusinessLink")
+    @Transactional
+    public ResponseEntity<String> removeBusinessLink(@RequestBody BusinessLinkRequest removeBusinessLinkRequest) {
+        String msg = businessLinkService.removeBusinessLink(removeBusinessLinkRequest);
         if (msg != null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
         }

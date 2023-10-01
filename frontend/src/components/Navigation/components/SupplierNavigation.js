@@ -94,6 +94,13 @@ export default function SupplierNavigation() {
               >
                 <ListItemText primary="Users" />
               </ListItemButton>
+              <ListItemButton
+                sx={{ paddingLeft: 4 }}
+                component={Link}
+                to="/links"
+              >
+                <ListItemText primary="Linked Users" />
+              </ListItemButton>
             </List>
           </Collapse>
           <ListItemButton onClick={() => handleDropdownClick("profile")}>
