@@ -25,20 +25,15 @@ public class InvoiceController {
      @PostMapping("/create")
      public ResponseEntity<ApiResponse> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
          int orderId = invoiceRequest.getOrderId();
-         String invoiceContent = invoiceService.generateInvoiceContent(orderId);
 
          Optional<Invoice> invoiceOptional = invoiceRepository.findByOrderId(orderId);
 
          if (invoiceOptional.isPresent()) {
-             Invoice invoice = invoiceOptional.get();
-             invoice.setInvoiceContent(invoiceContent);
-             invoiceRepository.save(invoice);
-             return ResponseEntity.ok(new ApiResponse(200, "Invoice edited successfully."));
+             return ResponseEntity.badRequest().body(new ApiResponse(404, "Invoice already exists for the order."));
          }
 
          Invoice newInvoice = new Invoice();
          newInvoice.setOrderId(orderId);
-         newInvoice.setInvoiceContent(invoiceContent);
 
          invoiceRepository.save(newInvoice);
 
@@ -51,7 +46,7 @@ public class InvoiceController {
              }
          }
 
-         return ResponseEntity.badRequest().body(new ApiResponse(404, "Invoice could not be created."));
+         return ResponseEntity.badRequest().body(new ApiResponse(404, "Unsuccessful."));
      }
 
      @DeleteMapping("/delete")
