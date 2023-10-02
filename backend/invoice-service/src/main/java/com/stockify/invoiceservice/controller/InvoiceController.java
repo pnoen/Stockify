@@ -20,7 +20,9 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
-    private final InvoiceService invoiceService = new InvoiceService();
+
+    @Autowired
+    private InvoiceService invoiceService;
 
      @PostMapping("/create")
      public ResponseEntity<ApiResponse> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
@@ -46,7 +48,7 @@ public class InvoiceController {
              }
          }
 
-         return ResponseEntity.badRequest().body(new ApiResponse(404, "Unsuccessful."));
+         return ResponseEntity.badRequest().body(new ApiResponse(404, "Invoice creation was unsuccessful."));
      }
 
      @DeleteMapping("/delete")
