@@ -4,8 +4,9 @@ import { Box, CssBaseline } from "@mui/material";
 import CustomerNavigation from "./components/CustomerNavigation";
 import SupplierNavigation from "./components/SupplierNavigation";
 import { checkIfBusiness } from "./api";
-import OrdersPage from "../../features/OrderManagement/components/OrdersPage/index";
+import OrderPage from "../../features/OrderManagement";
 import UserManagementPage from "../../features/UserManagement";
+import LinkingPage from "../../features/LinkingManagement";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -71,7 +72,7 @@ const Navigation = () => {
             path="/orders"
             element={
               <ProtectedRoute>
-                <OrdersPage />
+                <OrderPage />
               </ProtectedRoute>
             }
           />
@@ -80,6 +81,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <UserManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/links"
+            element={
+              <ProtectedRoute>
+                <LinkingPage />
               </ProtectedRoute>
             }
           />

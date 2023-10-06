@@ -196,8 +196,6 @@ public class MainController {
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        ApiResponse response = new ApiResponse();
-
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             return user.getBusinessCode();
@@ -215,6 +213,7 @@ public class MainController {
 
     }
 
+
     @GetMapping("/getUserEmail")
     public ResponseEntity<UserEmailResponse> getUserEmail(@RequestParam int userId) {
         Optional<User> existingUser = userRepository.findById(userId);
@@ -223,6 +222,22 @@ public class MainController {
             return ResponseEntity.ok(new UserEmailResponse(200, existingUser.get().getEmail()));
         } else {
             return ResponseEntity.ok(new UserEmailResponse(404, null));
+        }
+    }
+        
+        
+    @PostMapping("/updateUserBusinessCode")
+    public ResponseEntity<ApiResponse> updateUserBusinessCode(@RequestBody UpdateBusinessRequest updateBusinessRequest) {
+        Optional<User> existingUser = userRepository.findByEmail(updateBusinessRequest.getEmail());
+        System.out.println();
+        User user;
+        if (existingUser.isPresent()) {
+             user = existingUser.get();
+             user.setBusinessCode(updateBusinessRequest.getBusinessCode());
+             userRepository.save(user);
+            return ResponseEntity.ok(new ApiResponse(200, "User successfully added to business"));
+        }else{
+            return ResponseEntity.ok(new ApiResponse(400, "Error: User add unsuccessful"));
         }
     }
 
@@ -243,6 +258,19 @@ public class MainController {
             return ResponseEntity.ok(new BusinessesResponse(200, businesses));
         } else {
             return ResponseEntity.ok(new BusinessesResponse(404, new ArrayList<>()));
+        }
+    }
+
+    @GetMapping("/getUserIdByEmail")
+    public int getUserIdByEmail(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getId();
+        } else {
+            return -1;
         }
     }
 

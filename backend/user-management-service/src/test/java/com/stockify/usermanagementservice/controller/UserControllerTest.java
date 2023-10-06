@@ -1,8 +1,9 @@
 package com.stockify.usermanagementservice.controller;
 
 import com.stockify.usermanagementservice.dto.BusinessUserDto;
-import com.stockify.usermanagementservice.dto.GetBusinessUsersRequest;
 import com.stockify.usermanagementservice.dto.UpdateRequest;
+import com.stockify.usermanagementservice.dto.UserRequest;
+import com.stockify.usermanagementservice.dto.deleteRequest;
 import com.stockify.usermanagementservice.model.Role;
 import com.stockify.usermanagementservice.service.userService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +15,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,7 +32,26 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUserVerify() {
+    public void addUserVerify() {
+        when(userService.addUser(any(UserRequest.class))).thenReturn(true);
+
+        UserRequest userRequest = new UserRequest("john", "smith", Role.OWNER, 111111, "john@mail.com");
+        boolean result = userController.addUser(userRequest);
+
+        assertTrue(result, "Returned incorrect value");
+        verify(userService, times(1)).addUser(any(UserRequest.class));
+    }
+
+    @Test
+    public void deleteUserVerify() {
+        deleteRequest deleteRequest = new deleteRequest(1);
+        userController.deleteUser(deleteRequest);
+
+        verify(userService, times(1)).deleteUser(any(deleteRequest.class));
+    }
+
+    @Test
+    public void updateUserVerifyTrue() {
         when(userService.updateUser(any(UpdateRequest.class))).thenReturn(true);
         boolean result = userController.updateUser(new UpdateRequest(1, Role.EMPLOYEE));
         verify(userService, times(1)).updateUser(any(UpdateRequest.class));
@@ -41,17 +60,26 @@ public class UserControllerTest {
     }
 
     @Test
+    public void updateUserVerifyFalse() {
+        when(userService.updateUser(any(UpdateRequest.class))).thenReturn(false);
+        boolean result = userController.updateUser(new UpdateRequest(1, Role.EMPLOYEE));
+        verify(userService, times(1)).updateUser(any(UpdateRequest.class));
+
+        assertFalse(result, "Returned incorrect value");
+    }
+
+    @Test
     public void getBusinessUsersVerify() {
         List<BusinessUserDto> businessUserDtos = new ArrayList<>();
-        businessUserDtos.add(new BusinessUserDto(1, 1, Role.OWNER, "john", "cable", "john@mail.com"));
-        businessUserDtos.add(new BusinessUserDto(2, 1, Role.EMPLOYEE, "jim", "smith", "jim@mail.com"));
+        businessUserDtos.add(new BusinessUserDto(1, 1, Role.OWNER, "john", "smith", "john@mail.com"));
+        businessUserDtos.add(new BusinessUserDto(2, 1, Role.EMPLOYEE, "jim", "cable", "jim@mail.com"));
+        when(userService.getBusinessUsers("john@mail.com")).thenReturn(businessUserDtos);
 
-        when(userService.getBusinessUsers(any(GetBusinessUsersRequest.class))).thenReturn(businessUserDtos);
-        List<BusinessUserDto> result = userController.getBusinessUsers(new GetBusinessUsersRequest(1));
-        verify(userService, times(1)).getBusinessUsers(any(GetBusinessUsersRequest.class));
+        List<BusinessUserDto> result = userController.getBusinessUsers("john@mail.com");
 
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0).getFirstName()).isEqualTo("john");
-        assertThat(result.get(1).getFirstName()).isEqualTo("jim");
+        assertEquals(2, result.size());
+        assertEquals("john", result.get(0).getFirstName());
+        assertEquals("jim", result.get(1).getFirstName());
+        verify(userService, times(1)).getBusinessUsers("john@mail.com");
     }
 }

@@ -6,6 +6,7 @@ import com.stockify.usermanagementservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -60,7 +61,16 @@ public class userService {
                     id = Integer.parseInt(apiResponse.getMessage());
                 }
             }
-            System.out.println(userRequest.getBusinessCode());
+
+            UpdateUserBusinessCodeRequest updateRequest = new UpdateUserBusinessCodeRequest(userRequest.getEmail(), userRequest.getBusinessCode());
+            ResponseEntity<ApiCallResponse> webRequest = webClient.post()
+                    .uri("http://localhost:8080/account/updateUserBusinessCode")
+                    .bodyValue(updateRequest)
+                    .retrieve()
+                    .toEntity(ApiCallResponse.class)
+                    .block();
+
+            System.out.println(webRequest.getBody().getMessage());
             BusinessUser user = BusinessUser.builder()
                     .id(id)
 //                    .role_id(userRequest.getRole_id())
@@ -81,6 +91,26 @@ public class userService {
 
     public void deleteUser(deleteRequest deleteRequest) {
         userRepository.deleteById(deleteRequest.getId());
+
+        UriComponentsBuilder uriBuilder = fromHttpUrl("http://localhost:8080/account/getUserDetails");
+        uriBuilder.queryParam("userId", deleteRequest.getId());
+        URI uri = uriBuilder.build().encode().toUri();
+
+        UserDetailsDto userDetails = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(UserDetailsDto.class)
+                .block();
+
+        UpdateUserBusinessCodeRequest updateRequest = new UpdateUserBusinessCodeRequest(userDetails.getEmail(),0);
+        ResponseEntity<ApiCallResponse> webRequest = webClient.post()
+                .uri("http://localhost:8080/account/updateUserBusinessCode")
+                .bodyValue(updateRequest)
+                .retrieve()
+                .toEntity(ApiCallResponse.class)
+                .block();
+
+        System.out.println(webRequest.getBody().getMessage());
     }
 
     public boolean updateUser(UpdateRequest updateRequest) {

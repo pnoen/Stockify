@@ -32,7 +32,6 @@ export default function UserManagementPage() {
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
