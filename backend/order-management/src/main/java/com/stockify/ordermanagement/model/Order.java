@@ -16,6 +16,7 @@ public class Order {
     private int invoiceId;
     private LocalDate orderDate;
     private LocalDate completionDate;
+    private double totalCost = 0.0;
 
     public int getId() {
         return id;
@@ -68,4 +69,8 @@ public class Order {
     public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
     }
+
+    public double getTotalCost() { return totalCost; }
+
+    public void setTotalCost(double totalCost) { this.totalCost = totalCost; }
 }

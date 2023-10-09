@@ -34,14 +34,6 @@ public class OrderRequest {
         this.supplierId = supplierId;
     }
 
-    public int getInvoiceId() {
-        return invoiceId;
-    }
-
-    public void setInvoiceId(int invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
     public LocalDate getOrderDate() {
         return orderDate;
     }

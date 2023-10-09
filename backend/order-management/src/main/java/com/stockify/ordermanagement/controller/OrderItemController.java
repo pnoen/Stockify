@@ -2,6 +2,7 @@ package com.stockify.ordermanagement.controller;
 
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.ordermanagement.service.OrderItemService;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderItemRepository;
 import java.util.List;
@@ -19,6 +20,7 @@ public class OrderItemController {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+    private OrderItemService orderItemService = new OrderItemService();
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createOrder(@RequestBody OrderItemRequest orderItemRequest) {
@@ -28,6 +30,7 @@ public class OrderItemController {
         int quantitySuffixId = orderItemRequest.getQuantitySuffixId();
         float quantity = orderItemRequest.getQuantity();
         LocalDate lastUpdated = orderItemRequest.getLastUpdated();
+        double price = Double.parseDouble(String.format("%.2f", orderItemRequest.getPrice()));
 
         OrderItem newOrderItem = new OrderItem();
         newOrderItem.setOrderId(orderId);
@@ -36,7 +39,9 @@ public class OrderItemController {
         newOrderItem.setQuantitySuffixId(quantitySuffixId);
         newOrderItem.setQuantity(quantity);
         newOrderItem.setLastUpdated(lastUpdated);
+        newOrderItem.setPrice(price);
 
+        orderItemService.updateOrderTotalCost(newOrderItem);
         orderItemRepository.save(newOrderItem);
 
         return ResponseEntity.ok(new ApiResponse(200, "Order Item created successfully."));

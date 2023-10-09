@@ -15,6 +15,7 @@ public class OrderItem {
     private int quantitySuffixId;
     private float quantity;
     private LocalDate lastUpdated;
+    private double price;
 
     public int getId() {
         return id;
@@ -67,4 +68,8 @@ public class OrderItem {
     public void setLastUpdated(LocalDate lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) { this.price = price;}
 }

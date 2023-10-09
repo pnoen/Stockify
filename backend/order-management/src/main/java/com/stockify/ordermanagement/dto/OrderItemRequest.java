@@ -9,6 +9,7 @@ public class OrderItemRequest {
     private int quantitySuffixId;
     private float quantity;
     private LocalDate lastUpdated;
+    private float price;
 
     public int getOrderId() {
         return orderId;
@@ -57,4 +58,8 @@ public class OrderItemRequest {
     public void setLastUpdated(LocalDate lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
+    public float getPrice() { return price; }
+
+    public void setPrice(float price) { this.price = price; }
 }

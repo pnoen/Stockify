@@ -213,6 +213,19 @@ public class MainController {
 
     }
 
+
+    @GetMapping("/getUserEmail")
+    public ResponseEntity<UserEmailResponse> getUserEmail(@RequestParam int userId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+
+        if (existingUser.isPresent()) {
+            return ResponseEntity.ok(new UserEmailResponse(200, existingUser.get().getEmail()));
+        } else {
+            return ResponseEntity.ok(new UserEmailResponse(404, null));
+        }
+    }
+        
+        
     @PostMapping("/updateUserBusinessCode")
     public ResponseEntity<ApiResponse> updateUserBusinessCode(@RequestBody UpdateBusinessRequest updateBusinessRequest) {
         Optional<User> existingUser = userRepository.findByEmail(updateBusinessRequest.getEmail());
@@ -226,12 +239,6 @@ public class MainController {
         }else{
             return ResponseEntity.ok(new ApiResponse(400, "Error: User add unsuccessful"));
         }
-
-
-
-
-
-
     }
 
     @GetMapping("/getBusinesses")
