@@ -23,7 +23,7 @@ public class OrderItemController {
     private OrderItemService orderItemService = new OrderItemService();
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createOrder(@RequestBody OrderItemRequest orderItemRequest) {
+    public ResponseEntity<ApiResponse> createOrderItem(@RequestBody OrderItemRequest orderItemRequest) {
         int orderId = orderItemRequest.getOrderId();
         int productId = orderItemRequest.getProductId();
         int productVarietyId = orderItemRequest.getProductVarietyId();
@@ -48,7 +48,7 @@ public class OrderItemController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse> deleteOrder(@RequestBody OrderItemIdRequest orderItemIdRequest) {
+    public ResponseEntity<ApiResponse> deleteOrderItem(@RequestBody OrderItemIdRequest orderItemIdRequest) {
         Optional<OrderItem> orderItemOptional = orderItemRepository.findById(orderItemIdRequest.getOrderItemId());
 
         if (orderItemOptional.isPresent()) {
