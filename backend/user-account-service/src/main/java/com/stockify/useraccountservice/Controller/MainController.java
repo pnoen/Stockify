@@ -204,6 +204,19 @@ public class MainController {
         } else {
             return -1;
         }
+    }
+
+    @GetMapping("/getBusinessName")
+    public String getBusinessCode(@RequestParam int businessCode) {
+
+        Optional<User> existingUser = userRepository.findByBusinessCode(businessCode);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getBusiness();
+        } else {
+            return null;
+        }
 
     }
     @GetMapping("/getUserDetails")
