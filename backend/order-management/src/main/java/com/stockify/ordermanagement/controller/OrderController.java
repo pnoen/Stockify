@@ -82,8 +82,7 @@ public class OrderController {
 
     // Update Total Cost
     @PostMapping("/updateTotalCost")
-    public ResponseEntity<ApiResponse> createOrder(@RequestBody OrderCostUpdateRequest orderCostUpdateRequest) {
-
+    public ResponseEntity<ApiResponse> updateTotalCost(@RequestBody OrderCostUpdateRequest orderCostUpdateRequest) {
         Optional<Order> orderOptional = orderRepository.findById(orderCostUpdateRequest.getOrderId());
 
         if (orderOptional.isPresent()) {
