@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final WebClient webclient = WebClient.create("http://localhost:8080");
     public ResponseEntity<ApiResponse> addProduct(AddRequest addRequest) {
         String name = addRequest.getName();
         String description = addRequest.getDescription();
@@ -59,8 +61,13 @@ public class ProductService {
         }
         Optional<Product> product = productRepository.findById(id);
 
-        //NOTE - INSERT CODE TO GET COMPANY NAME FROM ITS ID
-        String companyName = "TEMP COMPANY";
+        ResponseEntity<String> response = webclient.get()
+                .uri("/account/getBusinessName?businessCode=" + product.get().getBusinessCode())
+                .retrieve()
+                .toEntity(String.class)
+                .block();
+
+        String companyName = response.getBody();
 
         return ResponseEntity.ok(new GetProductResponse(200, product.get().getName(),
                 product.get().getDescription(),
@@ -73,8 +80,14 @@ public class ProductService {
         List<ProductsSimple> productList = new ArrayList<>();
         List<Product> products = productRepository.findAll();
         for(Product product: products) {
+
+            ResponseEntity<String> response = webclient.get()
+                    .uri("/account/getBusinessName?businessCode=" + product.getBusinessCode())
+                    .retrieve()
+                    .toEntity(String.class)
+                    .block();
             //NOTE - INSERT CODE TO GET COMPANY NAME FROM ITS ID
-            String companyName = "TEMP COMPANY";
+            String companyName = response.getBody();
 
             productList.add(new ProductsSimple(product.getName(), product.getPrice(), companyName));
         }
