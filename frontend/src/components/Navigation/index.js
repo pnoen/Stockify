@@ -7,6 +7,7 @@ import { checkIfBusiness } from "./api";
 import OrderPage from "../../features/OrderManagement";
 import UserManagementPage from "../../features/UserManagement";
 import LinkingPage from "../../features/LinkingManagement";
+import Catalogue from "../../features/Catalogue";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -89,6 +90,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <LinkingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Catalogue />
               </ProtectedRoute>
             }
           />

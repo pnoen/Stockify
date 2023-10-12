@@ -1,5 +1,8 @@
 {
   "userManagementServiceUrl": "http://localhost:8080",
   "businessServiceUrl": "http://localhost:8081",
-  "businessLinkServiceUrl": "http://localhost:8082"
+  "businessLinkServiceUrl": "http://localhost:8082",
+  "productServiceUrl": "http://localhost:8083",
+  "orderManagementServiceUrl": "http://localhost:8084",
+  "invoiceServiceUrl": "http://localhost:8085"
 }
