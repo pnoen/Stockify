@@ -15,6 +15,7 @@ import {
 import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getBusinessCode, getInventory } from "./api";
+import AddProductModal from "./components/AddProductModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 export default function InventoryManagementPage() {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +67,7 @@ export default function InventoryManagementPage() {
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
-              onClick={console.log("add")}
+              onClick={() => setIsAddProductModalOpen(true)}
             >
               Add Product
             </Button>
@@ -87,7 +89,9 @@ export default function InventoryManagementPage() {
                 <TableCell className="table-header-cell">Product ID</TableCell>
                 <TableCell className="table-header-cell">Product</TableCell>
                 <TableCell className="table-header-cell">Quantity</TableCell>
-                <TableCell className="table-header-cell">Price per unit ($AUD)</TableCell>
+                <TableCell className="table-header-cell">
+                  Price per unit ($AUD)
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -102,6 +106,10 @@ export default function InventoryManagementPage() {
             </TableBody>
           </Table>
         </Paper>
+        <AddProductModal
+          open={isAddProductModalOpen}
+          onClose={() => setIsAddProductModalOpen(false)}
+        />
       </div>
     </div>
   );
