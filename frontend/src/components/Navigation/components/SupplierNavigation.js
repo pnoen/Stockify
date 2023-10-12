@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import InventoryIcon from '@mui/icons-material/Inventory';
 import logo from "../../../assets/logo.png"; // Import your logo here
 import { Link, useNavigate } from "react-router-dom";
 
@@ -74,6 +75,12 @@ export default function SupplierNavigation() {
               <ShoppingCartIcon />
             </ListItemIcon>
             <ListItemText primary="Orders" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/inventory">
+            <ListItemIcon>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
           </ListItemButton>
           <ListItemButton onClick={() => handleDropdownClick("admin")}>
             <ListItemIcon>
