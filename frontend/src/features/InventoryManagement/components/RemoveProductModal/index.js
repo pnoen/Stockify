@@ -10,26 +10,27 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, removeUserLink } from "./api";
-import { getLinkedUsers } from "../../api";
-import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
+import { getBusinessCode, removeProduct } from "./api";
+import { getInventory } from "../../api";
+import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function UnlinkUserModal({ open, onClose }) {
-  const [users, setUsers] = useState([]);
-  const [link, setLink] = useState({
-    businessCode: null,
-    userId: "",
+export default function RemoveProductModal({ open, onClose }) {
+  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState({
+    id: "",
   });
+
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersList = await getLinkedUsers();
-        setUsers(usersList.users);
+        const businessCode = await getBusinessCode();
+        const inventory = await getInventory(businessCode);
+        setProducts(inventory.product);
       } catch (error) {
-        console.error("An error occurred while fetching users:", error);
+        console.error("An error occurred while fetching inventory:", error);
       }
     };
     fetchData();
@@ -38,13 +39,9 @@ export default function UnlinkUserModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedLink = link.businessCode
-        ? link
-        : { ...link, businessCode: await getBusinessCode() };
-
-      const statusCode = await removeUserLink(updatedLink);
+      const statusCode = await removeProduct(product);
       if (statusCode >= 200 && statusCode < 300) {
-        setSnackBarMessage("Removed link successfully!");
+        setSnackBarMessage("Removed product successfully!");
         setSnackBarOpen(true);
       }
       onClose();
@@ -72,19 +69,22 @@ export default function UnlinkUserModal({ open, onClose }) {
       <Modal open={open} onClose={onClose}>
         <Box sx={{ ...modalStyle, p: 3 }}>
           <Typography variant="h6" align="center" marginBottom={2}>
-            Remove Link Form
+            Remove Product Form
           </Typography>
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth required margin="normal">
-              <InputLabel id="user-label">User</InputLabel>
+              <InputLabel id="product-label">Product</InputLabel>
               <Select
-                labelId="user-label"
-                value={link.userId}
-                onChange={(e) => setLink({ ...link, userId: e.target.value })}
+                labelId="product-label"
+                value={product.id}
+                onChange={(e) => setProduct({ ...product, id: e.target.value })}
               >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.email}
+                {products.map((inventoryProduct) => (
+                  <MenuItem
+                    key={inventoryProduct.id}
+                    value={inventoryProduct.id}
+                  >
+                    {inventoryProduct.name}
                   </MenuItem>
                 ))}
               </Select>

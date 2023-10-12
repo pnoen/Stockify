@@ -16,6 +16,7 @@ import "./styles.css";
 import { makeStyles } from "@mui/styles";
 import { getBusinessCode, getInventory } from "./api";
 import AddProductModal from "./components/AddProductModal";
+import RemoveProductModal from "./components/RemoveProductModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -28,6 +29,8 @@ export default function InventoryManagementPage() {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [isRemoveProductModalOpen, setIsRemoveProductModalOpen] =
+    useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +78,7 @@ export default function InventoryManagementPage() {
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#ce595f" }}
-              onClick={console.log("remove")}
+              onClick={() => setIsRemoveProductModalOpen(true)}
             >
               Remove Product
             </Button>
@@ -109,6 +112,10 @@ export default function InventoryManagementPage() {
         <AddProductModal
           open={isAddProductModalOpen}
           onClose={() => setIsAddProductModalOpen(false)}
+        />
+        <RemoveProductModal
+          open={isRemoveProductModalOpen}
+          onClose={() => setIsRemoveProductModalOpen(false)}
         />
       </div>
     </div>
