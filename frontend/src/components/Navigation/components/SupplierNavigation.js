@@ -84,9 +84,6 @@ export default function SupplierNavigation() {
           </ListItemButton>
           <Collapse in={openDropdowns.admin} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ paddingLeft: 4 }}>
-                <ListItemText primary="Businesses" />
-              </ListItemButton>
               <ListItemButton
                 sx={{ paddingLeft: 4 }}
                 component={Link}
