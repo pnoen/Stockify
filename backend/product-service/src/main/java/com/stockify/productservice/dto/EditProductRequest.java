@@ -7,13 +7,15 @@ public class EditProductRequest {
     private String description;
     private int quantity;
     private float price;
+    private String imageUrl;
 
-    public EditProductRequest(int id, String name, String description, int quantity, float price) {
+    public EditProductRequest(int id, String name, String description, int quantity, float price, String imageUrl) {
         this.id=id;
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {
@@ -54,5 +56,13 @@ public class EditProductRequest {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

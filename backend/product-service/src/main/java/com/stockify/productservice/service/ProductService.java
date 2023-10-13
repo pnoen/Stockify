@@ -29,7 +29,7 @@ public class ProductService {
         int businessCode = addRequest.getBusinessCode();
         String imageUrl = addRequest.getImageUrl();
 
-        if(name.isEmpty() || description.isEmpty()) {
+        if(name.isEmpty() || description.isEmpty() || imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
         }
         if(quantity == 0 || price == 0) {
@@ -117,8 +117,9 @@ public class ProductService {
         String description = editProductRequest.getDescription();
         float price = editProductRequest.getPrice();
         int quantity = editProductRequest.getQuantity();
+        String imageUrl = editProductRequest.getImageUrl();
 
-        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0) {
+        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0 && imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: At least one field is required"));
         }
 
@@ -130,15 +131,23 @@ public class ProductService {
             Product product = productRepository.getReferenceById(editProductRequest.getId());
             if(!name.isEmpty()) {
                 product.setName(name);
+                System.out.println("Name");
             }
             if(!description.isEmpty()){
                 product.setDescription(description);
+                System.out.println("Description");
             }
             if(price != 0) {
                 product.setPrice(price);
+                System.out.println("Price");
             }
             if(quantity!=0) {
                 product.setQuantity(quantity);
+                System.out.println("Quantity");
+            }
+            if (!imageUrl.isEmpty()) {
+                product.setImageUrl(imageUrl);
+                System.out.println("ImageUrl");
             }
             productRepository.save(product);
         }

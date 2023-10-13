@@ -17,6 +17,7 @@ import { makeStyles } from "@mui/styles";
 import { getBusinessCode, getInventory } from "./api";
 import AddProductModal from "./components/AddProductModal";
 import RemoveProductModal from "./components/RemoveProductModal";
+import EditProductModal from "./components/EditProductModal";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -31,6 +32,8 @@ export default function InventoryManagementPage() {
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [isRemoveProductModalOpen, setIsRemoveProductModalOpen] =
     useState(false);
+  const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +102,16 @@ export default function InventoryManagementPage() {
             </TableHead>
             <TableBody>
               {products.map((product) => (
-                <TableRow hover key={product.id} style={{ cursor: "pointer" }}>
+                <TableRow
+                  hover
+                  key={product.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setSelectedProductId(product.id);
+                    console.log(product.id);
+                    setIsEditProductModalOpen(true);
+                  }}
+                >
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.quantity}</TableCell>
@@ -116,6 +128,14 @@ export default function InventoryManagementPage() {
         <RemoveProductModal
           open={isRemoveProductModalOpen}
           onClose={() => setIsRemoveProductModalOpen(false)}
+        />
+        <EditProductModal
+          open={isEditProductModalOpen}
+          onClose={() => {
+            setIsEditProductModalOpen(false);
+            setSelectedProductId(null);
+          }}
+          productId={selectedProductId}
         />
       </div>
     </div>
