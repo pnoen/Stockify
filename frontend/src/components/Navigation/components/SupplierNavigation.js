@@ -99,7 +99,7 @@ export default function SupplierNavigation() {
                 component={Link}
                 to="/links"
               >
-                <ListItemText primary="Linked Users" />
+                <ListItemText primary="Linked Clients" />
               </ListItemButton>
             </List>
           </Collapse>
