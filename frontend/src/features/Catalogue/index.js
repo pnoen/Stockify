@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -10,6 +10,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import ProductItem from "./components/ProductItem";
 import ProductDetailModal from "./components/ProductDetailModal";
+import { getProductsForCustomer } from "./api";
 import "./styles.css";
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -19,159 +20,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Catalogue() {
   const classes = useStyles();
-  const dummyData = [
-    {
-      id: 1,
-      supplierName: "Supplier A",
-      itemName: "Item 1",
-      shortDescription: "Description 1",
-    },
-    {
-      id: 2,
-      supplierName: "Supplier B",
-      itemName: "Item 2",
-      shortDescription: "Description 2",
-    },
-    {
-      id: 3,
-      supplierName: "Supplier C",
-      itemName: "Item 3",
-      shortDescription: "Description 3",
-    },
-
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 1,
-      supplierName: "Supplier A",
-      itemName: "Item 1",
-      shortDescription: "Description 1",
-    },
-    {
-      id: 2,
-      supplierName: "Supplier B",
-      itemName: "Item 2",
-      shortDescription: "Description 2",
-    },
-    {
-      id: 3,
-      supplierName: "Supplier C",
-      itemName: "Item 3",
-      shortDescription: "Description 3",
-    },
-
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 1,
-      supplierName: "Supplier A",
-      itemName: "Item 1",
-      shortDescription: "Description 1",
-    },
-    {
-      id: 2,
-      supplierName: "Supplier B",
-      itemName: "Item 2",
-      shortDescription: "Description 2",
-    },
-    {
-      id: 3,
-      supplierName: "Supplier C",
-      itemName: "Item 3",
-      shortDescription: "Description 3",
-    },
-
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      itemName: "Item 4",
-      shortDescription: "Description 4",
-    },
-  ];
-
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProductsForCustomer();
+        setProducts(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Or any loading spinner
+  }
 
   return (
     <Box display="flex" justifyContent="center" width="100%" pt={"5vh"}>
@@ -187,7 +58,7 @@ export default function Catalogue() {
         ></Box>
         <Box style={{ maxHeight: "60vh", overflowY: "auto" }}>
           <Grid container spacing={2}>
-            {dummyData.map((product) => (
+            {products.map((product) => (
               <Grid item xs={2} key={product.id}>
                 <div
                   onClick={() => {
@@ -196,9 +67,9 @@ export default function Catalogue() {
                   }}
                 >
                   <ProductItem
-                    supplierName={product.supplierName}
-                    itemName={product.itemName}
-                    shortDescription={product.shortDescription}
+                    supplierName={product.businessCode}
+                    itemName={product.name}
+                    shortDescription={product.description}
                   />
                 </div>
               </Grid>
@@ -210,7 +81,7 @@ export default function Catalogue() {
               open={isModalOpen}
               onClose={() => {
                 setIsModalOpen(false);
-                setSelectedProduct(null); 
+                setSelectedProduct(null);
               }}
               product={selectedProduct}
             />
