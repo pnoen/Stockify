@@ -200,7 +200,7 @@ public class ProductService {
                 String companyName = response2.getBody();
 
                 List<ProductDto> newls = productSearch.stream()
-                                .map(product -> new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getQuantity(), product.getPrice(), companyName))
+                                .map(product -> new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getQuantity(), product.getPrice(), product.getBusinessCode(), companyName))
                                 .collect(Collectors.toList());
 
                 products.addAll(newls);

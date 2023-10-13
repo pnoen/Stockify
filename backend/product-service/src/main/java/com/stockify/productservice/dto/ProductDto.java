@@ -13,5 +13,6 @@ public class ProductDto {
     private String description;
     private int quantity;
     private float price;
+    private int businessCode;
     private String businessName;
 }
