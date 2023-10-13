@@ -12,10 +12,10 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final WebClient webClient = WebClient.create("http://localhost:8081");
+    private final WebClient webClient = WebClient.create("http://localhost:8084");
     public double calculateTotalCost(int orderId) {
         ResponseEntity<OrderItemListResponse> responseEntity = webClient.get()
-                .uri("/order/getAllByOrderId?orderId=" + orderId)
+                .uri("/api/order/getAllByOrderId?orderId=" + orderId)
                 .retrieve()
                 .toEntity(OrderItemListResponse.class)
                 .block();

@@ -2,6 +2,7 @@ package com.stockify.ordermanagement.controller;
 
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.ordermanagement.repository.OrderRepository;
 import com.stockify.ordermanagement.service.OrderItemService;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderItemRepository;
@@ -16,27 +17,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping("/orderItem")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OrderItemController {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+    @Autowired
+    private OrderRepository orderRepository;
     private OrderItemService orderItemService = new OrderItemService();
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createOrderItem(@RequestBody OrderItemRequest orderItemRequest) {
         int orderId = orderItemRequest.getOrderId();
         int productId = orderItemRequest.getProductId();
-        int productVarietyId = orderItemRequest.getProductVarietyId();
-        int quantitySuffixId = orderItemRequest.getQuantitySuffixId();
+        int productBusinessCode = orderItemRequest.getBusinessCode();
         float quantity = orderItemRequest.getQuantity();
         LocalDate lastUpdated = orderItemRequest.getLastUpdated();
         double price = Double.parseDouble(String.format("%.2f", orderItemRequest.getPrice()));
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+
+        if (!orderOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Order does not exist."));
+        }
+        Order order = orderOptional.get();
+
+        // Check businessCode logic
+        if (order.getBusinessCode() == 0) {
+            order.setBusinessCode(productBusinessCode);
+            orderRepository.save(order);
+        } else if (order.getBusinessCode() != productBusinessCode) {
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Sorry, Orders cannot contain items from different businesses."));
+        }
 
         OrderItem newOrderItem = new OrderItem();
         newOrderItem.setOrderId(orderId);
         newOrderItem.setProductId(productId);
-        newOrderItem.setProductVarietyId(productVarietyId);
-        newOrderItem.setQuantitySuffixId(quantitySuffixId);
         newOrderItem.setQuantity(quantity);
         newOrderItem.setLastUpdated(lastUpdated);
         newOrderItem.setPrice(price);

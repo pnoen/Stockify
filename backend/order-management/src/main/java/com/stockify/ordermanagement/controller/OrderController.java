@@ -1,5 +1,6 @@
 package com.stockify.ordermanagement.controller;
 
+import com.stockify.ordermanagement.constants.OrderStatus;
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderRepository;
@@ -8,13 +9,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
 
     @Autowired
@@ -32,13 +35,13 @@ public class OrderController {
         Order newOrder = new Order();
         newOrder.setOrganisation(organisation);
         newOrder.setCustomerId(customerId);
-        newOrder.setSupplierId(supplierId);
+        newOrder.setBusinessCode(supplierId);
         newOrder.setOrderDate(orderDate);
         newOrder.setCompletionDate(completionDate);
 
         orderRepository.save(newOrder);
 
-        return ResponseEntity.ok(new ApiResponse(200, "Order created successfully."));
+        return ResponseEntity.ok(new ApiResponse(200, String.valueOf(newOrder.getId())));
     }
 
     @DeleteMapping("/delete")
@@ -114,5 +117,29 @@ public class OrderController {
         } else {
             return ResponseEntity.ok(new BooleanResponse(404, false));
         }
+    }
+    @PostMapping("/createDraftOrder")
+    public ResponseEntity<ApiResponse> createDraftOrder(@RequestParam String email) {
+        int customerId = getUserIdByEmail(email);
+        Optional<Order> draftOrderOptional = orderRepository.findByOrderStatusAndCustomerId(OrderStatus.DRAFT, customerId);
+
+        Order draftOrder;
+        if (!draftOrderOptional.isPresent()) {
+            draftOrder = new Order();
+            draftOrder.setOrderStatus(OrderStatus.DRAFT);
+            draftOrder.setCustomerId(customerId);
+            orderRepository.save(draftOrder);
+        } else {
+            draftOrder = draftOrderOptional.get();
+        }
+
+        // Return the ID of the draft order
+        return ResponseEntity.ok(new ApiResponse(200, String.valueOf(draftOrder.getId())));
+    }
+
+    public int getUserIdByEmail(String email) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;
+        return restTemplate.getForObject(url, Integer.class);
     }
 }

@@ -1,7 +1,33 @@
-import React from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import React, { useState } from "react";
+import { Modal, Box, Typography, Button, TextField } from "@mui/material";
+import { getDraftOrder, createOrderItem } from "./api";
 
 export default function ProductDetailModal({ open, onClose, product }) {
+  const [quantity, setQuantity] = useState(0);
+
+  const handleQuantityChange = (e) => {
+    const value = e.target.value;
+    if (value >= 0 && value <= product.quantity) {
+      setQuantity(value);
+    }
+  };
+
+  const handleAddToCart = async (product, quantity) => {
+    try {
+      const draftOrderData = await getDraftOrder();
+      const draftOrderId = draftOrderData.message;
+
+      const orderItemData = await createOrderItem(
+        parseInt(draftOrderId),
+        product,
+        quantity
+      );
+
+      console.log(orderItemData);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="product-detail-modal">
       <Box
@@ -33,12 +59,12 @@ export default function ProductDetailModal({ open, onClose, product }) {
           {/* Product Image */}
           <Box
             component="img"
-            src={product.imageUrl} 
+            src={product.imageUrl}
             alt={product.name}
             sx={{ maxWidth: "100%", maxHeight: "300px" }}
           />
         </Box>
-       
+
         <Typography
           variant="body2"
           sx={{
@@ -57,7 +83,31 @@ export default function ProductDetailModal({ open, onClose, product }) {
         </Typography>
         <Typography align="center">{product.description}</Typography>
         <Typography variant="h6">Price: ${product.price}</Typography>
-        <Typography>Quantity Available: {product.quantity}</Typography>
+        <Typography variant="h6">
+          Quantity Available: {product.quantity}
+        </Typography>
+
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{ marginBottom: "1em", paddingTop: "1vh" }}
+        >
+          <Typography variant="h6" sx={{ paddingRight: "1vh" }}>
+            Order Quantity:
+          </Typography>
+          <TextField
+            type="number"
+            value={quantity}
+            onChange={handleQuantityChange}
+            InputProps={{
+              inputProps: {
+                min: 0,
+                max: product.quantity,
+              },
+            }}
+            sx={{ marginRight: "10px", width: "12%" }}
+          />
+        </Box>
 
         <Box
           mt={3}
@@ -70,9 +120,12 @@ export default function ProductDetailModal({ open, onClose, product }) {
           <Button variant="outlined" onClick={onClose}>
             Back
           </Button>
+
+          <Box></Box>
           <Button
             variant="contained"
             style={{ backgroundColor: "#1DB954", color: "white" }}
+            onClick={() => handleAddToCart(product, quantity)}
           >
             Add to Cart
           </Button>
