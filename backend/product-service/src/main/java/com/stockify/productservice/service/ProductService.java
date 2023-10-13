@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -175,7 +176,7 @@ public class ProductService {
         return ResponseEntity.ok(new ProductListSpecificResponse(200, productList));
     }
 
-    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(String email) {
+    public ResponseEntity<CustomerProductResponse> getProductsCustomer(String email) {
 
         ResponseEntity<GetBusinessesResponse> response = webclientLink.get()
                 .uri("http://localhost:8082/api/businessLink/getBusinesses?email=" + email)
@@ -186,15 +187,27 @@ public class ProductService {
         if(response != null && response.hasBody()) {
             List<BusinessDto> businessList = response.getBody().getBusinesses();
 
-            List<Product> products = new ArrayList<>();
+            List<ProductDto> products = new ArrayList<>();
             for(BusinessDto business: businessList) {
                 int businessCode = business.getBusinessCode();
                 List<Product> productSearch = productRepository.findByBusinessCode(businessCode);
-                products.addAll(productSearch);
+
+                ResponseEntity<String> response2 = webclient.get()
+                        .uri("/account/getBusinessName?businessCode=" + businessCode)
+                        .retrieve()
+                        .toEntity(String.class)
+                        .block();
+                String companyName = response2.getBody();
+
+                List<ProductDto> newls = productSearch.stream()
+                                .map(product -> new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getQuantity(), product.getPrice(), companyName))
+                                .collect(Collectors.toList());
+
+                products.addAll(newls);
             }
-            return ResponseEntity.ok(new ProductListSpecificResponse(200, products));
+            return ResponseEntity.ok(new CustomerProductResponse(200, products));
     }
-        return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+        return ResponseEntity.badRequest().body(new CustomerProductResponse(400, new ArrayList<>()));
 
 
     }
