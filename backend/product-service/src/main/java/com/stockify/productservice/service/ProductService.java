@@ -27,6 +27,7 @@ public class ProductService {
         int quantity = addRequest.getQuantity();
         float price = addRequest.getPrice();
         int businessCode = addRequest.getBusinessCode();
+        String imageUrl = addRequest.getImageUrl();
 
         if(name.isEmpty() || description.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
@@ -41,6 +42,7 @@ public class ProductService {
                 .price(price)
                 .quantity(quantity)
                 .businessCode(businessCode)
+                .imageUrl(imageUrl)
                 .build();
         productRepository.save(product);
         return ResponseEntity.ok(new ApiResponse(200, "Product Added successfully."));
@@ -105,7 +107,7 @@ public class ProductService {
         List<Product> productList = productRepository.findByBusinessCode(businessCode);
 
         if(productList.isEmpty()) {
-            return ResponseEntity.badRequest().body(new InventoryResponse(404, new ArrayList<>()));
+            return ResponseEntity.ok().body(new InventoryResponse(200, new ArrayList<>()));
         }
         return ResponseEntity.ok(new InventoryResponse(200, productList));
     }

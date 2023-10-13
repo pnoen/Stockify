@@ -10,8 +10,9 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, addProduct } from "./api";
+import { getBusinessCode, addProduct, uploadFile } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 export default function AddProductModal({ open, onClose }) {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -22,7 +23,9 @@ export default function AddProductModal({ open, onClose }) {
     quantity: 0,
     price: 0.0,
     businessCode: null,
+    imageUrl: "",
   });
+  const [file, setFile] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +36,12 @@ export default function AddProductModal({ open, onClose }) {
         product.price.toString().split(".")[1].length > 2
       ) {
         throw new Error("Incorrect price format");
+      }
+
+      if (file) {
+        product.imageUrl = await uploadFile(file);
+      } else {
+        throw new Error("Missing product image");
       }
 
       const updatedProduct = product.businessCode
@@ -113,6 +122,28 @@ export default function AddProductModal({ open, onClose }) {
               margin="normal"
               fullWidth
             />
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                component="label"
+                variant="outlined"
+                color="primary"
+                startIcon={<UploadFileIcon />}
+              >
+                Upload image
+                <input
+                  type="file"
+                  accept="image/jpeg"
+                  onChange={(e) =>
+                    e.target.files.length > 0
+                      ? setFile(e.target.files[0])
+                      : setFile(null)
+                  }
+                  hidden
+                />
+              </Button>
+              <Box sx={{ marginLeft: 1 }}>{file ? file.name : ""}</Box>
+            </Box>
+
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >

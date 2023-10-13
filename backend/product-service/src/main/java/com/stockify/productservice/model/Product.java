@@ -22,6 +22,7 @@ public class Product {
     private int quantity;
     private float price;
     private int businessCode;
+    private String imageUrl;
 
     public int getId() {
         return id;
@@ -69,5 +70,13 @@ public class Product {
 
     public void setBusinessCode(int businessCode) {
         this.businessCode = businessCode;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
