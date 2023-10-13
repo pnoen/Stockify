@@ -119,7 +119,7 @@ public class BusinessLinkControllerTests {
 
         assertEquals(0, body.getUsers().size());
         assertEquals("No users found.", body.getMessage());
-        assertEquals(404, result.getStatusCode().value());
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class BusinessLinkControllerTests {
 
         assertEquals(0, body.getUsers().size());
         assertEquals("No users found.", body.getMessage());
-        assertEquals(404, result.getStatusCode().value());
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
@@ -159,7 +159,7 @@ public class BusinessLinkControllerTests {
 
         assertEquals(0, body.getBusinesses().size());
         assertEquals("No businesses found.", body.getMessage());
-        assertEquals(404, result.getStatusCode().value());
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
@@ -171,7 +171,7 @@ public class BusinessLinkControllerTests {
 
         assertEquals(0, body.getBusinesses().size());
         assertEquals("No businesses found.", body.getMessage());
-        assertEquals(404, result.getStatusCode().value());
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
