@@ -10,18 +10,30 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, createUserLink } from "./api";
+import { getBusinessCode, removeClientLink } from "./api";
+import { getLinkedClients } from "../../api";
 import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
 
-export default function LinkUserModal({ open, onClose }) {
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [snackBarMessage, setSnackBarMessage] = useState("");
+export default function UnlinkClientModal({ open, onClose }) {
+  const [clients, setClients] = useState([]);
   const [link, setLink] = useState({
     businessCode: null,
-    firstName: "",
-    lastName: "",
-    email: "",
+    userId: "",
   });
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const clientsList = await getLinkedClients();
+        setClients(clientsList.users);
+      } catch (error) {
+        console.error("An error occurred while fetching clients:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,9 +42,9 @@ export default function LinkUserModal({ open, onClose }) {
         ? link
         : { ...link, businessCode: await getBusinessCode() };
 
-      const statusCode = await createUserLink(updatedLink);
+      const statusCode = await removeClientLink(updatedLink);
       if (statusCode >= 200 && statusCode < 300) {
-        setSnackBarMessage("Created link successfully!");
+        setSnackBarMessage("Removed link successfully!");
         setSnackBarOpen(true);
       }
       onClose();
@@ -60,34 +72,23 @@ export default function LinkUserModal({ open, onClose }) {
       <Modal open={open} onClose={onClose}>
         <Box sx={{ ...modalStyle, p: 3 }}>
           <Typography variant="h6" align="center" marginBottom={2}>
-            Create Link Form
+            Remove Link Form
           </Typography>
           <form onSubmit={handleSubmit}>
-            <TextField
-              label="First Name"
-              required
-              value={link.firstName}
-              onChange={(e) => setLink({ ...link, firstName: e.target.value })}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Last Name"
-              required
-              value={link.lastName}
-              onChange={(e) => setLink({ ...link, lastName: e.target.value })}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Email"
-              required
-              type="email"
-              value={link.email}
-              onChange={(e) => setLink({ ...link, email: e.target.value })}
-              margin="normal"
-              fullWidth
-            />
+            <FormControl fullWidth required margin="normal">
+              <InputLabel id="client-label">Client</InputLabel>
+              <Select
+                labelId="client-label"
+                value={link.userId}
+                onChange={(e) => setLink({ ...link, userId: e.target.value })}
+              >
+                {clients.map((client) => (
+                  <MenuItem key={client.id} value={client.id}>
+                    {client.email}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
 
     private final ProductService productService;
@@ -54,5 +54,10 @@ public class ProductController {
     @GetMapping("/getProductsBusinessList")
     public ResponseEntity<ProductListSpecificResponse> getProductListBusinessCode(@RequestParam List<Integer> businessCodes) {
         return productService.getProductListBusinessCodes(businessCodes);
+    }
+
+    @GetMapping("/getProductsCustomer")
+    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(@RequestParam String email) {
+        return productService.getProductsCustomer(email);
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import LinkedBusinessesPage from "./components/LinkedBusinessesPage";
-import LinkedUsersPage from "./components/LinkedUsersPage";
+import LinkedClientsPage from "./components/LinkedClientsPage";
 import { checkIfBusiness } from "./api";
 
 export default function LinkingPage() {
@@ -21,5 +21,5 @@ export default function LinkingPage() {
 
   if (isBusiness === null) return null;
 
-  return isBusiness ? <LinkedUsersPage /> : <LinkedBusinessesPage />;
+  return isBusiness ? <LinkedClientsPage /> : <LinkedBusinessesPage />;
 };

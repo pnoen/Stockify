@@ -14,19 +14,19 @@ export const getBusinessCode = async () => {
   }
 };
 
-export const createUserLink = async (link) => {
-  const url = `${config.businessLinkServiceUrl}/api/businessLink/createUserLink`;
+export const removeClientLink = async (link) => {
+  const url = `${config.businessLinkServiceUrl}/api/businessLink/removeUserLink`;
 
   try {
-    const response = await axios.post(url, {
-      businessCode: link.businessCode,
-      firstName: link.firstName,
-      lastName: link.lastName,
-      email: link.email,
+    const response = await axios.delete(url, {
+      data: {
+        businessCode: link.businessCode,
+        userId: link.userId,
+      },
     });
     return response.status;
   } catch (error) {
-    console.error("An error occurred while creating a link:", error);
+    console.error("An error occurred while removing a link:", error);
     throw error;
   }
 };

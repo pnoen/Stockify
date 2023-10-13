@@ -58,7 +58,9 @@ export default function CustomerNavigation() {
         <Typography variant="h6" style={{ marginRight: "10px" }}>
           Stockify
         </Typography>
-        <Button color="inherit">Home</Button>
+        <Button color="inherit" component={Link} to="/home">
+          Home
+        </Button>
         <Button color="inherit" component={Link} to="/orders">
           Orders
         </Button>
@@ -87,9 +89,6 @@ export default function CustomerNavigation() {
           open={adminOpen}
           onClose={handleAdminClose}
         >
-          <MenuItem onClick={handleAdminClose} component={Link} to="/users">
-            businesses
-          </MenuItem>
           <MenuItem onClick={handleAdminClose} component={Link} to="/links">
             Linked Businesses
           </MenuItem>

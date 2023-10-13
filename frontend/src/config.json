@@ -3,5 +3,6 @@
   "businessServiceUrl": "http://localhost:8081",
   "businessLinkServiceUrl": "http://localhost:8082",
   "productServiceUrl": "http://localhost:8083",
-  "orderManagementServiceUrl": "http://localhost:8084"
+  "orderManagementServiceUrl": "http://localhost:8084",
+  "invoiceServiceUrl": "http://localhost:8085"
 }
