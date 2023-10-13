@@ -57,7 +57,7 @@ public class ProductController {
     }
 
     @GetMapping("/getProductsCustomer")
-    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(@RequestParam String email) {
+    public ResponseEntity<CustomerProductResponse> getProductsCustomer(@RequestParam String email) {
         return productService.getProductsCustomer(email);
     }
 }
