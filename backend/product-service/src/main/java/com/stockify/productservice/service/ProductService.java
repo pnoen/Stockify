@@ -19,6 +19,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final WebClient webclient = WebClient.create("http://localhost:8080");
+    private final WebClient webclientLink = WebClient.create();
+
     public ResponseEntity<ApiResponse> addProduct(AddRequest addRequest) {
         String name = addRequest.getName();
         String description = addRequest.getDescription();
@@ -86,7 +88,6 @@ public class ProductService {
                     .retrieve()
                     .toEntity(String.class)
                     .block();
-            //NOTE - INSERT CODE TO GET COMPANY NAME FROM ITS ID
             String companyName = response.getBody();
 
             productList.add(new ProductsSimple(product.getName(), product.getPrice(), companyName));
@@ -172,6 +173,30 @@ public class ProductService {
             return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
         }
         return ResponseEntity.ok(new ProductListSpecificResponse(200, productList));
+    }
+
+    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(String email) {
+
+        ResponseEntity<GetBusinessesResponse> response = webclientLink.get()
+                .uri("http://localhost:8082/api/businessLink/getBusinesses?email=" + email)
+                .retrieve()
+                .toEntity(GetBusinessesResponse.class)
+                .block();
+
+        if(response != null && response.hasBody()) {
+            List<BusinessDto> businessList = response.getBody().getBusinesses();
+
+            List<Product> products = new ArrayList<>();
+            for(BusinessDto business: businessList) {
+                int businessCode = business.getBusinessCode();
+                List<Product> productSearch = productRepository.findByBusinessCode(businessCode);
+                products.addAll(productSearch);
+            }
+            return ResponseEntity.ok(new ProductListSpecificResponse(200, products));
+    }
+        return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+
+
     }
 
 }

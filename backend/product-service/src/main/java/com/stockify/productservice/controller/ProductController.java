@@ -54,4 +54,9 @@ public class ProductController {
     public ResponseEntity<ProductListSpecificResponse> getProductListBusinessCode(@RequestParam List<Integer> businessCodes) {
         return productService.getProductListBusinessCodes(businessCodes);
     }
+
+    @GetMapping("/getProductsCustomer")
+    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(@RequestParam String email) {
+        return productService.getProductsCustomer(email);
+    }
 }
