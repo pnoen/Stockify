@@ -206,6 +206,19 @@ public class MainController {
         }
 
     }
+
+    @GetMapping("/getBusinessName")
+    public String getBusinessName(@RequestParam int businessCode) {
+
+        Optional<User> existingUser = userRepository.findByBusinessCode(businessCode);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            return user.getBusiness();
+        } else {
+            return null;
+        }
+    }
     @GetMapping("/getUserDetails")
     public User getUserDetails(@RequestParam int userId) {
         Optional<User> existingUser = userRepository.findById(userId);

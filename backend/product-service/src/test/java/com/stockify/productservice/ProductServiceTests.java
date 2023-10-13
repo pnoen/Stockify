@@ -167,7 +167,6 @@ public class ProductServiceTests {
         assertEquals("Description", response.getBody().getDescription());
         assertEquals(20, response.getBody().getQuantity());
         assertEquals(20, response.getBody().getPrice());
-        assertEquals("TEMP COMPANY", response.getBody().getCompany());
 
     }
 
@@ -212,7 +211,6 @@ public class ProductServiceTests {
         assertEquals(1, response.getBody().getProducts().size());
         assertEquals(2.5, response.getBody().getProducts().get(0).getPrice());
         assertEquals("ProductName", response.getBody().getProducts().get(0).getName());
-        assertEquals("TEMP COMPANY", response.getBody().getProducts().get(0).getCompanyName());
 
     }
 
