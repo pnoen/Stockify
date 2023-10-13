@@ -8,6 +8,7 @@ import OrderPage from "../../features/OrderManagement";
 import UserManagementPage from "../../features/UserManagement";
 import LinkingPage from "../../features/LinkingManagement";
 import Catalogue from "../../features/Catalogue";
+import ShoppingCart from "../../features/ShoppingCart";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -98,6 +99,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <Catalogue />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shoppingcart"
+            element={
+              <ProtectedRoute>
+                <ShoppingCart />
               </ProtectedRoute>
             }
           />

@@ -210,7 +210,7 @@ export default function Catalogue() {
               open={isModalOpen}
               onClose={() => {
                 setIsModalOpen(false);
-                setSelectedProduct(null); // Clear the product when modal is closed
+                setSelectedProduct(null); 
               }}
               product={selectedProduct}
             />
