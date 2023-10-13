@@ -10,26 +10,27 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, removeClientLink } from "./api";
-import { getLinkedClients } from "../../api";
-import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
+import { getBusinessCode, removeProduct } from "./api";
+import { getInventory } from "../../api";
+import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function UnlinkClientModal({ open, onClose }) {
-  const [clients, setClients] = useState([]);
-  const [link, setLink] = useState({
-    businessCode: null,
-    userId: "",
+export default function RemoveProductModal({ open, onClose }) {
+  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState({
+    id: "",
   });
+
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clientsList = await getLinkedClients();
-        setClients(clientsList.users);
+        const businessCode = await getBusinessCode();
+        const inventory = await getInventory(businessCode);
+        setProducts(inventory.product);
       } catch (error) {
-        console.error("An error occurred while fetching clients:", error);
+        console.error("An error occurred while fetching inventory:", error);
       }
     };
     fetchData();
@@ -38,13 +39,9 @@ export default function UnlinkClientModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedLink = link.businessCode
-        ? link
-        : { ...link, businessCode: await getBusinessCode() };
-
-      const statusCode = await removeClientLink(updatedLink);
+      const statusCode = await removeProduct(product);
       if (statusCode >= 200 && statusCode < 300) {
-        setSnackBarMessage("Removed link successfully!");
+        setSnackBarMessage("Removed product successfully!");
         setSnackBarOpen(true);
       }
       onClose();
@@ -72,19 +69,22 @@ export default function UnlinkClientModal({ open, onClose }) {
       <Modal open={open} onClose={onClose}>
         <Box sx={{ ...modalStyle, p: 3 }}>
           <Typography variant="h6" align="center" marginBottom={2}>
-            Remove Link Form
+            Remove Product Form
           </Typography>
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth required margin="normal">
-              <InputLabel id="client-label">Client</InputLabel>
+              <InputLabel id="product-label">Product</InputLabel>
               <Select
-                labelId="client-label"
-                value={link.userId}
-                onChange={(e) => setLink({ ...link, userId: e.target.value })}
+                labelId="product-label"
+                value={product.id}
+                onChange={(e) => setProduct({ ...product, id: e.target.value })}
               >
-                {clients.map((client) => (
-                  <MenuItem key={client.id} value={client.id}>
-                    {client.email}
+                {products.map((inventoryProduct) => (
+                  <MenuItem
+                    key={inventoryProduct.id}
+                    value={inventoryProduct.id}
+                  >
+                    {inventoryProduct.name}
                   </MenuItem>
                 ))}
               </Select>

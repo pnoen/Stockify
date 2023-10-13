@@ -28,8 +28,9 @@ public class ProductService {
         int quantity = addRequest.getQuantity();
         float price = addRequest.getPrice();
         int businessCode = addRequest.getBusinessCode();
+        String imageUrl = addRequest.getImageUrl();
 
-        if(name.isEmpty() || description.isEmpty()) {
+        if(name.isEmpty() || description.isEmpty() || imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
         }
         if(quantity == 0 || price == 0) {
@@ -42,6 +43,7 @@ public class ProductService {
                 .price(price)
                 .quantity(quantity)
                 .businessCode(businessCode)
+                .imageUrl(imageUrl)
                 .build();
         productRepository.save(product);
         return ResponseEntity.ok(new ApiResponse(200, "Product Added successfully."));
@@ -106,7 +108,7 @@ public class ProductService {
         List<Product> productList = productRepository.findByBusinessCode(businessCode);
 
         if(productList.isEmpty()) {
-            return ResponseEntity.badRequest().body(new InventoryResponse(404, new ArrayList<>()));
+            return ResponseEntity.ok().body(new InventoryResponse(200, new ArrayList<>()));
         }
         return ResponseEntity.ok(new InventoryResponse(200, productList));
     }
@@ -116,8 +118,9 @@ public class ProductService {
         String description = editProductRequest.getDescription();
         float price = editProductRequest.getPrice();
         int quantity = editProductRequest.getQuantity();
+        String imageUrl = editProductRequest.getImageUrl();
 
-        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0) {
+        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0 && imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: At least one field is required"));
         }
 
@@ -129,15 +132,23 @@ public class ProductService {
             Product product = productRepository.getReferenceById(editProductRequest.getId());
             if(!name.isEmpty()) {
                 product.setName(name);
+                System.out.println("Name");
             }
             if(!description.isEmpty()){
                 product.setDescription(description);
+                System.out.println("Description");
             }
             if(price != 0) {
                 product.setPrice(price);
+                System.out.println("Price");
             }
             if(quantity!=0) {
                 product.setQuantity(quantity);
+                System.out.println("Quantity");
+            }
+            if (!imageUrl.isEmpty()) {
+                product.setImageUrl(imageUrl);
+                System.out.println("ImageUrl");
             }
             productRepository.save(product);
         }

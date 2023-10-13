@@ -7,6 +7,7 @@ import { checkIfBusiness } from "./api";
 import OrderPage from "../../features/OrderManagement";
 import UserManagementPage from "../../features/UserManagement";
 import LinkingPage from "../../features/LinkingManagement";
+import InventoryManagementPage from "../../features/InventoryManagement";
 import Catalogue from "../../features/Catalogue";
 import ShoppingCart from "../../features/ShoppingCart";
 
@@ -91,6 +92,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <LinkingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <ProtectedRoute>
+                <InventoryManagementPage />
               </ProtectedRoute>
             }
           />
