@@ -99,7 +99,7 @@ export default function EditDetailsForm() {
                 variant="contained"
                 style={{ backgroundColor: "#1DB954", color: "white" }}
               >
-                Submit
+                Update
               </Button>
             </Box>
           </form>

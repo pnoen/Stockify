@@ -80,7 +80,7 @@ export default function EditPasswordForm() {
                 variant="contained"
                 style={{ backgroundColor: "#1DB954", color: "white" }}
               >
-                Submit
+                Update
               </Button>
             </Box>
           </form>

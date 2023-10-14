@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  Button,
-  Box,
-  Checkbox,
-  ButtonBase,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { checkIfBusiness } from "./api";
 import EditDetailsForm from "./components/EditDetailsForm";
 import EditPasswordForm from "./components/EditPasswordForm";
 
@@ -26,22 +13,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SettingsPage() {
   const classes = useStyles();
-  const [isBusiness, setIsBusiness] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const businessCheck = await checkIfBusiness();
-        setIsBusiness(businessCheck === 200);
-      } catch (error) {
-        console.error("Error checking business status:", error);
-        setIsBusiness(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (isBusiness === null) return null;
 
   return (
     <div
