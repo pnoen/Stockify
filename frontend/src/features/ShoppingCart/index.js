@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import OrderItem from "./components/OrderItem";
+import { getDraftOrder, getOrderItems } from "./api";
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
     fontFamily: "Your Nice Font, sans-serif",
   },
   scrollContainer: {
-    maxHeight: "70%", // Or any suitable height
+    maxHeight: "70%",
     overflowY: "auto",
     marginBottom: 30,
   },
@@ -17,54 +18,41 @@ const useStyles = makeStyles((theme) => ({
 export default function ShoppingCart() {
   const classes = useStyles();
 
-  const dummyData = [
-    {
-      id: 1,
-      name: "Product 1",
-      supplier: "Supplier Name",
-      quantity: 1,
-      price: 681,
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      supplier: "Supplier Name",
-      quantity: 1,
-      price: 681,
-    },
-    {
-      id: 3,
-      name: "Product 2",
-      supplier: "Supplier Name",
-      quantity: 1,
-      price: 681,
-    },
-    {
-      id: 4,
-      name: "Product 4",
-      supplier: "Supplier Name",
-      quantity: 1,
-      price: 681,
-    },
-    {
-      id: 5,
-      name: "Product 5",
-      supplier: "Supplier Name",
-      quantity: 1,
-      price: 681,
-    },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [orderItems, setOrderItems] = useState(dummyData);
+  const [orderItems, setOrderItems] = useState([]);
+
+  useEffect(() => {
+    const fetchOrderData = async () => {
+      try {
+        const draftOrder = await getDraftOrder();
+        const draftOrderId = parseInt(draftOrder.message);
+
+        if (draftOrder && !isNaN(draftOrderId)) {
+          const response = await getOrderItems(draftOrderId);
+          setOrderItems(response.products);
+        }
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderData();
+  }, []);
 
   const handleRemove = (id) => {
     setOrderItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  const total = orderItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const total = Array.isArray(orderItems)
+    ? orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    : 0;
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <Box display="flex" justifyContent="center" pt={"5vh"}>

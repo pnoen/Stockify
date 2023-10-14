@@ -136,6 +136,18 @@ public class OrderController {
         // Return the ID of the draft order
         return ResponseEntity.ok(new ApiResponse(200, String.valueOf(draftOrder.getId())));
     }
+    @GetMapping("/getDraftOrder")
+    public ResponseEntity<ApiResponse> getDraftOrder(@RequestParam String email) {
+        int customerId = getUserIdByEmail(email);
+        Optional<Order> draftOrderOptional = orderRepository.findByOrderStatusAndCustomerId(OrderStatus.DRAFT, customerId);
+        Order draftOrder;
+        if (!draftOrderOptional.isPresent()) {
+            return ResponseEntity.ok(new ApiResponse(200, "Shopping Cart is Empty"));
+        } else {
+            draftOrder = draftOrderOptional.get();
+        }
+        return ResponseEntity.ok(new ApiResponse(200, String.valueOf(draftOrder.getId())));
+    }
 
     public int getUserIdByEmail(String email) {
         RestTemplate restTemplate = new RestTemplate();

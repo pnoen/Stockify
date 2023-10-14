@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "../../../../config.json";
 
-const getDraftOrder = async () => {
+const createDraftOrder = async () => {
   const email = localStorage.getItem("userToken");
   try {
     const response = await axios.post(
@@ -33,4 +33,4 @@ const createOrderItem = async (draftOrderId, product, quantity) => {
   }
 };
 
-export { getDraftOrder, createOrderItem };
+export { createDraftOrder, createOrderItem };

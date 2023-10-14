@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
-import { getDraftOrder, createOrderItem } from "./api";
+import { createDraftOrder, createOrderItem } from "./api";
 
 export default function ProductDetailModal({ open, onClose, product }) {
   const [quantity, setQuantity] = useState(0);
@@ -14,7 +14,7 @@ export default function ProductDetailModal({ open, onClose, product }) {
 
   const handleAddToCart = async (product, quantity) => {
     try {
-      const draftOrderData = await getDraftOrder();
+      const draftOrderData = await createDraftOrder();
       const draftOrderId = draftOrderData.message;
 
       const orderItemData = await createOrderItem(

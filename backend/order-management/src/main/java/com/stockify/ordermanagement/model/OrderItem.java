@@ -12,7 +12,7 @@ public class OrderItem {
     private int orderId;
     private int productId;
     private int businessCode;
-    private float quantity;
+    private int quantity;
     private LocalDate lastUpdated;
     private double price;
 
@@ -44,11 +44,11 @@ public class OrderItem {
         this.productId = productId;
     }
 
-    public float getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

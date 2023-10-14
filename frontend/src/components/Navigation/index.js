@@ -15,7 +15,7 @@ const LayoutWrapper = ({ isBusiness, children }) => (
     sx={{
       marginLeft: isBusiness ? "13%" : "0%",
       width: isBusiness ? "87%" : "100%",
-      backgroundColor: "#e6ffe3",
+      backgroundColor: "#FAFAFA",
       minHeight: "100vh",
     }}
   >

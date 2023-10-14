@@ -2,18 +2,24 @@ package com.stockify.ordermanagement.controller;
 
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.ordermanagement.model.ProductItem;
 import com.stockify.ordermanagement.repository.OrderRepository;
 import com.stockify.ordermanagement.service.OrderItemService;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderItemRepository;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/orderItem")
@@ -31,7 +37,7 @@ public class OrderItemController {
         int orderId = orderItemRequest.getOrderId();
         int productId = orderItemRequest.getProductId();
         int productBusinessCode = orderItemRequest.getBusinessCode();
-        float quantity = orderItemRequest.getQuantity();
+        int quantity = orderItemRequest.getQuantity();
         LocalDate lastUpdated = orderItemRequest.getLastUpdated();
         double price = Double.parseDouble(String.format("%.2f", orderItemRequest.getPrice()));
         Optional<Order> orderOptional = orderRepository.findById(orderId);
@@ -76,10 +82,39 @@ public class OrderItemController {
 
     // Get a list of all the order items with the given order id
     @GetMapping("/getAllByOrderId")
-    public ResponseEntity<OrderItemListResponse> getAllOrders(@RequestParam int orderId) {
-        return ResponseEntity.ok(new OrderItemListResponse(200, orderItemRepository.findAllByOrderId(orderId)));
-    }
+    public ResponseEntity<ProductItemListResponse> getAllOrders(@RequestParam int orderId) {
+        try {
+            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+            List<Integer> productIds = orderItems.stream()
+                    .map(OrderItem::getProductId)
+                    .collect(Collectors.toList());
 
+            String productUrl = "http://localhost:8083/api/product/getProducts?ids=" + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+
+            ProductItemListResponse fetchedProductItemListResponse = new RestTemplate().getForObject(productUrl, ProductItemListResponse.class);
+
+            if (fetchedProductItemListResponse != null) {
+                for (ProductItem product : fetchedProductItemListResponse.getProducts()) {
+                    for (OrderItem orderItem : orderItems) {
+                        if (orderItem.getProductId() == product.getId()) {
+                            product.setQuantity(orderItem.getQuantity());  // set ordered quantity
+                            break;
+                        }
+                    }
+                }
+
+                ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), fetchedProductItemListResponse.getProducts());
+
+                return ResponseEntity.ok(finalResponse);
+            } else {
+                ProductItemListResponse errorResponse = new ProductItemListResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+        } catch (Exception e) {
+            ProductItemListResponse errorResponse = new ProductItemListResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
     // Get an order item by the orderItem ID
     @GetMapping("/getOrderItemById")
     public ResponseEntity<OrderItemResponse> getOrderById(@RequestParam int orderItemId) {

@@ -13,6 +13,7 @@ export default function ProductItem({
         border: "1px solid green",
         borderRadius: "4px",
         padding: "1rem",
+        cursor: "pointer"
       }}
     >
       {/* Mock placeholder for the product image */}
