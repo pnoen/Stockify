@@ -132,23 +132,18 @@ public class ProductService {
             Product product = productRepository.getReferenceById(editProductRequest.getId());
             if(!name.isEmpty()) {
                 product.setName(name);
-                System.out.println("Name");
             }
             if(!description.isEmpty()){
                 product.setDescription(description);
-                System.out.println("Description");
             }
             if(price != 0) {
                 product.setPrice(price);
-                System.out.println("Price");
             }
             if(quantity!=0) {
                 product.setQuantity(quantity);
-                System.out.println("Quantity");
             }
             if (!imageUrl.isEmpty()) {
                 product.setImageUrl(imageUrl);
-                System.out.println("ImageUrl");
             }
             productRepository.save(product);
         }
