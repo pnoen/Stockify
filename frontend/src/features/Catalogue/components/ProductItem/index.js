@@ -27,9 +27,9 @@ export default function ProductItem({ product }) {
         borderRadius: "10px",
         padding: "1rem",
         cursor: "pointer",
-        transition: "transform 0.1s ease", 
+        transition: "transform 0.2s ease",
         "&:hover": {
-          transform: "scale(1.02)", 
+          transform: "scale(1.05)",
         },
       }}
     >

@@ -55,17 +55,30 @@ public class OrderItemController {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Sorry, Orders cannot contain items from different businesses."));
         }
 
-        OrderItem newOrderItem = new OrderItem();
-        newOrderItem.setOrderId(orderId);
-        newOrderItem.setProductId(productId);
-        newOrderItem.setQuantity(quantity);
-        newOrderItem.setLastUpdated(lastUpdated);
-        newOrderItem.setPrice(price);
+        // Check if OrderItem with same orderId and productId exists
+        Optional<OrderItem> existingOrderItemOpt = orderItemRepository.findByOrderIdAndProductId(orderId, productId);
 
-        orderItemService.updateOrderTotalCost(newOrderItem);
-        orderItemRepository.save(newOrderItem);
+        if (existingOrderItemOpt.isPresent()) {
+            OrderItem existingOrderItem = existingOrderItemOpt.get();
+            existingOrderItem.setQuantity(existingOrderItem.getQuantity() + quantity); // Increment the quantity
+            existingOrderItem.setLastUpdated(lastUpdated);
+            existingOrderItem.setPrice(price); // Assuming you might want to update price as well. Remove if not needed.
 
-        return ResponseEntity.ok(new ApiResponse(200, "Order Item created successfully."));
+            orderItemService.updateOrderTotalCost(existingOrderItem);
+            orderItemRepository.save(existingOrderItem);
+        } else {
+            OrderItem newOrderItem = new OrderItem();
+            newOrderItem.setOrderId(orderId);
+            newOrderItem.setProductId(productId);
+            newOrderItem.setQuantity(quantity);
+            newOrderItem.setLastUpdated(lastUpdated);
+            newOrderItem.setPrice(price);
+
+            orderItemService.updateOrderTotalCost(newOrderItem);
+            orderItemRepository.save(newOrderItem);
+        }
+
+        return ResponseEntity.ok(new ApiResponse(200, "Order Item processed successfully."));
     }
 
     @DeleteMapping("/delete")
