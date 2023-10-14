@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import InventoryIcon from '@mui/icons-material/Inventory';
 import logo from "../../../assets/logo.png"; // Import your logo here
 import { Link, useNavigate } from "react-router-dom";
 
@@ -75,6 +76,12 @@ export default function SupplierNavigation() {
             </ListItemIcon>
             <ListItemText primary="Orders" />
           </ListItemButton>
+          <ListItemButton component={Link} to="/inventory">
+            <ListItemIcon>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItemButton>
           <ListItemButton onClick={() => handleDropdownClick("admin")}>
             <ListItemIcon>
               <AccountCircleIcon />
@@ -84,9 +91,6 @@ export default function SupplierNavigation() {
           </ListItemButton>
           <Collapse in={openDropdowns.admin} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ paddingLeft: 4 }}>
-                <ListItemText primary="Businesses" />
-              </ListItemButton>
               <ListItemButton
                 sx={{ paddingLeft: 4 }}
                 component={Link}
@@ -99,7 +103,7 @@ export default function SupplierNavigation() {
                 component={Link}
                 to="/links"
               >
-                <ListItemText primary="Linked Users" />
+                <ListItemText primary="Linked Clients" />
               </ListItemButton>
             </List>
           </Collapse>

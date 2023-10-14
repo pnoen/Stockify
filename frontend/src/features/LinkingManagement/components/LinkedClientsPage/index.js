@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import "./styles.css";
 import { makeStyles } from "@mui/styles";
-import { getLinkedUsers } from "./api";
-import LinkUserModal from "./components/LinkUserModal";
-import UnlinkUserModal from "./components/UnlinkUserModal";
+import { getLinkedClients } from "./api";
+import LinkClientModal from "./components/LinkClientModal";
+import UnlinkClientModal from "./components/UnlinkClientModal";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,19 +26,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LinkedUsersPage() {
+export default function LinkedClientsPage() {
   const classes = useStyles();
-  const [users, setUsers] = useState([]);
-  const [isLinkUserModalOpen, setIsLinkUserModalOpen] = useState(false);
-  const [isUnlinkUserModalOpen, setIsUnlinkUserModalOpen] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [isLinkClientModalOpen, setIsLinkClientModalOpen] = useState(false);
+  const [isUnlinkClientModalOpen, setIsUnlinkClientModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersList = await getLinkedUsers();
-        setUsers(usersList.users);
+        const clientsList = await getLinkedClients();
+        setClients(clientsList.users);
       } catch (error) {
-        console.error("An error occurred while fetching linked users:", error);
+        console.error("An error occurred while fetching linked clients:", error);
       }
     };
     fetchData();
@@ -63,23 +63,23 @@ export default function LinkedUsersPage() {
           }}
         >
           <Typography variant="h3" gutterBottom className={classes.boldText}>
-            Linked Users
+            Linked Clients
           </Typography>
           <Box>
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#1DB954" }}
-              onClick={() => setIsLinkUserModalOpen(true)}
+              onClick={() => setIsLinkClientModalOpen(true)}
             >
-              Link User
+              Link Client
             </Button>
 
             <Button
               variant="contained"
               style={{ marginRight: "8px", backgroundColor: "#ce595f" }}
-              onClick={() => setIsUnlinkUserModalOpen(true)}
+              onClick={() => setIsUnlinkClientModalOpen(true)}
             >
-              Unlink User
+              Unlink Client
             </Button>
           </Box>
         </div>
@@ -88,31 +88,31 @@ export default function LinkedUsersPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell className="table-header-cell">User ID</TableCell>
+                <TableCell className="table-header-cell">Client ID</TableCell>
                 <TableCell className="table-header-cell">First Name</TableCell>
                 <TableCell className="table-header-cell">Last Name</TableCell>
                 <TableCell className="table-header-cell">Email</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow hover key={user.id} style={{ cursor: "pointer" }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+              {clients.map((client) => (
+                <TableRow hover key={client.id} style={{ cursor: "pointer" }}>
+                  <TableCell>{client.id}</TableCell>
+                  <TableCell>{client.firstName}</TableCell>
+                  <TableCell>{client.lastName}</TableCell>
+                  <TableCell>{client.email}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </Paper>
-        <LinkUserModal
-          open={isLinkUserModalOpen}
-          onClose={() => setIsLinkUserModalOpen(false)}
+        <LinkClientModal
+          open={isLinkClientModalOpen}
+          onClose={() => setIsLinkClientModalOpen(false)}
         />
-        <UnlinkUserModal
-          open={isUnlinkUserModalOpen}
-          onClose={() => setIsUnlinkUserModalOpen(false)}
+        <UnlinkClientModal
+          open={isUnlinkClientModalOpen}
+          onClose={() => setIsUnlinkClientModalOpen(false)}
         />
       </div>
     </div>

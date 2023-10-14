@@ -89,9 +89,6 @@ export default function CustomerNavigation() {
           open={adminOpen}
           onClose={handleAdminClose}
         >
-          <MenuItem onClick={handleAdminClose} component={Link} to="/users">
-            businesses
-          </MenuItem>
           <MenuItem onClick={handleAdminClose} component={Link} to="/links">
             Linked Businesses
           </MenuItem>

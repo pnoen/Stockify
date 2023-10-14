@@ -10,10 +10,10 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, createUserLink } from "./api";
+import { getBusinessCode, createClientLink } from "./api";
 import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
 
-export default function LinkUserModal({ open, onClose }) {
+export default function LinkClientModal({ open, onClose }) {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [link, setLink] = useState({
@@ -30,7 +30,7 @@ export default function LinkUserModal({ open, onClose }) {
         ? link
         : { ...link, businessCode: await getBusinessCode() };
 
-      const statusCode = await createUserLink(updatedLink);
+      const statusCode = await createClientLink(updatedLink);
       if (statusCode >= 200 && statusCode < 300) {
         setSnackBarMessage("Created link successfully!");
         setSnackBarOpen(true);

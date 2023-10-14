@@ -7,6 +7,7 @@ public class AddRequest {
     private int quantity;
     private float price;
     private int businessCode;
+    private String imageUrl;
 
     public String getName() {
         return name;
@@ -46,5 +47,13 @@ public class AddRequest {
 
     public void setBusinessCode(int businessCode) {
         this.businessCode = businessCode;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

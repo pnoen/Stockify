@@ -52,7 +52,7 @@ public class BusinessLinkController {
                     .users(new ArrayList<>())
                     .message("No users found.")
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
         GetUsersResponse res = GetUsersResponse.builder()
@@ -70,7 +70,7 @@ public class BusinessLinkController {
                     .businesses(new ArrayList<>())
                     .message("No businesses found.")
                     .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         }
 
         GetBusinessesResponse res = GetBusinessesResponse.builder()

@@ -44,6 +44,7 @@ public class ProductServiceTests {
         addRequest.setPrice((float)2.5);
         addRequest.setQuantity(10);
         addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("img.jpg");
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -58,6 +59,7 @@ public class ProductServiceTests {
         addRequest.setPrice((float)0);
         addRequest.setQuantity(10);
         addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("img.jpg");
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -72,6 +74,7 @@ public class ProductServiceTests {
         addRequest.setPrice((float)2);
         addRequest.setQuantity(0);
         addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("img.jpg");
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -86,6 +89,7 @@ public class ProductServiceTests {
         addRequest.setPrice((float)2);
         addRequest.setQuantity(1);
         addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("img.jpg");
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -100,6 +104,22 @@ public class ProductServiceTests {
         addRequest.setPrice((float)2);
         addRequest.setQuantity(2);
         addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("img.jpg");
+
+        ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: All fields are required.", response.getBody().getMessage());
+    }
+
+    @Test
+    public void testInvalidAddProductImageUrl(){
+        AddRequest addRequest = new AddRequest();
+        addRequest.setName("ProductName");
+        addRequest.setDescription("");
+        addRequest.setPrice((float)2);
+        addRequest.setQuantity(2);
+        addRequest.setBusinessCode(10000);
+        addRequest.setImageUrl("");
 
         ResponseEntity<ApiResponse> response = productService.addProduct(addRequest);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -238,7 +258,7 @@ public class ProductServiceTests {
         List<Product> productList = new ArrayList<>();
         when(productRepository.findByBusinessCode(10000)).thenReturn(productList);
         ResponseEntity<InventoryResponse> response = productService.getInventory(10000);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(new ArrayList<>(), response.getBody().getProduct());
     }
 
@@ -250,7 +270,8 @@ public class ProductServiceTests {
                 "",
                 "",
                 0,
-                0
+                0,
+                ""
         );
         ResponseEntity<ApiResponse> response = productService.editProduct(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -265,7 +286,8 @@ public class ProductServiceTests {
                 "New Name",
                 "New Description",
                 10,
-                10
+                10,
+                "newImage.jpg"
         );
         ResponseEntity<ApiResponse> response = productService.editProduct(request);
 
@@ -276,6 +298,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
         when(productRepository.findById(2)).thenReturn(Optional.empty());
@@ -292,7 +315,8 @@ public class ProductServiceTests {
                 "New Name",
                 "New Description",
                 10,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -301,6 +325,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -321,7 +346,8 @@ public class ProductServiceTests {
                 "",
                 "New Description",
                 10,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -330,6 +356,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -351,7 +378,8 @@ public class ProductServiceTests {
                 "New Name",
                 "",
                 10,
-                10
+                10,
+                "newImg.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -360,6 +388,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -381,7 +410,8 @@ public class ProductServiceTests {
                 "New Name",
                 "New Description",
                 0,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -390,6 +420,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -411,7 +442,8 @@ public class ProductServiceTests {
                 "New Name",
                 "New Description",
                 10,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -420,6 +452,39 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
+
+        Optional<Product> optionalProduct = Optional.ofNullable(product);
+
+        when(productRepository.findById(2)).thenReturn(optionalProduct);
+        when(productRepository.getReferenceById(2)).thenReturn(product);
+
+        ResponseEntity<ApiResponse> response = productService.editProduct(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Product Edited successfully.", response.getBody().getMessage());
+
+    }
+
+    @Test
+    public void testValidEditProductEmptyImageUrl() {
+
+        EditProductRequest request = new EditProductRequest(
+                2,
+                "New Name",
+                "New Description",
+                10,
+                0,
+                ""
+        );
+        Product product = new Product();
+        product.setId(2);
+        product.setQuantity(20);
+        product.setName("Product");
+        product.setDescription("Description");
+        product.setBusinessCode(10000);
+        product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -441,7 +506,8 @@ public class ProductServiceTests {
                 "",
                 "",
                 1,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -450,6 +516,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -471,7 +538,8 @@ public class ProductServiceTests {
                 "",
                 "description",
                 0,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -480,6 +548,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -501,7 +570,8 @@ public class ProductServiceTests {
                 "",
                 "description",
                 10,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -510,6 +580,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -531,7 +602,8 @@ public class ProductServiceTests {
                 "Name",
                 "",
                 0,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -540,6 +612,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -561,7 +634,8 @@ public class ProductServiceTests {
                 "Name",
                 "",
                 10,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -570,6 +644,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -591,7 +666,8 @@ public class ProductServiceTests {
                 "Name",
                 "Description",
                 0,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -600,6 +676,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -621,7 +698,8 @@ public class ProductServiceTests {
                 "",
                 "",
                 0,
-                10
+                10,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -630,6 +708,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -651,7 +730,8 @@ public class ProductServiceTests {
                 "",
                 "",
                 10,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -660,6 +740,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -681,7 +762,8 @@ public class ProductServiceTests {
                 "",
                 "Description",
                 0,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -690,6 +772,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 
@@ -711,7 +794,8 @@ public class ProductServiceTests {
                 "Name",
                 "",
                 0,
-                0
+                0,
+                "newImage.jpg"
         );
         Product product = new Product();
         product.setId(2);
@@ -720,6 +804,7 @@ public class ProductServiceTests {
         product.setDescription("Description");
         product.setBusinessCode(10000);
         product.setPrice(20);
+        product.setImageUrl("img.jpg");
 
         Optional<Product> optionalProduct = Optional.ofNullable(product);
 

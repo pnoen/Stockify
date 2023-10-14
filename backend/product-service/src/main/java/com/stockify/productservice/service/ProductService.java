@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +28,9 @@ public class ProductService {
         int quantity = addRequest.getQuantity();
         float price = addRequest.getPrice();
         int businessCode = addRequest.getBusinessCode();
+        String imageUrl = addRequest.getImageUrl();
 
-        if(name.isEmpty() || description.isEmpty()) {
+        if(name.isEmpty() || description.isEmpty() || imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: All fields are required."));
         }
         if(quantity == 0 || price == 0) {
@@ -41,6 +43,7 @@ public class ProductService {
                 .price(price)
                 .quantity(quantity)
                 .businessCode(businessCode)
+                .imageUrl(imageUrl)
                 .build();
         productRepository.save(product);
         return ResponseEntity.ok(new ApiResponse(200, "Product Added successfully."));
@@ -105,7 +108,7 @@ public class ProductService {
         List<Product> productList = productRepository.findByBusinessCode(businessCode);
 
         if(productList.isEmpty()) {
-            return ResponseEntity.badRequest().body(new InventoryResponse(404, new ArrayList<>()));
+            return ResponseEntity.ok().body(new InventoryResponse(200, new ArrayList<>()));
         }
         return ResponseEntity.ok(new InventoryResponse(200, productList));
     }
@@ -115,8 +118,9 @@ public class ProductService {
         String description = editProductRequest.getDescription();
         float price = editProductRequest.getPrice();
         int quantity = editProductRequest.getQuantity();
+        String imageUrl = editProductRequest.getImageUrl();
 
-        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0) {
+        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0 && imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: At least one field is required"));
         }
 
@@ -128,15 +132,23 @@ public class ProductService {
             Product product = productRepository.getReferenceById(editProductRequest.getId());
             if(!name.isEmpty()) {
                 product.setName(name);
+                System.out.println("Name");
             }
             if(!description.isEmpty()){
                 product.setDescription(description);
+                System.out.println("Description");
             }
             if(price != 0) {
                 product.setPrice(price);
+                System.out.println("Price");
             }
             if(quantity!=0) {
                 product.setQuantity(quantity);
+                System.out.println("Quantity");
+            }
+            if (!imageUrl.isEmpty()) {
+                product.setImageUrl(imageUrl);
+                System.out.println("ImageUrl");
             }
             productRepository.save(product);
         }
@@ -175,7 +187,7 @@ public class ProductService {
         return ResponseEntity.ok(new ProductListSpecificResponse(200, productList));
     }
 
-    public ResponseEntity<ProductListSpecificResponse> getProductsCustomer(String email) {
+    public ResponseEntity<CustomerProductResponse> getProductsCustomer(String email) {
 
         ResponseEntity<GetBusinessesResponse> response = webclientLink.get()
                 .uri("http://localhost:8082/api/businessLink/getBusinesses?email=" + email)
@@ -186,15 +198,27 @@ public class ProductService {
         if(response != null && response.hasBody()) {
             List<BusinessDto> businessList = response.getBody().getBusinesses();
 
-            List<Product> products = new ArrayList<>();
+            List<ProductDto> products = new ArrayList<>();
             for(BusinessDto business: businessList) {
                 int businessCode = business.getBusinessCode();
                 List<Product> productSearch = productRepository.findByBusinessCode(businessCode);
-                products.addAll(productSearch);
+
+                ResponseEntity<String> response2 = webclient.get()
+                        .uri("/account/getBusinessName?businessCode=" + businessCode)
+                        .retrieve()
+                        .toEntity(String.class)
+                        .block();
+                String companyName = response2.getBody();
+
+                List<ProductDto> newls = productSearch.stream()
+                                .map(product -> new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getQuantity(), product.getPrice(), product.getBusinessCode(), companyName))
+                                .collect(Collectors.toList());
+
+                products.addAll(newls);
             }
-            return ResponseEntity.ok(new ProductListSpecificResponse(200, products));
+            return ResponseEntity.ok(new CustomerProductResponse(200, products));
     }
-        return ResponseEntity.badRequest().body(new ProductListSpecificResponse(400, new ArrayList<>()));
+        return ResponseEntity.badRequest().body(new CustomerProductResponse(400, new ArrayList<>()));
 
 
     }
