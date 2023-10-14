@@ -287,4 +287,62 @@ public class MainController {
         }
     }
 
+    @PostMapping("/editUser")
+    public ResponseEntity<ApiResponse> editUser(@RequestBody UpdateRequest updateRequest) {
+        int userId = updateRequest.getId();
+        String firstName = updateRequest.getFirstName();
+        String lastName = updateRequest.getLastName();
+        String currentPassword = updateRequest.getCurrentPassword();
+        String newPassword = updateRequest.getNewPassword();
+        String confirmPassword = updateRequest.getConfirmPassword();
+        String business = updateRequest.getBusiness();
+
+        if(firstName.isEmpty() &&
+                lastName.isEmpty() &&
+                newPassword.isEmpty() &&
+                confirmPassword.isEmpty() &&
+                business.isEmpty()
+        ) {
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "At least one field is required"));
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Password mismatch"));
+        }
+
+        try {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (!userOptional.isPresent()){
+                throw new Exception();
+            }
+
+            User user = userOptional.get();
+            if (!firstName.isEmpty()) {
+                user.setFirstName(firstName);
+            }
+
+            if (!lastName.isEmpty()) {
+                user.setLastName(lastName);
+            }
+
+            if (!newPassword.isEmpty()) {
+                if (!user.getPassword().equals(currentPassword)) {
+                    return ResponseEntity.badRequest().body(new ApiResponse(400, "Current password doesn't match with the database"));
+                }
+                user.setPassword(newPassword);
+            }
+
+            if (!business.isEmpty()) {
+                user.setBusiness(business);
+            }
+
+            userRepository.save(user);
+        }
+        catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(400, "Error occurred when attempted to update fields in database"));
+        }
+        return ResponseEntity.ok(new ApiResponse(200, "User edited successfully."));
+
+    }
+
 }
