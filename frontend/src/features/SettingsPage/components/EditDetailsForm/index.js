@@ -11,10 +11,10 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { getUserId, editUser } from "./api";
+import { checkIfBusiness, getUserId, editUser } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function BussinessEditDetailsForm() {
+export default function EditDetailsForm() {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [user, setUser] = useState({
@@ -26,6 +26,22 @@ export default function BussinessEditDetailsForm() {
     confirmPassword: "",
     business: "",
   });
+  const [isBusiness, setIsBusiness] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const businessCheck = await checkIfBusiness();
+        setIsBusiness(businessCheck === 200);
+      } catch (error) {
+        console.error("Error checking business status:", error);
+        setIsBusiness(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (isBusiness === null) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,13 +81,16 @@ export default function BussinessEditDetailsForm() {
               margin="normal"
               fullWidth
             />
-            <TextField
-              label="Business Name"
-              value={user.business}
-              onChange={(e) => setUser({ ...user, business: e.target.value })}
-              margin="normal"
-              fullWidth
-            />
+            {isBusiness ? (
+              <TextField
+                label="Business Name"
+                value={user.business}
+                onChange={(e) => setUser({ ...user, business: e.target.value })}
+                margin="normal"
+                fullWidth
+              />
+            ) : null}
+
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 1 }}
             >

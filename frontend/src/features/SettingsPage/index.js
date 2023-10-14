@@ -14,8 +14,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { checkIfBusiness } from "./api";
-import BussinessEditDetailsForm from "./components/BusinessEditDetailsForm";
-import CustomerEditDetailsForm from "./components/CustomerEditDetailsForm";
+import EditDetailsForm from "./components/EditDetailsForm";
 import EditPasswordForm from "./components/EditPasswordForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -67,11 +66,7 @@ export default function SettingsPage() {
           </Typography>
         </div>
 
-        {isBusiness ? (
-          <BussinessEditDetailsForm />
-        ) : (
-          <CustomerEditDetailsForm />
-        )}
+        <EditDetailsForm />
         <EditPasswordForm />
       </div>
     </div>
