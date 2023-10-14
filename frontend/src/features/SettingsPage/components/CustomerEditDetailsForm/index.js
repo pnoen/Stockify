@@ -45,7 +45,7 @@ export default function CustomerEditDetailsForm() {
   return (
     <>
       <Paper>
-        <div style={{ width: "100%", padding: "10px" }}>
+        <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
             User Details
           </Typography>
@@ -66,7 +66,7 @@ export default function CustomerEditDetailsForm() {
               fullWidth
             />
             <Box
-              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 1 }}
             >
               <Button
                 type="submit"

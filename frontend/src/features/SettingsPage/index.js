@@ -16,6 +16,7 @@ import { makeStyles } from "@mui/styles";
 import { checkIfBusiness } from "./api";
 import BussinessEditDetailsForm from "./components/BusinessEditDetailsForm";
 import CustomerEditDetailsForm from "./components/CustomerEditDetailsForm";
+import EditPasswordForm from "./components/EditPasswordForm";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -66,7 +67,12 @@ export default function SettingsPage() {
           </Typography>
         </div>
 
-        {isBusiness ? <BussinessEditDetailsForm /> : <CustomerEditDetailsForm />}
+        {isBusiness ? (
+          <BussinessEditDetailsForm />
+        ) : (
+          <CustomerEditDetailsForm />
+        )}
+        <EditPasswordForm />
       </div>
     </div>
   );

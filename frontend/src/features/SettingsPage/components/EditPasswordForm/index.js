@@ -14,7 +14,7 @@ import {
 import { getUserId, editUser } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function BussinessEditDetailsForm() {
+export default function EditPasswordForm() {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [user, setUser] = useState({
@@ -44,31 +44,31 @@ export default function BussinessEditDetailsForm() {
 
   return (
     <>
-      <Paper style={{ marginBottom: "32px" }}>
+      <Paper>
         <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
-            User Details
+            Password
           </Typography>
 
           <form onSubmit={handleSubmit}>
             <TextField
-              label="First Name"
-              value={user.firstName}
-              onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+              label="Current Password"
+              value={user.currentPassword}
+              onChange={(e) => setUser({ ...user, currentPassword: e.target.value })}
               margin="normal"
               fullWidth
             />
             <TextField
-              label="Last Name"
-              value={user.lastName}
-              onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+              label="New Password"
+              value={user.newPassword}
+              onChange={(e) => setUser({ ...user, newPassword: e.target.value })}
               margin="normal"
               fullWidth
             />
             <TextField
-              label="Business Name"
-              value={user.business}
-              onChange={(e) => setUser({ ...user, business: e.target.value })}
+              label="Confirm Password"
+              value={user.confirmPassword}
+              onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
               margin="normal"
               fullWidth
             />
