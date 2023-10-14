@@ -15,4 +15,5 @@ public class ProductDto {
     private float price;
     private int businessCode;
     private String businessName;
+    private String imageURL;
 }

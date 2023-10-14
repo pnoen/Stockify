@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
-import { createDraftOrder, createOrderItem } from "./api";
+import { createDraftOrder, createOrderItem, getImageUrl } from "./api";
 
 export default function ProductDetailModal({ open, onClose, product }) {
   const [quantity, setQuantity] = useState(0);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const url = await getImageUrl(product.imageURL);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+    if (product.imageURL) {
+      fetchImage();
+    }
+  }, [product.imageURL]);
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
@@ -56,13 +72,28 @@ export default function ProductDetailModal({ open, onClose, product }) {
             position: "relative",
           }}
         >
-          {/* Product Image */}
-          <Box
-            component="img"
-            src={product.imageUrl}
-            alt={product.name}
-            sx={{ maxWidth: "100%", maxHeight: "300px" }}
-          />
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={product.name}
+              style={{
+                width: "100%",
+                height: "35vh",
+                objectFit: "cover",
+                marginBottom: "3px",
+                borderRadius: "10px",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "35vh",
+                backgroundColor: "#e0e0e0",
+                marginBottom: "10px",
+              }}
+            ></div>
+          )}
         </Box>
 
         <Typography

@@ -66,11 +66,7 @@ export default function Catalogue() {
                     setIsModalOpen(true);
                   }}
                 >
-                  <ProductItem
-                    supplierName={product.businessCode}
-                    itemName={product.name}
-                    shortDescription={product.description}
-                  />
+                  <ProductItem product={product} />
                 </div>
               </Grid>
             ))}

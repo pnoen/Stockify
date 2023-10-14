@@ -1,5 +1,7 @@
 import axios from "axios";
 import config from "../../../../config.json";
+import { getDownloadURL, ref } from "firebase/storage";
+import storage from "../../../../firebase";
 
 const createDraftOrder = async () => {
   const email = localStorage.getItem("userToken");
@@ -33,4 +35,10 @@ const createOrderItem = async (draftOrderId, product, quantity) => {
   }
 };
 
-export { createDraftOrder, createOrderItem };
+const getImageUrl = async (imageName) => {
+  const imageRef = ref(storage, imageName);
+  return getDownloadURL(imageRef);
+};
+
+
+export { createDraftOrder, createOrderItem, getImageUrl };
