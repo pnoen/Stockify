@@ -56,7 +56,7 @@ export default function Catalogue() {
           justifyContent="space-between"
           marginBottom={3}
         ></Box>
-        <Box style={{ maxHeight: "60vh", overflowY: "auto" }}>
+        <Box sx={{ maxHeight: "60vh", overflowY: "auto", padding:"2rem" }}>
           <Grid container spacing={2}>
             {products.map((product) => (
               <Grid item xs={2} key={product.id}>

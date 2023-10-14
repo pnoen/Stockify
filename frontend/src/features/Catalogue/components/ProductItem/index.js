@@ -23,10 +23,14 @@ export default function ProductItem({ product }) {
     <Box
       sx={{
         backgroundColor: "rgba(255, 255, 255, 0.3)",
-        border: "1px solid green",
-        borderRadius: "4px",
+        border: "1px solid grey",
+        borderRadius: "10px",
         padding: "1rem",
         cursor: "pointer",
+        transition: "transform 0.1s ease", 
+        "&:hover": {
+          transform: "scale(1.02)", 
+        },
       }}
     >
       {imageUrl ? (
@@ -38,7 +42,7 @@ export default function ProductItem({ product }) {
             height: "150px",
             objectFit: "cover",
             marginBottom: "3px",
-            borderRadius: "10px"
+            borderRadius: "10px",
           }}
         />
       ) : (
