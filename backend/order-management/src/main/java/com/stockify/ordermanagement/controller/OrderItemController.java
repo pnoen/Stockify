@@ -86,7 +86,14 @@ public class OrderItemController {
         Optional<OrderItem> orderItemOptional = orderItemRepository.findById(orderItemIdRequest.getOrderItemId());
 
         if (orderItemOptional.isPresent()) {
+            OrderItem orderItemToDelete = orderItemOptional.get();
+            int associatedOrderId = orderItemToDelete.getOrderId();
             orderItemRepository.deleteById(orderItemIdRequest.getOrderItemId());
+            List<OrderItem> remainingOrderItems = orderItemRepository.findAllByOrderId(associatedOrderId);
+            if (remainingOrderItems.isEmpty()) {
+                orderRepository.deleteById(associatedOrderId);
+            }
+
             return ResponseEntity.ok(new ApiResponse(200, "Order Item deleted successfully."));
         } else {
             return ResponseEntity.badRequest().body(new ApiResponse(404, "Order Item does not exist."));

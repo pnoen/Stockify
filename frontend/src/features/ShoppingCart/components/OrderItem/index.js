@@ -19,7 +19,7 @@ function OrderItem({ product, onRemove }) {
   const handleDelete = async (id) => {
     try {
       await deleteOrderItem(id);
-      onRemove(id);
+      onRemove(product.id);
     } catch (error) {
       console.error("Error deleting product:", error);
     }

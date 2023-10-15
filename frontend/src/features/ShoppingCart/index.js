@@ -75,7 +75,7 @@ export default function ShoppingCart() {
           <Typography variant="h6">
             Subtotal ({orderItems.length} items): ${total}
           </Typography>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" sx={{ backgroundColor: "#1DB954" }}>
             Proceed To Checkout
           </Button>
         </Box>
