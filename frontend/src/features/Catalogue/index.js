@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
     fontFamily: "Your Nice Font, sans-serif",
+    paddingLeft: "2rem",
   },
 }));
 export default function Catalogue() {
@@ -46,7 +47,7 @@ export default function Catalogue() {
 
   return (
     <Box display="flex" justifyContent="center" width="100%" pt={"5vh"}>
-      <Box width="80%">
+      <Box width="100%">
         <Typography variant="h3" gutterBottom className={classes.boldText}>
           Catalogue
         </Typography>
@@ -56,7 +57,7 @@ export default function Catalogue() {
           justifyContent="space-between"
           marginBottom={3}
         ></Box>
-        <Box sx={{ maxHeight: "60vh", overflowY: "auto", padding:"2rem" }}>
+        <Box sx={{ maxHeight: "60vh", overflowY: "auto", padding: "2rem" }}>
           <Grid container spacing={2}>
             {products.map((product) => (
               <Grid item xs={2} key={product.id}>

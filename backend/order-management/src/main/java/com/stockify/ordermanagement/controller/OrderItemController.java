@@ -102,8 +102,12 @@ public class OrderItemController {
                     .map(OrderItem::getProductId)
                     .collect(Collectors.toList());
 
-            String productUrl = "http://localhost:8083/api/product/getProducts?ids=" + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+            if (productIds.size() == 0){
+                ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), new ArrayList<>());
+                return ResponseEntity.ok(finalResponse);
+            }
 
+            String productUrl = "http://localhost:8083/api/product/getProducts?ids=" + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
             ProductItemListResponse fetchedProductItemListResponse = new RestTemplate().getForObject(productUrl, ProductItemListResponse.class);
 
             if (fetchedProductItemListResponse != null) {
@@ -111,6 +115,7 @@ public class OrderItemController {
                     for (OrderItem orderItem : orderItems) {
                         if (orderItem.getProductId() == product.getId()) {
                             product.setQuantity(orderItem.getQuantity());  // set ordered quantity
+                            product.setOrderItemId(orderItem.getId());
                             break;
                         }
                     }

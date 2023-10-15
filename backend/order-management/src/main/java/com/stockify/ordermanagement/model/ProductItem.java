@@ -3,6 +3,7 @@ package com.stockify.ordermanagement.model;
 
 public class ProductItem {
     private int id;
+    private int orderItemId;
     private String name;
     private String description;
     private int quantity;
@@ -15,6 +16,14 @@ public class ProductItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(int orderItemId) {
+        this.orderItemId = orderItemId;
     }
 
     public String getName() {

@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Card, CardContent, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { makeStyles } from "@mui/styles";
+import { deleteOrderItem } from "./api";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -15,12 +16,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 function OrderItem({ product, onRemove }) {
   const classes = useStyles();
+  const handleDelete = async (id) => {
+    try {
+      await deleteOrderItem(id);
+      onRemove(id);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
   return (
     <Card className={classes.card}>
       <CardContent>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h6">{product.name}</Typography>
-          <IconButton onClick={() => onRemove(product.id)}>
+          <IconButton onClick={() => handleDelete(product.orderItemId)}>
             <DeleteIcon />
           </IconButton>
         </Box>
