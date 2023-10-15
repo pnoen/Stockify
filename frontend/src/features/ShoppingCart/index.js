@@ -5,6 +5,7 @@ import OrderItem from "./components/OrderItem";
 import { getDraftOrder, getOrderItems, updateDraftOrder } from "./api";
 import CheckoutConfirmationDialog from "./components/CheckoutConfirmationDialog";
 import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
+import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
@@ -25,22 +26,24 @@ export default function ShoppingCart() {
   const [openDialog, setOpenDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
+  const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("");
 
   const handleCheckout = async () => {
     try {
       const draftOrder = await getDraftOrder();
       const draftOrderId = parseInt(draftOrder.message);
 
-      if (draftOrder && !isNaN(draftOrderId)) {
-        const response = await updateDraftOrder(draftOrderId);
+      const response = await updateDraftOrder(draftOrderId);
 
-        if (response.statusCode === 200) {
-          setSnackbarMessage("Order placed successfully.");
-          setSnackbarOpen(true);
-          setOrderItems([]);
-        } else {
-          console.error("Error placing the order.");
-        }
+      if (response.statusCode === 200) {
+        setSnackbarMessage(response.message);
+        setSnackbarOpen(true);
+        setOrderItems([]);
+      } else {
+        console.error("Error placing the order.");
+        setSnackbarErrorMessage(response.message);
+        setSnackbarErrorOpen(true);
       }
     } catch (err) {
       console.error("Error:", err);
@@ -116,17 +119,20 @@ export default function ShoppingCart() {
           >
             Create Order
           </Button>
-
           <CheckoutConfirmationDialog
             open={openDialog}
             onClose={() => setOpenDialog(false)}
             onConfirm={handleCheckout}
           />
-
           <SuccessSnackBar
             open={snackbarOpen}
             message={snackbarMessage}
             onClose={() => setSnackbarOpen(false)}
+          />
+          <FailureSnackbar
+            open={snackbarErrorOpen}
+            message={snackbarErrorMessage}
+            onClose={() => setSnackbarErrorOpen(false)}
           />
         </Box>
       </Box>

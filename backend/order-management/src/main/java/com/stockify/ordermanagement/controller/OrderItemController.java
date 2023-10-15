@@ -47,7 +47,7 @@ public class OrderItemController {
         }
 
         if (quantity == 0 ){
-            return ResponseEntity.accepted().body(new ApiResponse(202, "Sorry, Order Quantity cannot be empty."));
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Sorry, Order Quantity cannot be 0."));
         }
         Order order = orderOptional.get();
 

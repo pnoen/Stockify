@@ -142,7 +142,7 @@ public class OrderController {
         Optional<Order> draftOrderOptional = orderRepository.findByOrderStatusAndCustomerId(OrderStatus.DRAFT, customerId);
         Order draftOrder;
         if (!draftOrderOptional.isPresent()) {
-            return ResponseEntity.ok(new ApiResponse(200, "Shopping Cart is Empty"));
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Shopping Cart is Empty"));
         } else {
             draftOrder = draftOrderOptional.get();
         }
@@ -155,7 +155,7 @@ public class OrderController {
 
         if (!draftOrderOptional.isPresent()) {
             // Order doesn't exist
-            return ResponseEntity.badRequest().body(new ApiResponse(404, "Order does not exist."));
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot place order with empty shopping cart."));
         }
 
         Order draftOrder = draftOrderOptional.get();
