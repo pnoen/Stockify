@@ -10,7 +10,6 @@ import LinkingPage from "../../features/LinkingManagement";
 import InventoryManagementPage from "../../features/InventoryManagement";
 import Catalogue from "../../features/Catalogue";
 import ShoppingCart from "../../features/ShoppingCart";
-import "./styles.css";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
