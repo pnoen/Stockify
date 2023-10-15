@@ -73,9 +73,20 @@ export default function ShoppingCart() {
 
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h6">
-            Subtotal ({orderItems.length} items): ${total}
+            Subtotal ({orderItems.length} items): $
+            {parseFloat(total.toFixed(2))}
           </Typography>
-          <Button variant="contained" sx={{ backgroundColor: "#1DB954" }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#1DB954",
+              "&:hover": {
+                backgroundColor: "#cbf5d6",
+                color: "#1DB954",
+                outlineColor: "#1DB954",
+              },
+            }}
+          >
             Proceed To Checkout
           </Button>
         </Box>

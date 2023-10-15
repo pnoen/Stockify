@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme) => ({
     "&.MuiCard-root": {
       marginBottom: 10,
       backgroundColor: "rgba(255, 255, 255, 0.7)",
-      border: "1px solid green",
       borderRadius: "4px",
     },
   },

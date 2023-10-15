@@ -38,7 +38,7 @@ export default function ProductDetailModal({ open, onClose, product }) {
         product,
         quantity
       );
-
+      onClose();
       console.log(orderItemData);
     } catch (error) {
       console.error("Error adding to cart:", error);
