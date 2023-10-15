@@ -35,7 +35,7 @@ export default function ShoppingCart() {
         const response = await updateDraftOrder(draftOrderId);
 
         if (response.statusCode === 200) {
-          setSnackbarMessage("Order placed successfully!");
+          setSnackbarMessage("Order placed successfully.");
           setSnackbarOpen(true);
           setOrderItems([]);
         } else {

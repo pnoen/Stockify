@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
 import { createDraftOrder, createOrderItem, getImageUrl } from "./api";
+import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
-export default function ProductDetailModal({ open, onClose, product }) {
+export default function ProductDetailModal({
+  open,
+  onClose,
+  product,
+  onAddToCartSuccess,
+  onAddToCartFailure,
+}) {
   const [quantity, setQuantity] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -38,8 +45,15 @@ export default function ProductDetailModal({ open, onClose, product }) {
         product,
         quantity
       );
-      onClose();
-      console.log(orderItemData);
+
+      if (orderItemData.statusCode === 200) {
+        console.log(orderItemData);
+        onAddToCartSuccess(orderItemData.message);
+        onClose();
+      } else {
+        console.error("Error placing the order.");
+        onAddToCartFailure(orderItemData.message);
+      }
     } catch (error) {
       console.error("Error adding to cart:", error);
     }

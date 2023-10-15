@@ -11,6 +11,8 @@ import { makeStyles } from "@mui/styles";
 import ProductItem from "./components/ProductItem";
 import ProductDetailModal from "./components/ProductDetailModal";
 import { getProductsForCustomer } from "./api";
+import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
+import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
 import "./styles.css";
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -25,6 +27,10 @@ export default function Catalogue() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
+  const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -81,10 +87,28 @@ export default function Catalogue() {
                 setSelectedProduct(null);
               }}
               product={selectedProduct}
+              onAddToCartSuccess={(message) => {
+                setSnackbarMessage(message);
+                setSnackbarOpen(true);
+              }}
+              onAddToCartFailure={(message) => {
+                setSnackbarErrorMessage(message);
+                setSnackbarErrorOpen(true);
+              }}
             />
           )}
         </Box>
       </Box>
+      <SuccessSnackBar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
+      />
+      <FailureSnackbar
+        open={snackbarErrorOpen}
+        message={snackbarErrorMessage}
+        onClose={() => setSnackbarErrorOpen(false)}
+      />
     </Box>
   );
 }

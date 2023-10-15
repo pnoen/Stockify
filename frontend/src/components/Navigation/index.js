@@ -18,10 +18,8 @@ const LayoutWrapper = ({ isBusiness, children }) => (
       marginLeft: isBusiness ? "15%" : "0%",
       width: isBusiness ? "85%" : "100%",
       backgroundColor: "#FAFAFA",
-      minHeight: isBusiness ? "100vh" : "92vh",
-      maxHeight: isBusiness ? "100vh" : "92vh",
-      minWidth: isBusiness ? "85vw" : "100vw",
-      maxWidth: isBusiness ? "85vw" : "100vw",
+      minHeight: isBusiness ? "100vh" : "88vh",
+      maxHeight: isBusiness ? "100vh" : "88vh",
       overflowY: "auto",
     }}
   >

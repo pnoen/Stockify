@@ -43,7 +43,11 @@ public class OrderItemController {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
 
         if (!orderOptional.isPresent()) {
-            return ResponseEntity.badRequest().body(new ApiResponse(400, "Order does not exist."));
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Order does not exist."));
+        }
+
+        if (quantity == 0 ){
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Sorry, Order Quantity cannot be empty."));
         }
         Order order = orderOptional.get();
 
@@ -52,7 +56,7 @@ public class OrderItemController {
             order.setBusinessCode(productBusinessCode);
             orderRepository.save(order);
         } else if (order.getBusinessCode() != productBusinessCode) {
-            return ResponseEntity.badRequest().body(new ApiResponse(400, "Sorry, Orders cannot contain items from different businesses."));
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Sorry, Orders cannot contain items from different businesses."));
         }
 
         // Check if OrderItem with same orderId and productId exists
@@ -78,7 +82,7 @@ public class OrderItemController {
             orderItemRepository.save(newOrderItem);
         }
 
-        return ResponseEntity.ok(new ApiResponse(200, "Order Item processed successfully."));
+        return ResponseEntity.ok(new ApiResponse(200, "Order item processed successfully."));
     }
 
     @DeleteMapping("/delete")
