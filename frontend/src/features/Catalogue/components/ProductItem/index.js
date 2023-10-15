@@ -22,11 +22,11 @@ export default function ProductItem({ product }) {
   return (
     <Box
       sx={{
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
-        border: "1px solid grey",
+        backgroundColor: "rgba(29, 185, 84, 0.15)",
         borderRadius: "10px",
         padding: "1rem",
         cursor: "pointer",
+        boxShadow: "0 2px 6px",
         transition: "transform 0.2s ease",
         "&:hover": {
           transform: "scale(1.05)",
