@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import logo from "../../assets/logo.png"; // Import your logo here
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function SignupPage() {
     isBusiness: false,
     businessName: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,12 +42,15 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const result = await registerUser(formData);
+      setIsLoading(false);
       if (result === 200) {
         navigate("/login", { replace: true });
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
+      setIsLoading(false);
     }
   };
 
@@ -180,21 +185,27 @@ export default function SignupPage() {
                 onChange={handleInputChange}
               />
             )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: green[500],
-                "&:hover": {
-                  backgroundColor: green[700],
-                },
-              }}
-            >
-              Sign Up
-            </Button>
+            <LoadingSpinner
+              isLoading={isLoading}
+              props={
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    backgroundColor: green[500],
+                    "&:hover": {
+                      backgroundColor: green[700],
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              }
+            />
+
             <Box sx={{ mt: 2, alignSelf: "flex-start" }}>
               <Link
                 component={RouterLink}

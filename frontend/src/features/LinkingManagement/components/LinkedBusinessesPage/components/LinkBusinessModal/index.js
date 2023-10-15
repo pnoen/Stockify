@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { getBusinessCode, createBusinessLink } from "./api";
 import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../../../components/LoadingSpinner";
 
 export default function LinkBusinessModal({ open, onClose }) {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -20,10 +21,12 @@ export default function LinkBusinessModal({ open, onClose }) {
     businessCode: "",
     email: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const updatedLink = link.businessCode
         ? link
         : { ...link, businessCode: await getBusinessCode() };
@@ -33,9 +36,11 @@ export default function LinkBusinessModal({ open, onClose }) {
         setSnackBarMessage("Created link successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -75,9 +80,14 @@ export default function LinkBusinessModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>
