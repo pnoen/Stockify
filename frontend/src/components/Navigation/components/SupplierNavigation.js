@@ -116,7 +116,7 @@ export default function SupplierNavigation() {
           </ListItemButton>
           <Collapse in={openDropdowns.profile} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ paddingLeft: 4 }}>
+              <ListItemButton sx={{ paddingLeft: 4 }} to="/settings">
                 <ListItemText primary="Settings" />
               </ListItemButton>
               <ListItemButton sx={{ paddingLeft: 4 }} onClick={handleLogout}>

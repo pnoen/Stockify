@@ -80,8 +80,9 @@ export default function CustomerNavigation() {
           <AccountCircleIcon />
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>Settings</MenuItem>
+          <MenuItem onClick={handleClose} component={Link} to="/settings">
+            Settings
+          </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
         <Menu
