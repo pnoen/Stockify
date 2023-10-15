@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import OrderItem from "./components/OrderItem";
-import { getDraftOrder, getOrderItems } from "./api";
+import { getDraftOrder, getOrderItems, updateDraftOrder } from "./api";
+import CheckoutConfirmationDialog from "./components/CheckoutConfirmationDialog";
+import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
@@ -17,11 +19,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ShoppingCart() {
   const classes = useStyles();
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [orderItems, setOrderItems] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleCheckout = async () => {
+    try {
+      const draftOrder = await getDraftOrder();
+      const draftOrderId = parseInt(draftOrder.message);
+
+      if (draftOrder && !isNaN(draftOrderId)) {
+        const response = await updateDraftOrder(draftOrderId);
+
+        if (response.statusCode === 200) {
+          setSnackbarMessage("Order placed successfully!");
+          setSnackbarOpen(true);
+          setOrderItems([]);
+        } else {
+          console.error("Error placing the order.");
+        }
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
+
+    setOpenDialog(false);
+  };
 
   useEffect(() => {
     const fetchOrderData = async () => {
@@ -86,9 +112,22 @@ export default function ShoppingCart() {
                 outlineColor: "#1DB954",
               },
             }}
+            onClick={() => setOpenDialog(true)}
           >
-            Proceed To Checkout
+            Create Order
           </Button>
+
+          <CheckoutConfirmationDialog
+            open={openDialog}
+            onClose={() => setOpenDialog(false)}
+            onConfirm={handleCheckout}
+          />
+
+          <SuccessSnackBar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            onClose={() => setSnackbarOpen(false)}
+          />
         </Box>
       </Box>
     </Box>

@@ -10,14 +10,19 @@ import LinkingPage from "../../features/LinkingManagement";
 import InventoryManagementPage from "../../features/InventoryManagement";
 import Catalogue from "../../features/Catalogue";
 import ShoppingCart from "../../features/ShoppingCart";
+import "./styles.css";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
     sx={{
-      marginLeft: isBusiness ? "13%" : "0%",
-      width: isBusiness ? "87%" : "100%",
+      marginLeft: isBusiness ? "15%" : "0%",
+      width: isBusiness ? "85%" : "100%",
       backgroundColor: "#FAFAFA",
-      minHeight: "100vh",
+      minHeight: isBusiness ? "100vh" : "92vh",
+      maxHeight: isBusiness ? "100vh" : "92vh",
+      minWidth: isBusiness ? "85vw" : "100vw",
+      maxWidth: isBusiness ? "85vw" : "100vw",
+      overflowY: "auto",
     }}
   >
     {children}

@@ -3,13 +3,13 @@ package com.stockify.ordermanagement.dto;
 import java.util.List;
 
 public class OrderIdRequest {
-    private int id;
+    private int orderId;
 
     public int getOrderId() {
-        return id;
+        return orderId;
     }
 
-    public void setOrderId(int id) {
-        this.id = id;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }

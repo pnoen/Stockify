@@ -26,4 +26,19 @@ const getOrderItems = async (draftOrderId) => {
   }
 };
 
-export { getDraftOrder, getOrderItems };
+const updateDraftOrder = async (orderId) => {
+  try {
+    const response = await axios.post(
+      `${config.orderManagementServiceUrl}/api/order/updateDraftOrder`,
+      {
+        orderId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete order item:", error);
+    throw error;
+  }
+};
+
+export { getDraftOrder, getOrderItems, updateDraftOrder };

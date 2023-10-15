@@ -149,6 +149,24 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponse(200, String.valueOf(draftOrder.getId())));
     }
 
+    @PostMapping("/updateDraftOrder")
+    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody OrderIdRequest orderIdRequest) {
+        Optional<Order> draftOrderOptional = orderRepository.findById(orderIdRequest.getOrderId());
+
+        if (!draftOrderOptional.isPresent()) {
+            // Order doesn't exist
+            return ResponseEntity.badRequest().body(new ApiResponse(404, "Order does not exist."));
+        }
+
+        Order draftOrder = draftOrderOptional.get();
+        draftOrder.setOrderStatus(OrderStatus.PURCHASED);
+        orderRepository.save(draftOrder);
+
+        // Return the ID of the updated order
+        return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
+    }
+
+
     public int getUserIdByEmail(String email) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;

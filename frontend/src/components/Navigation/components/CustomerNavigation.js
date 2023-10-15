@@ -39,8 +39,8 @@ export default function CustomerNavigation() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); 
-    navigate("/login", { replace: true }); 
+    localStorage.removeItem("userToken");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -49,7 +49,7 @@ export default function CustomerNavigation() {
       color="default"
       sx={{ borderBottom: "2px solid #1DB954" }}
     >
-      <Toolbar>
+      <Toolbar sx={{height:"5vh"}}>
         <img
           src={logo}
           alt="Logo"
