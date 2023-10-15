@@ -17,7 +17,7 @@ import { makeStyles } from "@mui/styles";
 import { getLinkedClients } from "./api";
 import LinkClientModal from "./components/LinkClientModal";
 import UnlinkClientModal from "./components/UnlinkClientModal";
-
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -31,14 +31,18 @@ export default function LinkedClientsPage() {
   const [clients, setClients] = useState([]);
   const [isLinkClientModalOpen, setIsLinkClientModalOpen] = useState(false);
   const [isUnlinkClientModalOpen, setIsUnlinkClientModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const clientsList = await getLinkedClients();
         setClients(clientsList.users);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching linked clients:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -106,6 +110,7 @@ export default function LinkedClientsPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LoadingSpinner isLoading={isLoading} />
         <LinkClientModal
           open={isLinkClientModalOpen}
           onClose={() => setIsLinkClientModalOpen(false)}
