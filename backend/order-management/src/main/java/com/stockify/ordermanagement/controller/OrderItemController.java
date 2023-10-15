@@ -51,7 +51,6 @@ public class OrderItemController {
         }
         Order order = orderOptional.get();
 
-        // Check businessCode logic
         if (order.getBusinessCode() == 0) {
             order.setBusinessCode(productBusinessCode);
             orderRepository.save(order);
@@ -59,14 +58,13 @@ public class OrderItemController {
             return ResponseEntity.accepted().body(new ApiResponse(202, "Sorry, Orders cannot contain items from different businesses."));
         }
 
-        // Check if OrderItem with same orderId and productId exists
         Optional<OrderItem> existingOrderItemOpt = orderItemRepository.findByOrderIdAndProductId(orderId, productId);
 
         if (existingOrderItemOpt.isPresent()) {
             OrderItem existingOrderItem = existingOrderItemOpt.get();
-            existingOrderItem.setQuantity(existingOrderItem.getQuantity() + quantity); // Increment the quantity
+            existingOrderItem.setQuantity(existingOrderItem.getQuantity() + quantity);
             existingOrderItem.setLastUpdated(lastUpdated);
-            existingOrderItem.setPrice(price); // Assuming you might want to update price as well. Remove if not needed.
+            existingOrderItem.setPrice(price);
 
             orderItemService.updateOrderTotalCost(existingOrderItem);
             orderItemRepository.save(existingOrderItem);
@@ -125,7 +123,7 @@ public class OrderItemController {
                 for (ProductItem product : fetchedProductItemListResponse.getProducts()) {
                     for (OrderItem orderItem : orderItems) {
                         if (orderItem.getProductId() == product.getId()) {
-                            product.setQuantity(orderItem.getQuantity());  // set ordered quantity
+                            product.setQuantity(orderItem.getQuantity()); 
                             product.setOrderItemId(orderItem.getId());
                             break;
                         }
