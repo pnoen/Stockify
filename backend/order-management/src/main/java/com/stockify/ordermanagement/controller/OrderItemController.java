@@ -123,7 +123,7 @@ public class OrderItemController {
                 for (ProductItem product : fetchedProductItemListResponse.getProducts()) {
                     for (OrderItem orderItem : orderItems) {
                         if (orderItem.getProductId() == product.getId()) {
-                            product.setQuantity(orderItem.getQuantity()); 
+                            product.setQuantity(orderItem.getQuantity());
                             product.setOrderItemId(orderItem.getId());
                             break;
                         }
