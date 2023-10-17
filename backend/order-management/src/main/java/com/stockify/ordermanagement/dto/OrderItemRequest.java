@@ -5,9 +5,8 @@ import java.time.LocalDate;
 public class OrderItemRequest {
     private int orderId;
     private int productId;
-    private int productVarietyId;
-    private int quantitySuffixId;
-    private float quantity;
+    private int businessCode;
+    private int quantity;
     private LocalDate lastUpdated;
     private float price;
 
@@ -27,27 +26,19 @@ public class OrderItemRequest {
         this.productId = productId;
     }
 
-    public int getProductVarietyId() {
-        return productVarietyId;
+    public int getBusinessCode() {
+        return businessCode;
     }
 
-    public void setProductVarietyId(int productVarietyId) {
-        this.productVarietyId = productVarietyId;
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 
-    public int getQuantitySuffixId() {
-        return quantitySuffixId;
-    }
-
-    public void setQuantitySuffixId(int quantitySuffixId) {
-        this.quantitySuffixId = quantitySuffixId;
-    }
-
-    public float getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

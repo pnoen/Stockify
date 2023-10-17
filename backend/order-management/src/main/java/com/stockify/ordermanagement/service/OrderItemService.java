@@ -12,12 +12,12 @@ import java.util.List;
 @Service
 public class OrderItemService {
 
-    private final WebClient webClient = WebClient.create("http://localhost:8081");
+    private final WebClient webClient = WebClient.create("http://localhost:8084");
     public void updateOrderTotalCost(OrderItem orderItem) {
         OrderCostUpdateRequest request = new OrderCostUpdateRequest(orderItem.getOrderId(), orderItem.getPrice() * orderItem.getQuantity());
 
         ResponseEntity<ApiResponse> responseEntity = webClient.post()
-                .uri("/order/updateTotalCost")
+                .uri("/api/order/updateTotalCost")
                 .bodyValue(request)
                 .retrieve()
                 .toEntity(ApiResponse.class)

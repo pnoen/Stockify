@@ -11,14 +11,21 @@ public class OrderItem {
     private int id;
     private int orderId;
     private int productId;
-    private int productVarietyId;
-    private int quantitySuffixId;
-    private float quantity;
+    private int businessCode;
+    private int quantity;
     private LocalDate lastUpdated;
     private double price;
 
     public int getId() {
         return id;
+    }
+
+    public int getBusinessCode() {
+        return businessCode;
+    }
+
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 
     public int getOrderId() {
@@ -37,27 +44,11 @@ public class OrderItem {
         this.productId = productId;
     }
 
-    public int getProductVarietyId() {
-        return productVarietyId;
-    }
-
-    public void setProductVarietyId(int productVarietyId) {
-        this.productVarietyId = productVarietyId;
-    }
-
-    public int getQuantitySuffixId() {
-        return quantitySuffixId;
-    }
-
-    public void setQuantitySuffixId(int quantitySuffixId) {
-        this.quantitySuffixId = quantitySuffixId;
-    }
-
-    public float getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

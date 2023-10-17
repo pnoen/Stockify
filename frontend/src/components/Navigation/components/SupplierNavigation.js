@@ -17,7 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import InventoryIcon from '@mui/icons-material/Inventory';
+import InventoryIcon from "@mui/icons-material/Inventory";
 import logo from "../../../assets/logo.png"; // Import your logo here
 import { Link, useNavigate } from "react-router-dom";
 
@@ -45,10 +45,10 @@ export default function SupplierNavigation() {
       <Drawer
         variant="permanent"
         sx={{
-          width: 250,
+          width: "15vw",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: 250,
+            width: "15vw",
             boxSizing: "border-box",
           },
         }}

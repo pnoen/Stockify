@@ -11,11 +11,14 @@ import { makeStyles } from "@mui/styles";
 import ProductItem from "./components/ProductItem";
 import ProductDetailModal from "./components/ProductDetailModal";
 import { getProductsForCustomer } from "./api";
+import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
+import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
 import "./styles.css";
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
     fontFamily: "Your Nice Font, sans-serif",
+    paddingLeft: "2rem",
   },
 }));
 export default function Catalogue() {
@@ -24,6 +27,10 @@ export default function Catalogue() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
+  const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -46,7 +53,7 @@ export default function Catalogue() {
 
   return (
     <Box display="flex" justifyContent="center" width="100%" pt={"5vh"}>
-      <Box width="80%">
+      <Box width="100%">
         <Typography variant="h3" gutterBottom className={classes.boldText}>
           Catalogue
         </Typography>
@@ -56,7 +63,7 @@ export default function Catalogue() {
           justifyContent="space-between"
           marginBottom={3}
         ></Box>
-        <Box style={{ maxHeight: "60vh", overflowY: "auto" }}>
+        <Box sx={{ maxHeight: "60vh", overflowY: "auto", padding: "2rem" }}>
           <Grid container spacing={2}>
             {products.map((product) => (
               <Grid item xs={2} key={product.id}>
@@ -66,11 +73,7 @@ export default function Catalogue() {
                     setIsModalOpen(true);
                   }}
                 >
-                  <ProductItem
-                    supplierName={product.businessCode}
-                    itemName={product.name}
-                    shortDescription={product.description}
-                  />
+                  <ProductItem product={product} />
                 </div>
               </Grid>
             ))}
@@ -84,10 +87,28 @@ export default function Catalogue() {
                 setSelectedProduct(null);
               }}
               product={selectedProduct}
+              onAddToCartSuccess={(message) => {
+                setSnackbarMessage(message);
+                setSnackbarOpen(true);
+              }}
+              onAddToCartFailure={(message) => {
+                setSnackbarErrorMessage(message);
+                setSnackbarErrorOpen(true);
+              }}
             />
           )}
         </Box>
       </Box>
+      <SuccessSnackBar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
+      />
+      <FailureSnackbar
+        open={snackbarErrorOpen}
+        message={snackbarErrorMessage}
+        onClose={() => setSnackbarErrorOpen(false)}
+      />
     </Box>
   );
 }

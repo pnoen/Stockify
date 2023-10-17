@@ -1,7 +1,10 @@
 package com.stockify.ordermanagement.model;
 
+import com.stockify.ordermanagement.constants.OrderStatus;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+
+
 
 @Entity
 @Table(name = "orders")
@@ -12,11 +15,22 @@ public class Order {
     private int id;
     private int organisation;
     private int customerId;
-    private int supplierId;
+    private int businessCode;
     private int invoiceId;
     private LocalDate orderDate;
     private LocalDate completionDate;
     private double totalCost = 0.0;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private OrderStatus orderStatus;
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
     public int getId() {
         return id;
@@ -38,12 +52,12 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public int getSupplierId() {
-        return supplierId;
+    public int getBusinessCode() {
+        return businessCode;
     }
 
-    public void setSupplierId(int supplierId) {
-        this.supplierId = supplierId;
+    public void setBusinessCode(int businessCode) {
+        this.businessCode = businessCode;
     }
 
     public int getInvoiceId() {

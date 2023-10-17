@@ -7,11 +7,11 @@ const StyledAlert = styled(Alert)(({ theme }) => ({
   ".MuiAlert-icon": {
     color: "white",
   },
-  backgroundColor: "#1DB954",
+  backgroundColor: "#fa3e3e",
   color: "white",
 }));
 
-export default function SuccessSnackBar({ open, message, onClose }) {
+export default function FailureSnackbar({ open, message, onClose }) {
   return (
     <Snackbar
       open={open}
@@ -19,7 +19,7 @@ export default function SuccessSnackBar({ open, message, onClose }) {
       onClose={onClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
-      <StyledAlert onClose={onClose} severity="success" sx={{ width: "100%" }}>
+      <StyledAlert onClose={onClose} severity="error">
         {message}
       </StyledAlert>
     </Snackbar>

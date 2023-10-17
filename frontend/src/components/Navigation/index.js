@@ -15,10 +15,12 @@ import SettingsPage from "../../features/SettingsPage";
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
     sx={{
-      marginLeft: isBusiness ? "13%" : "0%",
-      width: isBusiness ? "87%" : "100%",
-      backgroundColor: "#e6ffe3",
-      minHeight: "100vh",
+      marginLeft: isBusiness ? "15%" : "0%",
+      width: isBusiness ? "85%" : "100%",
+      backgroundColor: "#FAFAFA",
+      minHeight: isBusiness ? "100vh" : "88vh",
+      maxHeight: isBusiness ? "100vh" : "88vh",
+      overflowY: "auto",
     }}
   >
     {children}
