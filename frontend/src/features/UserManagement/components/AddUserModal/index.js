@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { getRoles, addUser, getBusinessCode } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function AddUserModal({ open, onClose }) {
   const [roles, setRoles] = useState([]);
@@ -24,15 +25,19 @@ export default function AddUserModal({ open, onClose }) {
   });
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
+        setIsLoading(true);
         const rolesList = await getRoles();
 
         setRoles(rolesList);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching roles:", error);
+        setIsLoading(false);
       }
     };
     fetchRoles();
@@ -41,6 +46,7 @@ export default function AddUserModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const updatedUser = user.businessCode
         ? user
         : { ...user, businessCode: await getBusinessCode() };
@@ -50,9 +56,11 @@ export default function AddUserModal({ open, onClose }) {
         setSnackBarMessage("User added successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -120,9 +128,14 @@ export default function AddUserModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>

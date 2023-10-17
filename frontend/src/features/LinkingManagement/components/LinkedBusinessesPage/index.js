@@ -17,6 +17,7 @@ import { makeStyles } from "@mui/styles";
 import { getLinkedBusinesses } from "./api";
 import LinkBusinessModal from "./components/LinkBusinessModal";
 import UnlinkBusinessModal from "./components/UnlinkBusinessModal";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -31,14 +32,18 @@ export default function LinkedBusinessesPage() {
   const [isLinkBusinessModalOpen, setIsLinkBusinessModalOpen] = useState(false);
   const [isUninkBusinessModalOpen, setIsUnlinkBusinessModalOpen] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const businessesList = await getLinkedBusinesses();
         setBusinesses(businessesList.businesses);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching linked users:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -110,6 +115,7 @@ export default function LinkedBusinessesPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LoadingSpinner isLoading={isLoading} />
         <LinkBusinessModal
           open={isLinkBusinessModalOpen}
           onClose={() => setIsLinkBusinessModalOpen(false)}

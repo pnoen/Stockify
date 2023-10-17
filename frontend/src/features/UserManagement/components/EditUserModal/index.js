@@ -13,6 +13,7 @@ import {
 import { getUserDetails, updateUser, deleteUser } from "./api";
 import { getRoles } from "../AddUserModal/api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function EditUserModal({ open, onClose, userId }) {
   const [roles, setRoles] = useState([]);
@@ -20,18 +21,22 @@ export default function EditUserModal({ open, onClose, userId }) {
   const [firstName, setFirstName] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const userDetails = await getUserDetails(userId);
         const rolesList = await getRoles();
 
         setFirstName(userDetails.firstName);
         // setUser({ firstName: userDetails.firstName, role: userDetails.role });
         setRoles(rolesList);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -41,27 +46,33 @@ export default function EditUserModal({ open, onClose, userId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const statusCode = await updateUser(userId, user);
       if (statusCode >= 200 && statusCode < 300) {
         setSnackBarMessage("Role updated successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       const statusCode = await deleteUser(userId);
       if (statusCode >= 200 && statusCode < 300) {
         setSnackBarMessage("User deleted successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while deleting the user:", error);
+      setIsLoading(false);
     }
   };
 
@@ -107,23 +118,30 @@ export default function EditUserModal({ open, onClose, userId }) {
               </Select>
             </FormControl>
 
-            <Box display="flex" justifyContent="space-between" mt={2}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                style={{ marginRight: "8px" }}
-              >
-                Update
-              </Button>
-              <Button
-                type="button"
-                variant="contained"
-                sx={{ backgroundColor: "#e66e6e" }}
-                onClick={handleDelete}
-              >
-                Delete User
-              </Button>
+            <Box display="flex" justifyContent="center" mt={2}>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      style={{ marginRight: "8px" }}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      sx={{ backgroundColor: "#e66e6e" }}
+                      onClick={handleDelete}
+                    >
+                      Delete User
+                    </Button>
+                  </>
+                }
+              />
             </Box>
           </form>
         </Box>

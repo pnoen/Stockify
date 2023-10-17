@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import logo from "../../assets/logo.png"; // Import your logo here
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,12 +33,15 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const result = await loginUser(formData.email, formData.password);
+      setIsLoading(false);
       if (result === 200) {
         navigate("/orders", { replace: true });
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
+      setIsLoading(false);
     }
   };
 
@@ -95,21 +100,27 @@ export default function LoginPage() {
               value={formData.password}
               onChange={handleInputChange}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: green[500],
-                "&:hover": {
-                  backgroundColor: green[700],
-                },
-              }}
-            >
-              Log In
-            </Button>
+            <LoadingSpinner
+              isLoading={isLoading}
+              props={
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    backgroundColor: green[500],
+                    "&:hover": {
+                      backgroundColor: green[700],
+                    },
+                  }}
+                >
+                  Log In
+                </Button>
+              }
+            />
+
             <Box sx={{ mt: 2, alignSelf: "flex-start" }}>
               <Link
                 component={RouterLink}

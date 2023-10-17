@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import { getBusinessCode, removeClientLink } from "./api";
 import { getLinkedClients } from "../../api";
-import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar"
+import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../../../components/LoadingSpinner";
 
 export default function UnlinkClientModal({ open, onClose }) {
   const [clients, setClients] = useState([]);
@@ -22,14 +23,18 @@ export default function UnlinkClientModal({ open, onClose }) {
   });
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const clientsList = await getLinkedClients();
         setClients(clientsList.users);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching clients:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -38,6 +43,7 @@ export default function UnlinkClientModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const updatedLink = link.businessCode
         ? link
         : { ...link, businessCode: await getBusinessCode() };
@@ -47,9 +53,11 @@ export default function UnlinkClientModal({ open, onClose }) {
         setSnackBarMessage("Removed link successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -92,9 +100,14 @@ export default function UnlinkClientModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>

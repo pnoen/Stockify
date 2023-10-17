@@ -17,6 +17,7 @@ import { getUsers } from "./api";
 import AddUserModal from "./components/AddUserModal";
 import EditUserModal from "./components/EditUserModal";
 import { makeStyles } from "@mui/styles";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -31,14 +32,18 @@ export default function UserManagementPage() {
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const usersList = await getUsers();
         setUsers(usersList);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching users:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -108,6 +113,7 @@ export default function UserManagementPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LoadingSpinner isLoading={isLoading} />
         <AddUserModal
           open={isAddUserModalOpen}
           onClose={() => setIsAddUserModalOpen(false)}

@@ -13,6 +13,7 @@ import {
 import { getBusinessCode, addProduct, uploadFile } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function AddProductModal({ open, onClose }) {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function AddProductModal({ open, onClose }) {
     imageUrl: "",
   });
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +41,7 @@ export default function AddProductModal({ open, onClose }) {
       }
 
       if (file) {
+        setIsLoading(true);
         product.imageUrl = await uploadFile(file);
       } else {
         throw new Error("Missing product image");
@@ -53,9 +56,11 @@ export default function AddProductModal({ open, onClose }) {
         setSnackBarMessage("Added product successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -147,9 +152,14 @@ export default function AddProductModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>

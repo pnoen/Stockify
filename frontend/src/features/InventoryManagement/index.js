@@ -18,6 +18,7 @@ import { getBusinessCode, getInventory } from "./api";
 import AddProductModal from "./components/AddProductModal";
 import RemoveProductModal from "./components/RemoveProductModal";
 import EditProductModal from "./components/EditProductModal";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -34,15 +35,19 @@ export default function InventoryManagementPage() {
     useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const businessCode = await getBusinessCode();
         const inventory = await getInventory(businessCode);
+        setIsLoading(false);
         setProducts(inventory.product);
       } catch (error) {
         console.error("An error occurred while fetching inventory:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -108,7 +113,6 @@ export default function InventoryManagementPage() {
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     setSelectedProductId(product.id);
-                    console.log(product.id);
                     setIsEditProductModalOpen(true);
                   }}
                 >
@@ -121,6 +125,7 @@ export default function InventoryManagementPage() {
             </TableBody>
           </Table>
         </Paper>
+        <LoadingSpinner isLoading={isLoading} />
         <AddProductModal
           open={isAddProductModalOpen}
           onClose={() => setIsAddProductModalOpen(false)}

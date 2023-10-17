@@ -13,6 +13,7 @@ import {
 import { getBusinessCode, removeBusinessLink, removeUserLink } from "./api";
 import { getLinkedBusinesses } from "../../api";
 import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../../../components/LoadingSpinner";
 
 export default function UnlinkBusinessModal({ open, onClose }) {
   const [businesses, setBusinesses] = useState([]);
@@ -22,14 +23,18 @@ export default function UnlinkBusinessModal({ open, onClose }) {
   });
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const businessesList = await getLinkedBusinesses();
         setBusinesses(businessesList.businesses);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching businesses:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -38,6 +43,7 @@ export default function UnlinkBusinessModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const updatedLink = link.businessCode
         ? link
         : { ...link, businessCode: await getBusinessCode() };
@@ -47,9 +53,11 @@ export default function UnlinkBusinessModal({ open, onClose }) {
         setSnackBarMessage("Removed link successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -97,9 +105,14 @@ export default function UnlinkBusinessModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>

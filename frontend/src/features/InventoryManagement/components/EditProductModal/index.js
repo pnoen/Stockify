@@ -13,6 +13,7 @@ import {
 import { editProduct, uploadFile } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function EditProductModal({ open, onClose, productId }) {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function EditProductModal({ open, onClose, productId }) {
     imageUrl: "",
   });
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +40,7 @@ export default function EditProductModal({ open, onClose, productId }) {
       }
 
       if (file) {
+        setIsLoading(true);
         product.imageUrl = await uploadFile(file);
       }
 
@@ -46,9 +49,11 @@ export default function EditProductModal({ open, onClose, productId }) {
         setSnackBarMessage("Edited product successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -136,9 +141,14 @@ export default function EditProductModal({ open, onClose, productId }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Update
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Update
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>
@@ -150,5 +160,4 @@ export default function EditProductModal({ open, onClose, productId }) {
       />
     </>
   );
-  
 }

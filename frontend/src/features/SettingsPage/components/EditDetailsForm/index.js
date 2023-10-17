@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { checkIfBusiness, getUserId, editUser } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function EditDetailsForm() {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -27,15 +28,19 @@ export default function EditDetailsForm() {
     business: "",
   });
   const [isBusiness, setIsBusiness] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const businessCheck = await checkIfBusiness();
         setIsBusiness(businessCheck === 200);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error checking business status:", error);
         setIsBusiness(false);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -46,6 +51,7 @@ export default function EditDetailsForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const updatedUser = user.id ? user : { ...user, id: await getUserId() };
 
       const statusCode = await editUser(updatedUser);
@@ -53,8 +59,10 @@ export default function EditDetailsForm() {
         setSnackBarMessage("Edited user successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -94,13 +102,18 @@ export default function EditDetailsForm() {
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 1 }}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                style={{ backgroundColor: "#1DB954", color: "white" }}
-              >
-                Update
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    style={{ backgroundColor: "#1DB954", color: "white" }}
+                  >
+                    Update
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </div>

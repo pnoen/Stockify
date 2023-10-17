@@ -13,6 +13,7 @@ import {
 import { getBusinessCode, removeProduct } from "./api";
 import { getInventory } from "../../api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function RemoveProductModal({ open, onClose }) {
   const [products, setProducts] = useState([]);
@@ -22,15 +23,19 @@ export default function RemoveProductModal({ open, onClose }) {
 
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const businessCode = await getBusinessCode();
         const inventory = await getInventory(businessCode);
         setProducts(inventory.product);
+        setIsLoading(false);
       } catch (error) {
         console.error("An error occurred while fetching inventory:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -39,14 +44,17 @@ export default function RemoveProductModal({ open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const statusCode = await removeProduct(product);
       if (statusCode >= 200 && statusCode < 300) {
         setSnackBarMessage("Removed product successfully!");
         setSnackBarOpen(true);
       }
+      setIsLoading(false);
       onClose();
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
+      setIsLoading(false);
     }
   };
 
@@ -92,9 +100,14 @@ export default function RemoveProductModal({ open, onClose }) {
             <Box
               sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
             >
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
+              <LoadingSpinner
+                isLoading={isLoading}
+                props={
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                }
+              />
             </Box>
           </form>
         </Box>
