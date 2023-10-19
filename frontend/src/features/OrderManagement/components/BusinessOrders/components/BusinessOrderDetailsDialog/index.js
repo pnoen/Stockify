@@ -22,6 +22,7 @@ import {
   fetchOrderDetailsById,
   fetchOrderItemsByOrderId,
   updateOrderStatus,
+  fetchCustomerDetails,
 } from "./api";
 import CancelOrderConfirmationDialog from "../CancelOrderConfirmationDialog";
 import "./styles.css";
@@ -37,6 +38,7 @@ export default function BusinessOrderDetailsDialog({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [orderStatus, setOrderStatus] = useState("");
+  const [customerDetails, setCustomerDetails] = useState(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -46,6 +48,10 @@ export default function BusinessOrderDetailsDialog({
           const detailsResponse = await fetchOrderDetailsById(orderId);
           setOrderDetails(detailsResponse.order);
           setOrderStatus(detailsResponse.order?.orderStatus);
+          const customerResponse = await fetchCustomerDetails(
+            detailsResponse.order?.customerId
+          );
+          setCustomerDetails(customerResponse);
 
           const itemsResponse = await fetchOrderItemsByOrderId(orderId);
           setOrderItems(itemsResponse.products);
@@ -116,7 +122,8 @@ export default function BusinessOrderDetailsDialog({
       </DialogTitle>
       <DialogContent>
         <Typography sx={{ fontWeight: "bold" }} variant="h6">
-          Business Name: {orderDetails?.businessName}
+          Customer Name: {customerDetails?.firstName}{" "}
+          {customerDetails?.lastName}
         </Typography>
         <Box display="flex" alignItems="center" sx={{ paddingTop: "0.5rem" }}>
           <Typography

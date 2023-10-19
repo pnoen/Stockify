@@ -40,3 +40,15 @@ export const updateOrderStatus = async (orderId, orderStatus) => {
     console.error("Error fetching open orders:", error);
   }
 };
+
+export const fetchCustomerDetails = async (customerId) => {
+  try {
+    const response = await axios.get(
+      `${config.userManagementServiceUrl}/account/getUserDetails?userId=${customerId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order items by order ID:", error);
+    throw error;
+  }
+};
