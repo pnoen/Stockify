@@ -11,33 +11,24 @@ import {
   TableRow,
   TableFooter,
   TablePagination,
-  FormControl,
-  Select,
-  Box,
-  MenuItem,
-  DialogActions,
-  Button,
 } from "@mui/material";
 import {
+  fetchCustomerDetails,
   fetchOrderDetailsById,
   fetchOrderItemsByOrderId,
-  updateOrderStatus,
 } from "./api";
-import CancelOrderConfirmationDialog from "../CancelOrderConfirmationDialog";
 import "./styles.css";
 
-export default function BusinessOrderDetailsDialog({
+export default function BusinessCompleteOrderDetailsDialog({
   orderId,
   open,
   onClose,
-  onSuccess,
 }) {
   const [orderDetails, setOrderDetails] = useState(null);
+  const [customerDetails, setCustomerDetails] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
-  const [orderStatus, setOrderStatus] = useState("");
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -45,7 +36,10 @@ export default function BusinessOrderDetailsDialog({
         try {
           const detailsResponse = await fetchOrderDetailsById(orderId);
           setOrderDetails(detailsResponse.order);
-          setOrderStatus(detailsResponse.order?.orderStatus);
+          const customerResponse = await fetchCustomerDetails(
+            detailsResponse.order?.customerId
+          );
+          setCustomerDetails(customerResponse);
 
           const itemsResponse = await fetchOrderItemsByOrderId(orderId);
           setOrderItems(itemsResponse.products);
@@ -64,35 +58,6 @@ export default function BusinessOrderDetailsDialog({
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleStatusChange = async (event) => {
-    const newStatus = event.target.value;
-    setOrderStatus(newStatus);
-    try {
-      const updateResponse = await updateOrderStatus(
-        orderDetails.id,
-        newStatus
-      );
-      onSuccess(updateResponse.message);
-    } catch (error) {
-      console.error("Error updating order status:", error);
-    }
-  };
-
-  const handleCancelConfirm = async () => {
-    try {
-      const updateResponse = await updateOrderStatus(
-        orderDetails.id,
-        "CANCELLED"
-      );
-      setOrderStatus("CANCELLED");
-      onSuccess(updateResponse.message);
-      setCancelDialogOpen(false);
-      onClose();
-    } catch (error) {
-      console.error("Error cancelling order:", error);
-    }
   };
 
   return (
@@ -116,28 +81,15 @@ export default function BusinessOrderDetailsDialog({
       </DialogTitle>
       <DialogContent>
         <Typography sx={{ fontWeight: "bold" }} variant="h6">
-          Business Name: {orderDetails?.businessName}
+          Customer Name: {customerDetails?.firstName}{" "}
+          {customerDetails?.lastName}
         </Typography>
-        <Box display="flex" alignItems="center" sx={{ paddingTop: "0.5rem" }}>
-          <Typography
-            sx={{ fontWeight: "bold", paddingRight: "0.5rem" }}
-            variant="h6"
-          >
-            Order Status:
-          </Typography>
-          <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-            <Select
-              value={orderStatus}
-              onChange={handleStatusChange}
-              sx={{ height: "2rem", pl: 1 }}
-            >
-              <MenuItem value={"PURCHASED"}>Purchased</MenuItem>
-              <MenuItem value={"PACKING"}>Packing</MenuItem>
-              <MenuItem value={"AWAITING_SHIPMENT"}>Awaiting Shipment</MenuItem>
-              <MenuItem value={"COMPLETE"}>Complete</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
+        <Typography
+          sx={{ fontWeight: "bold", paddingTop: "0.5rem" }}
+          variant="h6"
+        >
+          Order Status: {orderDetails?.orderStatus}
+        </Typography>
 
         <Typography
           variant="h6"
@@ -184,20 +136,6 @@ export default function BusinessOrderDetailsDialog({
           </TableFooter>
         </Table>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "center", paddingBottom: "2rem" }}>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => setCancelDialogOpen(true)}
-        >
-          Cancel Order
-        </Button>
-      </DialogActions>
-      <CancelOrderConfirmationDialog
-        open={cancelDialogOpen}
-        onClose={() => setCancelDialogOpen(false)}
-        onConfirm={handleCancelConfirm}
-      />
     </Dialog>
   );
 }

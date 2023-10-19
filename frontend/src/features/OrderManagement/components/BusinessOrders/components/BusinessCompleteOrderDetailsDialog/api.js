@@ -25,18 +25,14 @@ export const fetchOrderItemsByOrderId = async (orderId) => {
   }
 };
 
-export const updateOrderStatus = async (orderId, orderStatus) => {
+export const fetchCustomerDetails = async (customerId) => {
   try {
-    const response = await axios.post(
-      `${config.orderManagementServiceUrl}/api/order/updateOrderStatus`,
-      {
-        orderId,
-        orderStatus,
-      }
+    const response = await axios.get(
+      `${config.userManagementServiceUrl}/account/getUserDetails?userId=${customerId}`
     );
-
     return response.data;
   } catch (error) {
-    console.error("Error fetching open orders:", error);
+    console.error("Error fetching order items by order ID:", error);
+    throw error;
   }
 };

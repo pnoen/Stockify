@@ -70,7 +70,7 @@ public class OrderController {
             }
             List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
             List<Order> filteredOrders = ordersForCustomer.stream()
-                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus())  && !OrderStatus.CANCELLED.equals(o.getOrderStatus()))
                     .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                     .collect(Collectors.toList());
 
@@ -91,7 +91,7 @@ public class OrderController {
             }
             List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
             List<Order> completedOrders = ordersForCustomer.stream()
-                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) && OrderStatus.CANCELLED.equals(o.getOrderStatus()))
                     .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                     .collect(Collectors.toList());
 
@@ -111,7 +111,7 @@ public class OrderController {
             }
             List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
             List<Order> filteredOrders = ordersForCustomer.stream()
-                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()) && !OrderStatus.CANCELLED.equals(o.getOrderStatus()))
                     .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                     .collect(Collectors.toList());
 
@@ -132,7 +132,7 @@ public class OrderController {
             }
             List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
             List<Order> completedOrders = ordersForCustomer.stream()
-                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) || OrderStatus.CANCELLED.equals(o.getOrderStatus()))
                     .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                     .collect(Collectors.toList());
 
@@ -243,6 +243,19 @@ public class OrderController {
         orderRepository.save(draftOrder);
 
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
+    }
+
+    @PostMapping("/updateOrderStatus")
+    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody UpdateOrderStatusRequest updateOrderStatusRequest) {
+        Optional<Order> orderOptional = orderRepository.findById(updateOrderStatusRequest.getOrderId());
+
+        if (!orderOptional.isPresent()) {
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot find order."));
+        }
+        Order order = orderOptional.get();
+        order.setOrderStatus(updateOrderStatusRequest.getOrderStatus());
+        orderRepository.save(order);
+        return ResponseEntity.ok(new ApiResponse(200, "Order status successfully updated to " + order.getOrderStatus()));
     }
 
 

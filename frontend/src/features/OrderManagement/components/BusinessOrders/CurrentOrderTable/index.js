@@ -13,12 +13,15 @@ import {
 import { fetchOpenOrders } from "./api";
 import "./styles.css";
 import BusinessOrderDetailsDialog from "../components/BusinessOrderDetailsDialog";
+import SuccessSnackBar from "../../../../../components/Snackbars/SuccessSnackbar";
 
 export default function CurrentOrderTable() {
   const [openOrders, setOpenOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     const getOrders = async () => {
@@ -47,6 +50,7 @@ export default function CurrentOrderTable() {
   };
 
   const handleCloseDialog = () => {
+    console.log("closed");
     setSelectedOrderId(null);
   };
 
@@ -109,6 +113,15 @@ export default function CurrentOrderTable() {
         orderId={selectedOrderId}
         open={!!selectedOrderId}
         onClose={handleCloseDialog}
+        onSuccess={(message) => {
+          setSnackbarMessage(message);
+          setSnackbarOpen(true);
+        }}
+      />
+      <SuccessSnackBar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
       />
     </div>
   );
