@@ -113,8 +113,13 @@ export default function CustomerNavigation() {
           Admin
         </Button>
         <div style={{ flexGrow: 1 }}></div>
-        <IconButton color="inherit" component={Link} to="/shoppingcart" className={classes.button}>
-          <ShoppingCartIcon/>
+        <IconButton
+          color="inherit"
+          component={Link}
+          to="/shoppingcart"
+          className={classes.button}
+        >
+          <ShoppingCartIcon />
         </IconButton>
         <IconButton
           edge="end"

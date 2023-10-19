@@ -14,13 +14,14 @@ import { getProductsForCustomer } from "./api";
 import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
 import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
 import "./styles.css";
+
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
     fontFamily: "Your Nice Font, sans-serif",
-    paddingLeft: "2rem",
   },
 }));
+
 export default function Catalogue() {
   const classes = useStyles();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -52,18 +53,28 @@ export default function Catalogue() {
   }
 
   return (
-    <Box display="flex" justifyContent="center" width="100%" pt={"5vh"}>
-      <Box width="100%">
-        <Typography variant="h3" gutterBottom className={classes.boldText}>
-          Catalogue
-        </Typography>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          marginBottom={3}
-        ></Box>
-        <Box sx={{ maxHeight: "60vh", overflowY: "auto", padding: "2rem" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: "5vh",
+      }}
+    >
+      <div style={{ maxWidth: "90%", width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <Typography variant="h3" gutterBottom className={classes.boldText}>
+            Catalogue
+          </Typography>
+        </div>
+        <Box sx={{ maxHeight: "65vh", overflowY: "auto", padding: "1rem" }}>
           <Grid container spacing={2}>
             {products.map((product) => (
               <Grid item xs={2} key={product.id}>
@@ -98,7 +109,7 @@ export default function Catalogue() {
             />
           )}
         </Box>
-      </Box>
+      </div>
       <SuccessSnackBar
         open={snackbarOpen}
         message={snackbarMessage}
@@ -109,6 +120,6 @@ export default function Catalogue() {
         message={snackbarErrorMessage}
         onClose={() => setSnackbarErrorOpen(false)}
       />
-    </Box>
+    </div>
   );
 }
