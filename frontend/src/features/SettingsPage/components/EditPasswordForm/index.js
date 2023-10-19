@@ -11,11 +11,19 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { getUserId, editUser } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 
+const useStyles = makeStyles((theme) => ({
+  input: {
+    background: "#cbf5d68f",
+  },
+}));
+
 export default function EditPasswordForm() {
+  const classes = useStyles();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [user, setUser] = useState({
@@ -63,6 +71,7 @@ export default function EditPasswordForm() {
                 setUser({ ...user, currentPassword: e.target.value })
               }
               margin="normal"
+              InputProps={{ className: classes.input }}
               fullWidth
             />
             <TextField
@@ -72,6 +81,7 @@ export default function EditPasswordForm() {
                 setUser({ ...user, newPassword: e.target.value })
               }
               margin="normal"
+              InputProps={{ className: classes.input }}
               fullWidth
             />
             <TextField
@@ -81,6 +91,7 @@ export default function EditPasswordForm() {
                 setUser({ ...user, confirmPassword: e.target.value })
               }
               margin="normal"
+              InputProps={{ className: classes.input }}
               fullWidth
             />
             <Box
