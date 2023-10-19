@@ -142,7 +142,7 @@ public class ProductService {
                 product.setPrice(price);
                 System.out.println("Price");
             }
-            if(quantity!=0) {
+            if(quantity!=-1) {
                 product.setQuantity(quantity);
                 System.out.println("Quantity");
             }
