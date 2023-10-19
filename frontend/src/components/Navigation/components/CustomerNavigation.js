@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import logo from "../../../assets/logoGreen.png"; // Import your logo here
 import { makeStyles } from "@mui/styles";
@@ -19,10 +18,13 @@ import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles((theme) => ({
   button: {
     color: "#ffffff",
+    "&:hover": {
+      color: "#cbf5d6",
+    },
     "& .MuiSvgIcon-root": {
       color: "#ffffff",
     },
-    "&:hover": {
+    "& .MuiSvgIcon-root:hover": {
       color: "#cbf5d6",
     },
   },
@@ -105,24 +107,14 @@ export default function CustomerNavigation() {
         </Button>
         <Button
           color="inherit"
-          component={Link}
-          to="/shoppingcart"
-          className={classes.button}
-        >
-          Shopping Cart
-        </Button>
-        <Button
-          color="inherit"
           onClick={handleAdminMenu}
           className={adminOpen ? classes.openDropdown : classes.button}
         >
           Admin
         </Button>
         <div style={{ flexGrow: 1 }}></div>
-        <IconButton color="inherit" className={classes.button}>
-          <Badge badgeContent={4} color="error">
-            <NotificationsIcon />
-          </Badge>
+        <IconButton color="inherit" component={Link} to="/shoppingcart" className={classes.button}>
+          <ShoppingCartIcon/>
         </IconButton>
         <IconButton
           edge="end"
