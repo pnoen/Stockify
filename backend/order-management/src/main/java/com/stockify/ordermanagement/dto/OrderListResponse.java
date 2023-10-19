@@ -21,7 +21,7 @@ public class OrderListResponse {
         return statusCode;
     }
 
-    public List<Order> getOrder() {
+    public List<Order> getOrderList() {
         return orderList;
     }
 

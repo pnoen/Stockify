@@ -96,7 +96,7 @@ public class OrderManagementTest {
         ResponseEntity<OrderListResponse> response = orderController.getAllOrders();
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(mockOrderList, response.getBody().getOrder());
+        assertEquals(mockOrderList, response.getBody().getOrderList());
     }
 
     @Test

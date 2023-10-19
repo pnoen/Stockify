@@ -5,11 +5,15 @@ import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderRepository;
 import com.stockify.ordermanagement.service.OrderService;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,18 +61,50 @@ public class OrderController {
     }
 
     // Get a list of all the orders
-    @GetMapping("/getAll")
-    public ResponseEntity<OrderListResponse> getAllOrders() {
-        List<Order> orderList = new ArrayList<>();
+    @GetMapping("/getAllCurrentOrders")
+    public ResponseEntity<?> getAllOrders(@RequestParam String email) {
+        try {
+            int customerId = getUserIdByEmail(email);
+            if (customerId <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
+            List<Order> filteredOrders = ordersForCustomer.stream()
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
 
-        Iterable<Order> orders = orderRepository.findAll();
+            return ResponseEntity.ok(new OrderListResponse(200, filteredOrders));
 
-        for (Order o:orders) {
-            orderList.add(o);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
         }
-
-        return ResponseEntity.ok(new OrderListResponse(200, orderList));
     }
+
+    @GetMapping("/getAllCompletedOrders")
+    public ResponseEntity<?> getAllCompletedOrders(@RequestParam String email) {
+        try {
+            int customerId = getUserIdByEmail(email);
+            if (customerId <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
+            List<Order> completedOrders = ordersForCustomer.stream()
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+
+
+
 
     // Get an order by its ID
     @GetMapping("/getOrderById")
@@ -160,10 +196,13 @@ public class OrderController {
         Order draftOrder = draftOrderOptional.get();
         draftOrder.setOrderStatus(OrderStatus.PURCHASED);
         draftOrder.setTotalCost(updateDraftOrderRequest.getTotalCost());
+        draftOrder.setOrderDate(LocalDate.now());
         orderRepository.save(draftOrder);
 
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
     }
+
+
 
 
     public int getUserIdByEmail(String email) {
