@@ -11,12 +11,22 @@ import {
   TablePagination,
 } from "@mui/material";
 import { fetchOrderHistory } from "./api";
+import OrderDetailsDialog from "../components/OrderDetailsDialog";
 import "./styles.css";
 
 export default function CurrentOrderTable() {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const handleOpenDialog = (orderId) => {
+    setSelectedOrderId(orderId);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedOrderId(null);
+  };
 
   useEffect(() => {
     const getOrders = async () => {
@@ -51,7 +61,9 @@ export default function CurrentOrderTable() {
             <TableRow>
               <TableCell className="table-header-cell">Order ID</TableCell>
               <TableCell className="table-header-cell">Order Date</TableCell>
-              <TableCell className="table-header-cell">Total Cost ($)</TableCell>
+              <TableCell className="table-header-cell">
+                Total Cost ($)
+              </TableCell>
               <TableCell className="table-header-cell">Status</TableCell>
             </TableRow>
           </TableHead>
@@ -59,7 +71,16 @@ export default function CurrentOrderTable() {
             {completedOrders
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((order) => (
-                <TableRow key={order.id}>
+                <TableRow
+                  key={order.id}
+                  onClick={() => handleOpenDialog(order.id)}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "lightgray",
+                    },
+                  }}
+                >
                   <TableCell>{order.id}</TableCell>
                   <TableCell>{order.orderDate}</TableCell>
                   <TableCell>{order.totalCost}</TableCell>
@@ -86,6 +107,11 @@ export default function CurrentOrderTable() {
           </TableFooter>
         </Table>
       </Paper>
+      <OrderDetailsDialog
+        orderId={selectedOrderId}
+        open={!!selectedOrderId}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 }

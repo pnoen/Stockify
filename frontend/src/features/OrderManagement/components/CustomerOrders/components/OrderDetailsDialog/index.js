@@ -53,10 +53,11 @@ export default function OrderDetailsDialog({ orderId, open, onClose }) {
       onClose={onClose}
       PaperProps={{
         sx: {
-          width: "70vw",
+          width: "50vw",
           maxWidth: "100%",
           height: "70vh",
           maxHeight: "100%",
+          borderRadius: "20px",
         },
       }}
     >
