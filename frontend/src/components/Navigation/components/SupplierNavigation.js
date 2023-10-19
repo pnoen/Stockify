@@ -13,7 +13,6 @@ import {
   Box,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -188,6 +187,7 @@ export default function SupplierNavigation() {
             <List component="div" disablePadding>
               <ListItemButton
                 sx={{ paddingLeft: 4 }}
+                component={Link}
                 to="/settings"
                 className={classes.itemButtonCollapsed}
               >
