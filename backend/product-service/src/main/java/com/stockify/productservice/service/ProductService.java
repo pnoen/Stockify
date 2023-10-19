@@ -117,10 +117,10 @@ public class ProductService {
         String name = editProductRequest.getName();
         String description = editProductRequest.getDescription();
         float price = editProductRequest.getPrice();
-        int quantity = editProductRequest.getQuantity();
+        Integer quantity = editProductRequest.getQuantity();
         String imageUrl = editProductRequest.getImageUrl();
 
-        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == 0 && imageUrl.isEmpty()) {
+        if(name.isEmpty() && description.isEmpty() && price == 0 && quantity == null && imageUrl.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse(400, "Error: At least one field is required"));
         }
 
@@ -142,7 +142,7 @@ public class ProductService {
                 product.setPrice(price);
                 System.out.println("Price");
             }
-            if(quantity!=-1) {
+            if(quantity != null) {
                 product.setQuantity(quantity);
                 System.out.println("Quantity");
             }

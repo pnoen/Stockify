@@ -5,11 +5,11 @@ public class EditProductRequest {
     private int id;
     private String name;
     private String description;
-    private int quantity;
+    private Integer quantity;
     private float price;
     private String imageUrl;
 
-    public EditProductRequest(int id, String name, String description, int quantity, float price, String imageUrl) {
+    public EditProductRequest(int id, String name, String description, Integer quantity, float price, String imageUrl) {
         this.id=id;
         this.name = name;
         this.description = description;
@@ -34,11 +34,11 @@ public class EditProductRequest {
         this.description = description;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
