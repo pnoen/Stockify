@@ -23,6 +23,15 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private OrderStatus orderStatus;
+    private String businessName;
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;

@@ -113,6 +113,7 @@ public class OrderController {
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
+            order.setBusinessName(getBusinessNameByBusinessCode(order.getBusinessCode()));
             return ResponseEntity.ok(new OrderResponse(200, order));
         } else {
             return ResponseEntity.ok(new OrderResponse(404, null));
@@ -197,6 +198,7 @@ public class OrderController {
         draftOrder.setOrderStatus(OrderStatus.PURCHASED);
         draftOrder.setTotalCost(updateDraftOrderRequest.getTotalCost());
         draftOrder.setOrderDate(LocalDate.now());
+        draftOrder.setBusinessName(getBusinessNameByBusinessCode(draftOrder.getBusinessCode()));
         orderRepository.save(draftOrder);
 
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
@@ -209,5 +211,11 @@ public class OrderController {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;
         return restTemplate.getForObject(url, Integer.class);
+    }
+
+    public String getBusinessNameByBusinessCode(int businessCode) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getBusinessName?businessCode=" + businessCode;
+        return restTemplate.getForObject(url, String.class);
     }
 }

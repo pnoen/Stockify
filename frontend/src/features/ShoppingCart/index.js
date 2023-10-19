@@ -6,7 +6,6 @@ import { getDraftOrder, getOrderItems, updateDraftOrder } from "./api";
 import CheckoutConfirmationDialog from "./components/CheckoutConfirmationDialog";
 import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
 import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
-
 const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: "bold",
@@ -35,7 +34,12 @@ export default function ShoppingCart() {
     try {
       const draftOrder = await getDraftOrder();
       const draftOrderId = parseInt(draftOrder.message);
-      const response = await updateDraftOrder(draftOrderId, totalCost);
+
+      const response = await updateDraftOrder(
+        draftOrderId,
+        parseFloat(totalCost.toFixed(2))
+      );
+
       if (response.statusCode === 200) {
         setSnackbarMessage(response.message);
         setSnackbarOpen(true);
@@ -48,6 +52,7 @@ export default function ShoppingCart() {
     } catch (err) {
       console.error("Error:", err);
     }
+
     setOpenDialog(false);
   };
 
@@ -56,6 +61,7 @@ export default function ShoppingCart() {
       try {
         const draftOrder = await getDraftOrder();
         const draftOrderId = parseInt(draftOrder.message);
+
         if (draftOrder && !isNaN(draftOrderId)) {
           const response = await getOrderItems(draftOrderId);
           setOrderItems(response.products);
@@ -66,6 +72,7 @@ export default function ShoppingCart() {
         setLoading(false);
       }
     };
+
     fetchOrderData();
   }, []);
 
@@ -79,6 +86,10 @@ export default function ShoppingCart() {
   const handleRemove = (id) => {
     setOrderItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
+
+  const total = Array.isArray(orderItems)
+    ? orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    : 0;
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
