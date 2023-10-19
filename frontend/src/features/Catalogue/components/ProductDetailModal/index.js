@@ -150,7 +150,13 @@ export default function ProductDetailModal({
                 max: product.quantity,
               },
             }}
-            sx={{ marginRight: "10px", width: "12%" }}
+            sx={{
+              marginRight: "10px",
+              width: "12%",
+              "& .MuiInputBase-input": {
+                height: "0em",
+              },
+            }}
           />
         </Box>
 
