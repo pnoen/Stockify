@@ -5,22 +5,26 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TableFooter,
   Paper,
   Typography,
+  TablePagination,
 } from "@mui/material";
-import { fetchOpenOrders, fetchOrderHistory } from "./api";
+import { fetchOpenOrders } from "./api";
 import "./styles.css";
+import BusinessOrderDetailsDialog from "../components/BusinessOrderDetailsDialog";
 
 export default function CurrentOrderTable() {
   const [openOrders, setOpenOrders] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     const getOrders = async () => {
       try {
-        setOpenOrders([
-          { id: 1, date: "2023-01-01", totalCost: 100, status: "Pending" },
-          { id: 2, date: "2023-01-02", totalCost: 200, status: "Processing" },
-        ]);
+        const response = await fetchOpenOrders();
+        setOpenOrders(response.orderList || []);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -28,6 +32,23 @@ export default function CurrentOrderTable() {
 
     getOrders();
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleOpenDialog = (orderId) => {
+    setSelectedOrderId(orderId);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedOrderId(null);
+  };
 
   return (
     <div style={{ maxWidth: "90%", width: "100%" }}>
@@ -40,22 +61,55 @@ export default function CurrentOrderTable() {
             <TableRow>
               <TableCell className="table-header-cell">Order ID</TableCell>
               <TableCell className="table-header-cell">Order Date</TableCell>
-              <TableCell className="table-header-cell">Total Cost</TableCell>
+              <TableCell className="table-header-cell">
+                Total Cost ($)
+              </TableCell>
               <TableCell className="table-header-cell">Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {openOrders.map((order) => (
-              <TableRow key={order.id}>
+              <TableRow
+                key={order.id}
+                onClick={() => handleOpenDialog(order.id)}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "lightgray",
+                  },
+                }}
+              >
                 <TableCell>{order.id}</TableCell>
-                <TableCell>{order.date}</TableCell>
+                <TableCell>{order.orderDate}</TableCell>
                 <TableCell>{order.totalCost}</TableCell>
-                <TableCell>{order.status}</TableCell>
+                <TableCell>{order.orderStatus}</TableCell>
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={4} style={{ textAlign: "center" }}>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <TablePagination
+                    rowsPerPageOptions={[5]}
+                    component="div"
+                    count={openOrders.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </Paper>
+      <BusinessOrderDetailsDialog
+        orderId={selectedOrderId}
+        open={!!selectedOrderId}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 }

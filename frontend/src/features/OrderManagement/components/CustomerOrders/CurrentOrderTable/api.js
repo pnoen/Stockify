@@ -5,7 +5,7 @@ export const fetchOpenOrders = async () => {
     const email = localStorage.getItem("userToken");
 
     const response = await axios.get(
-      `${config.orderManagementServiceUrl}/api/order/getAllCurrentOrders?email=${email}`
+      `${config.orderManagementServiceUrl}/api/order/getAllCurrentCustomerOrders?email=${email}`
     );
 
     return response.data;

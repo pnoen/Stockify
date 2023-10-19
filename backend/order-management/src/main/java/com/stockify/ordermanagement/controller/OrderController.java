@@ -61,8 +61,8 @@ public class OrderController {
     }
 
     // Get a list of all the orders
-    @GetMapping("/getAllCurrentOrders")
-    public ResponseEntity<?> getAllOrders(@RequestParam String email) {
+    @GetMapping("/getAllCurrentCustomerOrders")
+    public ResponseEntity<?> getAllCurrentCustomerOrders(@RequestParam String email) {
         try {
             int customerId = getUserIdByEmail(email);
             if (customerId <= 0) {
@@ -82,14 +82,55 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/getAllCompletedOrders")
-    public ResponseEntity<?> getAllCompletedOrders(@RequestParam String email) {
+    @GetMapping("/getAllCompletedCustomerOrders")
+    public ResponseEntity<?> getAllCompletedCustomerOrders(@RequestParam String email) {
         try {
             int customerId = getUserIdByEmail(email);
             if (customerId <= 0) {
                 return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
             }
             List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
+            List<Order> completedOrders = ordersForCustomer.stream()
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+    @GetMapping("/getAllCurrentBusinessOrders")
+    public ResponseEntity<?> getAllCurrentBusinessOrders(@RequestParam String email) {
+        try {
+            int businessCode = getBusinessCodeByEmail(email);
+            if (businessCode <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
+            List<Order> filteredOrders = ordersForCustomer.stream()
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, filteredOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+
+    @GetMapping("/getAllCompletedBusinessOrders")
+    public ResponseEntity<?> getAllCompletedBusinessOrders(@RequestParam String email) {
+        try {
+            int businessCode = getBusinessCodeByEmail(email);
+            if (businessCode <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
             List<Order> completedOrders = ordersForCustomer.stream()
                     .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()))
                     .sorted(Comparator.comparing(Order::getOrderDate).reversed())
@@ -210,6 +251,11 @@ public class OrderController {
     public int getUserIdByEmail(String email) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;
+        return restTemplate.getForObject(url, Integer.class);
+    }
+    public int getBusinessCodeByEmail(String email) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getBusinessCode?email=" + email;
         return restTemplate.getForObject(url, Integer.class);
     }
 

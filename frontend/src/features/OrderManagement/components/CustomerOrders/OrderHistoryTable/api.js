@@ -5,7 +5,7 @@ export const fetchOrderHistory = async () => {
     const email = localStorage.getItem("userToken");
 
     const response = await axios.get(
-      `${config.orderManagementServiceUrl}/api/order/getAllCompletedOrders?email=${email}`
+      `${config.orderManagementServiceUrl}/api/order/getAllCompletedCustomerOrders?email=${email}`
     );
 
     return response.data;
