@@ -86,8 +86,8 @@ export default function UserManagementPage() {
             <TableHead>
               <TableRow>
                 <TableCell className="table-header-cell">User ID</TableCell>
-                <TableCell className="table-header-cell">Firstname</TableCell>
-                <TableCell className="table-header-cell">Lastname</TableCell>
+                <TableCell className="table-header-cell">First Name</TableCell>
+                <TableCell className="table-header-cell">Last Name</TableCell>
                 <TableCell className="table-header-cell">Email</TableCell>
                 <TableCell className="table-header-cell">Role</TableCell>
               </TableRow>
