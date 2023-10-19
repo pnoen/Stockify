@@ -150,19 +150,18 @@ public class OrderController {
     }
 
     @PostMapping("/updateDraftOrder")
-    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody OrderIdRequest orderIdRequest) {
-        Optional<Order> draftOrderOptional = orderRepository.findById(orderIdRequest.getOrderId());
+    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody UpdateDraftOrderRequest updateDraftOrderRequest) {
+        Optional<Order> draftOrderOptional = orderRepository.findById(updateDraftOrderRequest.getOrderId());
 
         if (!draftOrderOptional.isPresent()) {
-            // Order doesn't exist
             return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot place order with empty shopping cart."));
         }
 
         Order draftOrder = draftOrderOptional.get();
         draftOrder.setOrderStatus(OrderStatus.PURCHASED);
+        draftOrder.setTotalCost(updateDraftOrderRequest.getTotalCost());
         orderRepository.save(draftOrder);
 
-        // Return the ID of the updated order
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
     }
 
