@@ -11,6 +11,8 @@ import {
   Box,
   Checkbox,
   ButtonBase,
+  TableFooter,
+  TablePagination,
 } from "@mui/material";
 import "./styles.css";
 import { makeStyles } from "@mui/styles";
@@ -32,6 +34,8 @@ export default function LinkedClientsPage() {
   const [isLinkClientModalOpen, setIsLinkClientModalOpen] = useState(false);
   const [isUnlinkClientModalOpen, setIsUnlinkClientModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,12 +45,24 @@ export default function LinkedClientsPage() {
         setClients(clientsList.users);
         setIsLoading(false);
       } catch (error) {
-        console.error("An error occurred while fetching linked clients:", error);
+        console.error(
+          "An error occurred while fetching linked clients:",
+          error
+        );
         setIsLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <div
@@ -99,15 +115,42 @@ export default function LinkedClientsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clients.map((client) => (
-                <TableRow hover key={client.id} style={{ cursor: "pointer" }}>
-                  <TableCell>{client.id}</TableCell>
-                  <TableCell>{client.firstName}</TableCell>
-                  <TableCell>{client.lastName}</TableCell>
-                  <TableCell>{client.email}</TableCell>
-                </TableRow>
-              ))}
+              {clients
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((client) => (
+                  <TableRow hover key={client.id} style={{ cursor: "pointer" }}>
+                    <TableCell>{client.id}</TableCell>
+                    <TableCell>{client.firstName}</TableCell>
+                    <TableCell>{client.lastName}</TableCell>
+                    <TableCell>{client.email}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  style={{ textAlign: "center", padding: "0.5em" }}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <LoadingSpinner
+                      isLoading={isLoading}
+                      props={
+                        <TablePagination
+                          rowsPerPageOptions={[5]}
+                          component="div"
+                          count={clients.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                      }
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         </Paper>
         <LoadingSpinner isLoading={isLoading} />
