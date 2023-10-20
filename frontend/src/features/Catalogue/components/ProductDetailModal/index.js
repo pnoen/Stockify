@@ -178,6 +178,7 @@ export default function ProductDetailModal({
           <Button
             variant="outlined"
             onClick={onClose}
+            color="error"
             sx={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}
           >
             Back
