@@ -13,12 +13,14 @@ import {
 import { fetchOrderHistory } from "./api";
 import BusinessCompleteOrderDetailsDialog from "../components/BusinessCompleteOrderDetailsDialog";
 import "./styles.css";
+import LoadingSpinner from "../../../../../components/LoadingSpinner";
 
 export default function OrderHistoryTable() {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpenDialog = (orderId) => {
     setSelectedOrderId(orderId);
@@ -31,10 +33,13 @@ export default function OrderHistoryTable() {
   useEffect(() => {
     const getOrders = async () => {
       try {
+        setIsLoading(true);
         const response = await fetchOrderHistory();
         setCompletedOrders(response.orderList || []);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        setIsLoading(false);
       }
     };
 
@@ -51,7 +56,7 @@ export default function OrderHistoryTable() {
   };
 
   return (
-    <div style={{ maxWidth: "90%", width: "100%" }}>
+    <div style={{ width: "100%" }}>
       <Typography variant="h6" gutterBottom>
         Order History
       </Typography>
@@ -63,7 +68,9 @@ export default function OrderHistoryTable() {
               <TableCell className="table-header-cell">
                 Completion Date
               </TableCell>
-              <TableCell className="table-header-cell">Total Cost</TableCell>
+              <TableCell className="table-header-cell">
+                Total Cost ($)
+              </TableCell>
               <TableCell className="table-header-cell">Status</TableCell>
             </TableRow>
           </TableHead>
@@ -80,7 +87,6 @@ export default function OrderHistoryTable() {
                 }}
               >
                 <TableCell>{order.id}</TableCell>
-
                 <TableCell>{order.completionDate}</TableCell>
                 <TableCell>{order.totalCost}</TableCell>
                 <TableCell>{order.orderStatus}</TableCell>
@@ -89,16 +95,24 @@ export default function OrderHistoryTable() {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={5} style={{ textAlign: "center" }}>
+              <TableCell
+                colSpan={5}
+                style={{ textAlign: "center", padding: "0.5em" }}
+              >
                 <div style={{ display: "flex", justifyContent: "center" }}>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    component="div"
-                    count={completedOrders.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  <LoadingSpinner
+                    isLoading={isLoading}
+                    props={
+                      <TablePagination
+                        rowsPerPageOptions={[5]}
+                        component="div"
+                        count={completedOrders.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    }
                   />
                 </div>
               </TableCell>

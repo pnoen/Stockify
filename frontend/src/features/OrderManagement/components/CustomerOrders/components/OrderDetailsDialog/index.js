@@ -11,27 +11,35 @@ import {
   TableRow,
   TableFooter,
   TablePagination,
+  Paper,
+  Divider,
+  Box,
 } from "@mui/material";
 import { fetchOrderDetailsById, fetchOrderItemsByOrderId } from "./api";
 import "./styles.css";
+import LoadingSpinner from "../../../../../../components/LoadingSpinner";
 
 export default function OrderDetailsDialog({ orderId, open, onClose }) {
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
       if (orderId) {
         try {
+          setIsLoading(true);
           const detailsResponse = await fetchOrderDetailsById(orderId);
           setOrderDetails(detailsResponse.order);
 
           const itemsResponse = await fetchOrderItemsByOrderId(orderId);
           setOrderItems(itemsResponse.products);
+          setIsLoading(false);
         } catch (error) {
           console.error("Error fetching order details:", error);
+          setIsLoading(false);
         }
       }
     };
@@ -55,86 +63,95 @@ export default function OrderDetailsDialog({ orderId, open, onClose }) {
         sx: {
           width: "50vw",
           maxWidth: "100%",
-          height: "70vh",
-          maxHeight: "100%",
           borderRadius: "20px",
+          bgcolor: "background.paper",
+          padding: "1em 0.5em",
         },
       }}
     >
       <DialogTitle>
-        <Typography variant="h3" align="center" sx={{ fontWeight: "bold" }}>
+        <Divider />
+        <Typography variant="h4" align="center" sx={{ margin: "0.5em 0" }}>
           Order #{orderDetails?.id}
         </Typography>
+        <Divider />
       </DialogTitle>
       <DialogContent>
-        <Typography sx={{ fontWeight: "bold" }} variant="h6">
-          Business Name: {orderDetails?.businessName}
-        </Typography>
-        <Typography
-          sx={{ fontWeight: "bold", paddingTop: "0.5rem" }}
-          variant="h6"
-        >
-          Order Status: {orderDetails?.orderStatus}
-        </Typography>
-        <Typography
-          sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
-          variant="body1"
-        >
-          Order Date: {orderDetails?.orderDate}
-        </Typography>
-        {orderDetails?.completionDate ? (
-          <Typography
-            sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
-            variant="body1"
-          >
-            Completion Date: {orderDetails?.completionDate}
+        <Box sx={{ padding: "0 1em" }}>
+          <Typography>
+            <span style={{ fontWeight: "bold" }}>Business Name: </span>
+            {orderDetails?.businessName}
           </Typography>
-        ) : null}
+          <Typography sx={{ paddingTop: "0.5em" }}>
+            <span style={{ fontWeight: "bold" }}>Order Status: </span>{" "}
+            {orderDetails?.orderStatus}
+          </Typography>
+          <Typography sx={{ paddingTop: "0.5em" }}>
+            <span style={{ fontWeight: "bold" }}>Order Date: </span>
+            {orderDetails?.orderDate}
+          </Typography>
+          {orderDetails?.completionDate ? (
+            <Typography sx={{ paddingTop: "0.5em" }}>
+              <span style={{ fontWeight: "bold" }}>Completion Date: </span>
+              {orderDetails?.completionDate}
+            </Typography>
+          ) : null}
 
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: "bold" }}
-          style={{ paddingTop: "4rem" }}
-        >
-          Order Items
-        </Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="table-header-cell">Name</TableCell>
-              <TableCell className="table-header-cell">Description</TableCell>
-              <TableCell className="table-header-cell">Price</TableCell>
-              <TableCell className="table-header-cell">Quantity</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orderItems.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>${item.price}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={4} style={{ textAlign: "center" }}>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <TablePagination
-                    rowsPerPageOptions={[3]}
-                    component="div"
-                    count={orderItems.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
+          <Typography sx={{ fontWeight: "bold", paddingTop: "0.5em" }}>
+            Order Items:
+          </Typography>
+          <Paper sx={{ paddingTop: "0.2em" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell className="table-header-cell">Name</TableCell>
+                  <TableCell className="table-header-cell">
+                    Description
+                  </TableCell>
+                  <TableCell className="table-header-cell">Price ($)</TableCell>
+                  <TableCell className="table-header-cell">Quantity</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orderItems
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{item.price}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    style={{ textAlign: "center", padding: "0.5em" }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <LoadingSpinner
+                        isLoading={isLoading}
+                        props={
+                          <TablePagination
+                            rowsPerPageOptions={[3]}
+                            component="div"
+                            count={orderItems.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                          />
+                        }
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </Paper>
+        </Box>
       </DialogContent>
     </Dialog>
   );

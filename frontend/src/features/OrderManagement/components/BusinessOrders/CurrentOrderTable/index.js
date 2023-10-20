@@ -14,6 +14,7 @@ import { fetchOpenOrders } from "./api";
 import "./styles.css";
 import BusinessOrderDetailsDialog from "../components/BusinessOrderDetailsDialog";
 import SuccessSnackBar from "../../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../../components/LoadingSpinner";
 
 export default function CurrentOrderTable() {
   const [openOrders, setOpenOrders] = useState([]);
@@ -22,14 +23,18 @@ export default function CurrentOrderTable() {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getOrders = async () => {
       try {
+        setIsLoading(true);
         const response = await fetchOpenOrders();
         setOpenOrders(response.orderList || []);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        setIsLoading(false);
       }
     };
 
@@ -50,15 +55,15 @@ export default function CurrentOrderTable() {
   };
 
   const handleCloseDialog = () => {
-    console.log("closed");
     setSelectedOrderId(null);
   };
 
   return (
-    <div style={{ maxWidth: "90%", width: "100%" }}>
+    <div style={{ width: "100%", marginBottom: "32px" }}>
       <Typography variant="h6" gutterBottom>
         Open Orders
       </Typography>
+
       <Paper>
         <Table>
           <TableHead>
@@ -72,36 +77,46 @@ export default function CurrentOrderTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {openOrders.map((order) => (
-              <TableRow
-                key={order.id}
-                onClick={() => handleOpenDialog(order.id)}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "lightgray",
-                  },
-                }}
-              >
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.orderDate}</TableCell>
-                <TableCell>{order.totalCost}</TableCell>
-                <TableCell>{order.orderStatus}</TableCell>
-              </TableRow>
-            ))}
+            {openOrders
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((order) => (
+                <TableRow
+                  key={order.id}
+                  onClick={() => handleOpenDialog(order.id)}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "lightgray",
+                    },
+                  }}
+                >
+                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{order.orderDate}</TableCell>
+                  <TableCell>{order.totalCost}</TableCell>
+                  <TableCell>{order.orderStatus}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={4} style={{ textAlign: "center" }}>
+              <TableCell
+                colSpan={4}
+                style={{ textAlign: "center", padding: "0.5em" }}
+              >
                 <div style={{ display: "flex", justifyContent: "center" }}>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    component="div"
-                    count={openOrders.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  <LoadingSpinner
+                    isLoading={isLoading}
+                    props={
+                      <TablePagination
+                        rowsPerPageOptions={[5]}
+                        component="div"
+                        count={openOrders.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    }
                   />
                 </div>
               </TableCell>
