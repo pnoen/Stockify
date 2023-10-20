@@ -8,7 +8,12 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
-import { createDraftOrder, createOrderItem, getImageUrl } from "./api";
+import {
+  createDraftOrder,
+  createOrderItem,
+  getBusinessName,
+  getImageUrl,
+} from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 
 export default function ProductDetailModal({
@@ -20,6 +25,7 @@ export default function ProductDetailModal({
 }) {
   const [quantity, setQuantity] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+  const [businessName, setBusinessName] = useState("");
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -35,6 +41,18 @@ export default function ProductDetailModal({
       fetchImage();
     }
   }, [product.imageURL]);
+
+  useEffect(() => {
+    const fetchBusinessName = async () => {
+      try {
+        const business = await getBusinessName(product.businessCode);
+        setBusinessName(business);
+      } catch (error) {
+        console.error("Error fetching business name:", error);
+      }
+    };
+    fetchBusinessName();
+  }, []);
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
@@ -128,7 +146,7 @@ export default function ProductDetailModal({
             margin: "0.5em 0",
           }}
         >
-          {product.businessCode}
+          {businessName}
         </Typography>
         {/* Centered Name and Description */}
         <Paper sx={{ margin: "0em", padding: "1em", borderRadius: "5px" }}>
