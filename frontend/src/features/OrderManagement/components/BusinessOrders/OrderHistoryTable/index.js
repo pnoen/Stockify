@@ -60,7 +60,9 @@ export default function OrderHistoryTable() {
           <TableHead>
             <TableRow>
               <TableCell className="table-header-cell">Order ID</TableCell>
-              <TableCell className="table-header-cell">Order Date</TableCell>
+              <TableCell className="table-header-cell">
+                Completion Date
+              </TableCell>
               <TableCell className="table-header-cell">Total Cost</TableCell>
               <TableCell className="table-header-cell">Status</TableCell>
             </TableRow>
@@ -78,7 +80,8 @@ export default function OrderHistoryTable() {
                 }}
               >
                 <TableCell>{order.id}</TableCell>
-                <TableCell>{order.orderDate}</TableCell>
+
+                <TableCell>{order.completionDate}</TableCell>
                 <TableCell>{order.totalCost}</TableCell>
                 <TableCell>{order.orderStatus}</TableCell>
               </TableRow>
@@ -86,7 +89,7 @@ export default function OrderHistoryTable() {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={4} style={{ textAlign: "center" }}>
+              <TableCell colSpan={5} style={{ textAlign: "center" }}>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <TablePagination
                     rowsPerPageOptions={[5]}
