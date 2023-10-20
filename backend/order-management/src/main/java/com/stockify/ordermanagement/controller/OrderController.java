@@ -1,16 +1,18 @@
 package com.stockify.ordermanagement.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockify.ordermanagement.constants.OrderStatus;
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.dto.*;
+import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.ordermanagement.model.ProductItem;
+import com.stockify.ordermanagement.repository.OrderItemRepository;
 import com.stockify.ordermanagement.repository.OrderRepository;
+import com.stockify.ordermanagement.service.EmailService;
 import com.stockify.ordermanagement.service.OrderService;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,13 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
     private OrderService orderService = new OrderService();
+    @Autowired
+    private EmailService emailService;
+
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createOrder(@RequestBody OrderRequest orderRequest) {
@@ -210,8 +218,6 @@ public class OrderController {
         } else {
             draftOrder = draftOrderOptional.get();
         }
-
-        // Return the ID of the draft order
         return ResponseEntity.ok(new ApiResponse(200, String.valueOf(draftOrder.getId())));
     }
     @GetMapping("/getDraftOrder")
@@ -256,6 +262,14 @@ public class OrderController {
         if (updateOrderStatusRequest.getOrderStatus() == OrderStatus.COMPLETE || updateOrderStatusRequest.getOrderStatus() == OrderStatus.CANCELLED ){
             order.setCompletionDate(LocalDate.now());
         }
+        if(updateOrderStatusRequest.getOrderStatus() == OrderStatus.COMPLETE) {
+            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+            List<ProductItem> productItems = fetchProductDetails(orderItems);
+
+            String emailContent = generateEmailContent(order, productItems);
+            String customerEmail = getUserEmailByCustomerId(order.getCustomerId());
+            emailService.sendEmail(customerEmail, "Stockify - Order Invoice", emailContent);
+        }
         order.setOrderStatus(updateOrderStatusRequest.getOrderStatus());
         orderRepository.save(order);
         return ResponseEntity.ok(new ApiResponse(200, "Order status successfully updated to " + order.getOrderStatus()));
@@ -279,5 +293,84 @@ public class OrderController {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/account/getBusinessName?businessCode=" + businessCode;
         return restTemplate.getForObject(url, String.class);
+    }
+    public String getUserEmailByCustomerId(int customerId) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getUserEmail?userId=" + customerId;
+        String jsonResponse = restTemplate.getForObject(url, String.class);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> responseMap = mapper.readValue(jsonResponse, Map.class);
+
+            String email = (String) responseMap.get("email");
+            return email;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private List<ProductItem> fetchProductDetails(List<OrderItem> orderItems) {
+        List<Integer> productIds = orderItems.stream()
+                .map(OrderItem::getProductId)
+                .collect(Collectors.toList());
+
+        String productUrl = "http://localhost:8083/api/product/getProducts?ids="
+                + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        ProductItemListResponse fetchedProductItemListResponse = new RestTemplate().getForObject(productUrl, ProductItemListResponse.class);
+
+        if (fetchedProductItemListResponse != null) {
+            List<ProductItem> productItems = fetchedProductItemListResponse.getProducts();
+            for (ProductItem product : productItems) {
+                for (OrderItem orderItem : orderItems) {
+                    if (orderItem.getProductId() == product.getId()) {
+                        product.setQuantity(orderItem.getQuantity());
+                        product.setOrderItemId(orderItem.getId());
+                        break;
+                    }
+                }
+            }
+            return productItems;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private String generateEmailContent(Order order, List<ProductItem> productItems) {
+        StringBuilder emailContent = new StringBuilder();
+
+        emailContent.append("<html><head>")
+                .append("<style>")
+                .append("body { color: #000; }")
+                .append("table {width: 100%; border-collapse: collapse; margin-bottom: 20px;}")
+                .append("th, td {border: 1px solid #ddd; text-align: left; padding: 8px;}")
+                .append("th {background-color: #cbf5d6;}")
+                .append("</style>")
+                .append("</head><body>");
+
+        emailContent
+                .append("<h2>Order #: ").append(order.getId()).append("</h2>")
+                .append("<h3>Business Name: ").append(order.getBusinessName()).append("</h3>")
+                .append("<p>Order Date: ").append(order.getOrderDate()).append("</p>")
+                .append("<p>Completion Date: ").append(order.getCompletionDate()).append("</p><br>");
+
+        emailContent.append("<h3>Order Items</h3>")
+                .append("<table>")
+                .append("<tr><th>Item Name</th><th>Description</th><th>Price ($)</th><th>Quantity</th></tr>");
+
+        for (ProductItem productItem : productItems) {
+            emailContent.append("<tr>")
+                    .append("<td>").append(productItem.getName()).append("</td>")
+                    .append("<td>").append(productItem.getDescription()).append("</td>")
+                    .append("<td>").append(productItem.getPrice()).append("</td>")
+                    .append("<td>").append(productItem.getQuantity()).append("</td>")
+                    .append("</tr>");
+        }
+
+        emailContent.append("</table>");
+
+        emailContent.append("<p>Thank you for your business!</p>")
+                .append("</body></html>");
+
+        return emailContent.toString();
     }
 }
