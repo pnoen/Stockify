@@ -26,12 +26,13 @@ const getOrderItems = async (draftOrderId) => {
   }
 };
 
-const updateDraftOrder = async (orderId) => {
+const updateDraftOrder = async (orderId, totalCost) => {
   try {
     const response = await axios.post(
       `${config.orderManagementServiceUrl}/api/order/updateDraftOrder`,
       {
         orderId,
+        totalCost,
       }
     );
     return response.data;

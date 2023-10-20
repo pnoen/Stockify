@@ -28,13 +28,17 @@ export default function ShoppingCart() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
   const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("");
+  const [totalCost, setTotalCost] = useState(0.0);
 
   const handleCheckout = async () => {
     try {
       const draftOrder = await getDraftOrder();
       const draftOrderId = parseInt(draftOrder.message);
 
-      const response = await updateDraftOrder(draftOrderId);
+      const response = await updateDraftOrder(
+        draftOrderId,
+        parseFloat(totalCost.toFixed(2))
+      );
 
       if (response.statusCode === 200) {
         setSnackbarMessage(response.message);
@@ -72,6 +76,13 @@ export default function ShoppingCart() {
     fetchOrderData();
   }, []);
 
+  useEffect(() => {
+    const newTotal = Array.isArray(orderItems)
+      ? orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+      : 0;
+    setTotalCost(newTotal);
+  }, [orderItems]);
+
   const handleRemove = (id) => {
     setOrderItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
@@ -103,7 +114,7 @@ export default function ShoppingCart() {
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h6">
             Subtotal ({orderItems.length} items): $
-            {parseFloat(total.toFixed(2))}
+            {parseFloat(totalCost.toFixed(2))}
           </Typography>
           <Button
             variant="contained"

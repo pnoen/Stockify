@@ -5,11 +5,15 @@ import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.repository.OrderRepository;
 import com.stockify.ordermanagement.service.OrderService;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,18 +61,91 @@ public class OrderController {
     }
 
     // Get a list of all the orders
-    @GetMapping("/getAll")
-    public ResponseEntity<OrderListResponse> getAllOrders() {
-        List<Order> orderList = new ArrayList<>();
+    @GetMapping("/getAllCurrentCustomerOrders")
+    public ResponseEntity<?> getAllCurrentCustomerOrders(@RequestParam String email) {
+        try {
+            int customerId = getUserIdByEmail(email);
+            if (customerId <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
+            List<Order> filteredOrders = ordersForCustomer.stream()
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus())  && !OrderStatus.CANCELLED.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
 
-        Iterable<Order> orders = orderRepository.findAll();
+            return ResponseEntity.ok(new OrderListResponse(200, filteredOrders));
 
-        for (Order o:orders) {
-            orderList.add(o);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
         }
-
-        return ResponseEntity.ok(new OrderListResponse(200, orderList));
     }
+
+    @GetMapping("/getAllCompletedCustomerOrders")
+    public ResponseEntity<?> getAllCompletedCustomerOrders(@RequestParam String email) {
+        try {
+            int customerId = getUserIdByEmail(email);
+            if (customerId <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
+            List<Order> completedOrders = ordersForCustomer.stream()
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) && OrderStatus.CANCELLED.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+    @GetMapping("/getAllCurrentBusinessOrders")
+    public ResponseEntity<?> getAllCurrentBusinessOrders(@RequestParam String email) {
+        try {
+            int businessCode = getBusinessCodeByEmail(email);
+            if (businessCode <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
+            List<Order> filteredOrders = ordersForCustomer.stream()
+                    .filter(o -> !OrderStatus.DRAFT.equals(o.getOrderStatus()) && !OrderStatus.COMPLETE.equals(o.getOrderStatus()) && !OrderStatus.CANCELLED.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, filteredOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+
+    @GetMapping("/getAllCompletedBusinessOrders")
+    public ResponseEntity<?> getAllCompletedBusinessOrders(@RequestParam String email) {
+        try {
+            int businessCode = getBusinessCodeByEmail(email);
+            if (businessCode <= 0) {
+                return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
+            }
+            List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
+            List<Order> completedOrders = ordersForCustomer.stream()
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) || OrderStatus.CANCELLED.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(500, "An error occurred while processing the request."));
+        }
+    }
+
+
+
 
     // Get an order by its ID
     @GetMapping("/getOrderById")
@@ -77,6 +154,7 @@ public class OrderController {
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
+            order.setBusinessName(getBusinessNameByBusinessCode(order.getBusinessCode()));
             return ResponseEntity.ok(new OrderResponse(200, order));
         } else {
             return ResponseEntity.ok(new OrderResponse(404, null));
@@ -150,26 +228,53 @@ public class OrderController {
     }
 
     @PostMapping("/updateDraftOrder")
-    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody OrderIdRequest orderIdRequest) {
-        Optional<Order> draftOrderOptional = orderRepository.findById(orderIdRequest.getOrderId());
+    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody UpdateDraftOrderRequest updateDraftOrderRequest) {
+        Optional<Order> draftOrderOptional = orderRepository.findById(updateDraftOrderRequest.getOrderId());
 
         if (!draftOrderOptional.isPresent()) {
-            // Order doesn't exist
             return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot place order with empty shopping cart."));
         }
 
         Order draftOrder = draftOrderOptional.get();
         draftOrder.setOrderStatus(OrderStatus.PURCHASED);
+        draftOrder.setTotalCost(updateDraftOrderRequest.getTotalCost());
+        draftOrder.setOrderDate(LocalDate.now());
+        draftOrder.setBusinessName(getBusinessNameByBusinessCode(draftOrder.getBusinessCode()));
         orderRepository.save(draftOrder);
 
-        // Return the ID of the updated order
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
     }
+
+    @PostMapping("/updateOrderStatus")
+    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody UpdateOrderStatusRequest updateOrderStatusRequest) {
+        Optional<Order> orderOptional = orderRepository.findById(updateOrderStatusRequest.getOrderId());
+
+        if (!orderOptional.isPresent()) {
+            return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot find order."));
+        }
+        Order order = orderOptional.get();
+        order.setOrderStatus(updateOrderStatusRequest.getOrderStatus());
+        orderRepository.save(order);
+        return ResponseEntity.ok(new ApiResponse(200, "Order status successfully updated to " + order.getOrderStatus()));
+    }
+
+
 
 
     public int getUserIdByEmail(String email) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;
         return restTemplate.getForObject(url, Integer.class);
+    }
+    public int getBusinessCodeByEmail(String email) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getBusinessCode?email=" + email;
+        return restTemplate.getForObject(url, Integer.class);
+    }
+
+    public String getBusinessNameByBusinessCode(int businessCode) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8080/account/getBusinessName?businessCode=" + businessCode;
+        return restTemplate.getForObject(url, String.class);
     }
 }

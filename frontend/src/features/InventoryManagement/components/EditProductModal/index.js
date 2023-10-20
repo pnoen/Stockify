@@ -21,7 +21,7 @@ export default function EditProductModal({ open, onClose, productId }) {
   const [product, setProduct] = useState({
     name: "",
     description: "",
-    quantity: 0,
+    quantity: null,
     price: 0.0,
     imageUrl: "",
   });
@@ -103,6 +103,7 @@ export default function EditProductModal({ open, onClose, productId }) {
                 setProduct({ ...product, quantity: e.target.value })
               }
               margin="normal"
+              inputProps={{ min: 0 }}
               fullWidth
             />
             <TextField

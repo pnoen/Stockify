@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import "./styles.css";
-import CurrentOrderTable from "../CustomerOrders/CurrentOrderTable";
-import OrderHistoryTable from "../CustomerOrders/OrderHistoryTable";
+import CurrentOrderTable from "./CurrentOrderTable";
+import OrderHistoryTable from "./OrderHistoryTable"
 
 export default function BusinessOrderPage() {
   return (
