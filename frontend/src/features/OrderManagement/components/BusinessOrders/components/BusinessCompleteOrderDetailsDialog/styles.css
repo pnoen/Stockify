@@ -1,4 +1,5 @@
 .table-header-cell {
   background-color: #cbf5d6; /* Green background color */
   color: rgb(0, 0, 0); /* White text color */
+  font-weight: bold !important;
 }
