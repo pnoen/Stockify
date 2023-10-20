@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Modal,
-  TextField,
   Select,
   MenuItem,
   InputLabel,
@@ -10,7 +9,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { getBusinessCode, removeBusinessLink, removeUserLink } from "./api";
+import { getBusinessCode, removeBusinessLink } from "./api";
 import { getLinkedBusinesses } from "../../api";
 import SuccessSnackBar from "../../../../../../components/Snackbars/SuccessSnackbar";
 import LoadingSpinner from "../../../../../../components/LoadingSpinner";

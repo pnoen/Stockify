@@ -9,8 +9,8 @@ import {
   Typography,
   Button,
   Box,
-  Checkbox,
-  ButtonBase,
+  TableFooter,
+  TablePagination,
 } from "@mui/material";
 import "./styles.css";
 import { getUsers } from "./api";
@@ -33,6 +33,8 @@ export default function UserManagementPage() {
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +50,15 @@ export default function UserManagementPage() {
     };
     fetchData();
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <div
@@ -93,27 +104,53 @@ export default function UserManagementPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow
-                  hover
-                  key={user.id}
-                  onClick={() => {
-                    setSelectedUserId(user.id);
-                    setIsEditUserModalOpen(true);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                </TableRow>
-              ))}
+              {users
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user) => (
+                  <TableRow
+                    hover
+                    key={user.id}
+                    onClick={() => {
+                      setSelectedUserId(user.id);
+                      setIsEditUserModalOpen(true);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.firstName}</TableCell>
+                    <TableCell>{user.lastName}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  style={{ textAlign: "center", padding: "0.5em" }}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <LoadingSpinner
+                      isLoading={isLoading}
+                      props={
+                        <TablePagination
+                          rowsPerPageOptions={[5]}
+                          component="div"
+                          count={users.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                      }
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         </Paper>
-        <LoadingSpinner isLoading={isLoading} />
         <AddUserModal
           open={isAddUserModalOpen}
           onClose={() => setIsAddUserModalOpen(false)}

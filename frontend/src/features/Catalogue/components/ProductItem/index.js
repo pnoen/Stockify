@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 import { getImageUrl } from "./api";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function ProductItem({ product }) {
   const [imageUrl, setImageUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
+        setIsLoading(true);
         const url = await getImageUrl(product.imageURL);
         setImageUrl(url);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching image:", error);
+        setIsLoading(false);
       }
     };
 
@@ -51,9 +56,14 @@ export default function ProductItem({ product }) {
             width: "100%",
             height: "150px",
             backgroundColor: "#e0e0e0",
-            marginBottom: "10px",
+            marginBottom: "3px",
+            borderRadius: "10px",
+            display: "flex",
+            justifyContent: "center",
           }}
-        ></div>
+        >
+          <LoadingSpinner isLoading={isLoading} />
+        </div>
       )}
 
       <Typography>{product.businessName}</Typography>

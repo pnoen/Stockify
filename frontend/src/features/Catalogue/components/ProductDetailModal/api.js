@@ -40,5 +40,22 @@ const getImageUrl = async (imageName) => {
   return getDownloadURL(imageRef);
 };
 
+const getBusinessName = async (businessCode) => {
+  try {
+    const response = await axios.get(
+      `${config.userManagementServiceUrl}/account/getBusinessName`,
+      {
+        params: {
+          businessCode: businessCode,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching business name:", error);
+    throw error;
+  }
+}
 
-export { createDraftOrder, createOrderItem, getImageUrl };
+
+export { createDraftOrder, createOrderItem, getImageUrl, getBusinessName };

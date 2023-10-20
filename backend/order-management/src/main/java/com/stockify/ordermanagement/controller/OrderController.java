@@ -268,7 +268,8 @@ public class OrderController {
 
             String emailContent = generateEmailContent(order, productItems);
             String customerEmail = getUserEmailByCustomerId(order.getCustomerId());
-            emailService.sendEmail(customerEmail, "Stockify - Order Invoice", emailContent);
+            String emailSubject = "Stockify - Order #" + updateOrderStatusRequest.getOrderId() + " Invoice";
+            emailService.sendEmail(customerEmail, emailSubject, emailContent);
         }
         order.setOrderStatus(updateOrderStatusRequest.getOrderStatus());
         orderRepository.save(order);
@@ -344,19 +345,28 @@ public class OrderController {
                 .append("table {width: 100%; border-collapse: collapse; margin-bottom: 20px;}")
                 .append("th, td {border: 1px solid #ddd; text-align: left; padding: 8px;}")
                 .append("th {background-color: #cbf5d6;}")
+                .append("div.emailBody {padding: 0 1em;}")
+                .append("h1 {text-align: center; margin: 0;}")
+                .append("hr {border-style: solid; border-color: #00000050;}")
+                .append("p.orderItems {margin-bottom: 0.2em;}")
+                .append("p.subtotal {margin-top: 0.5em; text-align: right}")
                 .append("</style>")
                 .append("</head><body>");
 
         emailContent
-                .append("<h2>Order #: ").append(order.getId()).append("</h2>")
-                .append("<h3>Business Name: ").append(order.getBusinessName()).append("</h3>")
-                .append("<p>Order Date: ").append(order.getOrderDate()).append("</p>")
-                .append("<p>Completion Date: ").append(order.getCompletionDate()).append("</p><br>");
+                .append("<hr />")
+                .append("<h1>Order #").append(order.getId()).append("</h1>")
+                .append("<hr />")
+                .append("<div class='emailBody'>")
+                .append("<p><b>Business Name: </b>").append(order.getBusinessName()).append("</p>")
+                .append("<p><b>Order Date: </b>").append(order.getOrderDate()).append("</p>")
+                .append("<p><b>Completion Date: </b>").append(order.getCompletionDate()).append("</p>");
 
-        emailContent.append("<h3>Order Items</h3>")
+        emailContent.append("<p class='orderItems'><b>Order Items:</b></p>")
                 .append("<table>")
                 .append("<tr><th>Item Name</th><th>Description</th><th>Price ($)</th><th>Quantity</th></tr>");
 
+        float subtotal = 0;
         for (ProductItem productItem : productItems) {
             emailContent.append("<tr>")
                     .append("<td>").append(productItem.getName()).append("</td>")
@@ -364,11 +374,15 @@ public class OrderController {
                     .append("<td>").append(productItem.getPrice()).append("</td>")
                     .append("<td>").append(productItem.getQuantity()).append("</td>")
                     .append("</tr>");
+            subtotal += productItem.getPrice();
         }
 
         emailContent.append("</table>");
 
-        emailContent.append("<p>Thank you for your business!</p>")
+        emailContent.append("<p class='subtotal'>Subtotal (").append(productItems.size()).append(" items): $")
+                .append(subtotal).append("</p>")
+                .append("<p>Thank you for your business!</p>")
+                .append("</div>")
                 .append("</body></html>");
 
         return emailContent.toString();

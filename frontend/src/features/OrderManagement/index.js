@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
 import CustomerOrderPage from "./components/CustomerOrders";
 import BusinessOrderPage from "./components/BusinessOrders";
 import { checkIfBusiness } from "./api";

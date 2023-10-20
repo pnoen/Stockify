@@ -133,10 +133,6 @@ export default function ShoppingCart() {
         </Box>
 
         <Box display="flex" justifyContent="flex-end">
-          {/* <Typography variant="h6">
-            Subtotal ({orderItems.length} items): $
-            {parseFloat(total.toFixed(2))}
-          </Typography> */}
           <Button
             variant="contained"
             sx={{

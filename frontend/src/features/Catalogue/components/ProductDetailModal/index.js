@@ -8,8 +8,14 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
-import { createDraftOrder, createOrderItem, getImageUrl } from "./api";
+import {
+  createDraftOrder,
+  createOrderItem,
+  getBusinessName,
+  getImageUrl,
+} from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 export default function ProductDetailModal({
   open,
@@ -20,14 +26,20 @@ export default function ProductDetailModal({
 }) {
   const [quantity, setQuantity] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+  const [businessName, setBusinessName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
+        setIsImageLoading(true);
         const url = await getImageUrl(product.imageURL);
         setImageUrl(url);
+        setIsImageLoading(false);
       } catch (error) {
         console.error("Error fetching image:", error);
+        setIsImageLoading(false);
       }
     };
 
@@ -35,6 +47,18 @@ export default function ProductDetailModal({
       fetchImage();
     }
   }, [product.imageURL]);
+
+  useEffect(() => {
+    const fetchBusinessName = async () => {
+      try {
+        const business = await getBusinessName(product.businessCode);
+        setBusinessName(business);
+      } catch (error) {
+        console.error("Error fetching business name:", error);
+      }
+    };
+    fetchBusinessName();
+  }, []);
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
@@ -45,6 +69,7 @@ export default function ProductDetailModal({
 
   const handleAddToCart = async (product, quantity) => {
     try {
+      setIsLoading(true);
       const draftOrderData = await createDraftOrder();
       const draftOrderId = draftOrderData.message;
 
@@ -57,13 +82,16 @@ export default function ProductDetailModal({
       if (orderItemData.statusCode === 200) {
         console.log(orderItemData);
         onAddToCartSuccess(orderItemData.message);
+        setIsLoading(false);
         onClose();
       } else {
         console.error("Error placing the order.");
+        setIsLoading(false);
         onAddToCartFailure(orderItemData.message);
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
+      setIsLoading(false);
     }
   };
   return (
@@ -112,9 +140,14 @@ export default function ProductDetailModal({
                 width: "100%",
                 height: "35vh",
                 backgroundColor: "#e0e0e0",
-                marginBottom: "10px",
+                marginBottom: "3px",
+                borderRadius: "10px",
+                display: "flex",
+                justifyContent: "center",
               }}
-            ></div>
+            >
+              <LoadingSpinner isLoading={isImageLoading} />
+            </div>
           )}
         </Box>
 
@@ -128,7 +161,7 @@ export default function ProductDetailModal({
             margin: "0.5em 0",
           }}
         >
-          {product.businessCode}
+          {businessName}
         </Typography>
         {/* Centered Name and Description */}
         <Paper sx={{ margin: "0em", padding: "1em", borderRadius: "5px" }}>
@@ -184,13 +217,18 @@ export default function ProductDetailModal({
             Back
           </Button>
 
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "#1DB954", color: "white" }}
-            onClick={() => handleAddToCart(product, quantity)}
-          >
-            Add to Cart
-          </Button>
+          <LoadingSpinner
+            isLoading={isLoading}
+            props={
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "#1DB954", color: "white" }}
+                onClick={() => handleAddToCart(product, quantity)}
+              >
+                Add to Cart
+              </Button>
+            }
+          />
         </Box>
       </Box>
     </Modal>

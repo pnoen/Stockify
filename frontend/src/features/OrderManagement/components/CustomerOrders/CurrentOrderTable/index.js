@@ -13,12 +13,14 @@ import {
 import { fetchOpenOrders } from "./api";
 import OrderDetailsDialog from "../components/OrderDetailsDialog";
 import "./styles.css";
+import LoadingSpinner from "../../../../../components/LoadingSpinner";
 
 export default function CurrentOrderTable() {
   const [openOrders, setOpenOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpenDialog = (orderId) => {
     setSelectedOrderId(orderId);
@@ -31,10 +33,13 @@ export default function CurrentOrderTable() {
   useEffect(() => {
     const getOrders = async () => {
       try {
+        setIsLoading(true);
         const response = await fetchOpenOrders();
         setOpenOrders(response.orderList || []);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        setIsLoading(false);
       }
     };
 
@@ -51,10 +56,11 @@ export default function CurrentOrderTable() {
   };
 
   return (
-    <div style={{ maxWidth: "90%", width: "100%" }}>
+    <div style={{ width: "100%", marginBottom: "39px" }}>
       <Typography variant="h6" gutterBottom>
         Open Orders
       </Typography>
+
       <Paper>
         <Table>
           <TableHead>
@@ -90,16 +96,24 @@ export default function CurrentOrderTable() {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={4} style={{ textAlign: "center" }}>
+              <TableCell
+                colSpan={4}
+                style={{ textAlign: "center", padding: "0.5em" }}
+              >
                 <div style={{ display: "flex", justifyContent: "center" }}>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    component="div"
-                    count={openOrders.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  <LoadingSpinner
+                    isLoading={isLoading}
+                    props={
+                      <TablePagination
+                        rowsPerPageOptions={[5]}
+                        component="div"
+                        count={openOrders.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    }
                   />
                 </div>
               </TableCell>

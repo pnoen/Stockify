@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditDetailsForm from "./components/EditDetailsForm";
 import EditPasswordForm from "./components/EditPasswordForm";
@@ -38,6 +38,15 @@ export default function SettingsPage() {
         </div>
 
         <EditDetailsForm />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            margin: "1.5em 0",
+          }}
+        >
+          <Divider sx={{ width: "75%" }} />
+        </div>
         <EditPasswordForm />
       </div>
     </div>

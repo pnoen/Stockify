@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
   TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   Button,
   Box,
   Typography,
@@ -76,7 +71,7 @@ export default function EditDetailsForm() {
 
   return (
     <>
-      <Paper style={{ marginBottom: "32px", borderRadius: "10px" }}>
+      <Paper style={{ borderRadius: "10px" }}>
         <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
             User Details
