@@ -91,8 +91,8 @@ public class OrderController {
             }
             List<Order> ordersForCustomer = orderRepository.findByCustomerId(customerId);
             List<Order> completedOrders = ordersForCustomer.stream()
-                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) && OrderStatus.CANCELLED.equals(o.getOrderStatus()))
-                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) || OrderStatus.CANCELLED.equals(o.getOrderStatus()))
+                    .sorted(Comparator.comparing(Order::getCompletionDate).reversed())
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
@@ -133,7 +133,7 @@ public class OrderController {
             List<Order> ordersForCustomer = orderRepository.findByBusinessCode(businessCode);
             List<Order> completedOrders = ordersForCustomer.stream()
                     .filter(o -> OrderStatus.COMPLETE.equals(o.getOrderStatus()) || OrderStatus.CANCELLED.equals(o.getOrderStatus()))
-                    .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                    .sorted(Comparator.comparing(Order::getCompletionDate).reversed())
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(new OrderListResponse(200, completedOrders));
@@ -253,6 +253,9 @@ public class OrderController {
             return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot find order."));
         }
         Order order = orderOptional.get();
+        if (updateOrderStatusRequest.getOrderStatus() == OrderStatus.COMPLETE || updateOrderStatusRequest.getOrderStatus() == OrderStatus.CANCELLED ){
+            order.setCompletionDate(LocalDate.now());
+        }
         order.setOrderStatus(updateOrderStatusRequest.getOrderStatus());
         orderRepository.save(order);
         return ResponseEntity.ok(new ApiResponse(200, "Order status successfully updated to " + order.getOrderStatus()));

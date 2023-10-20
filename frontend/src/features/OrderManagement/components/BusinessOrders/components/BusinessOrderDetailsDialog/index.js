@@ -81,6 +81,7 @@ export default function BusinessOrderDetailsDialog({
         newStatus
       );
       onSuccess(updateResponse.message);
+      onClose();
     } catch (error) {
       console.error("Error updating order status:", error);
     }
@@ -125,13 +126,14 @@ export default function BusinessOrderDetailsDialog({
           Customer Name: {customerDetails?.firstName}{" "}
           {customerDetails?.lastName}
         </Typography>
-        <Box display="flex" alignItems="center" sx={{ paddingTop: "0.5rem" }}>
+        <Box display="flex" alignItems="center" sx={{ paddingTop: "0.2rem" }}>
           <Typography
             sx={{ fontWeight: "bold", paddingRight: "0.5rem" }}
             variant="h6"
           >
             Order Status:
           </Typography>
+
           <FormControl variant="outlined" sx={{ minWidth: 120 }}>
             <Select
               value={orderStatus}
@@ -145,6 +147,20 @@ export default function BusinessOrderDetailsDialog({
             </Select>
           </FormControl>
         </Box>
+        <Typography
+          sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
+          variant="body1"
+        >
+          Order Date: {orderDetails?.orderDate}
+        </Typography>
+        {orderDetails?.completionDate ? (
+          <Typography
+            sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
+            variant="body1"
+          >
+            Completion Date: {orderDetails?.completionDate}
+          </Typography>
+        ) : null}
 
         <Typography
           variant="h6"

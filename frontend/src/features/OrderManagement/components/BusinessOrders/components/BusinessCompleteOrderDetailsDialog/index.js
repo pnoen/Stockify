@@ -90,7 +90,20 @@ export default function BusinessCompleteOrderDetailsDialog({
         >
           Order Status: {orderDetails?.orderStatus}
         </Typography>
-
+        <Typography
+          sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
+          variant="body1"
+        >
+          Order Date: {orderDetails?.orderDate}
+        </Typography>
+        {orderDetails?.completionDate ? (
+          <Typography
+            sx={{ fontWeight: "light", paddingTop: "0.5rem" }}
+            variant="body1"
+          >
+            Completion Date: {orderDetails?.completionDate}
+          </Typography>
+        ) : null}
         <Typography
           variant="h6"
           sx={{ fontWeight: "bold" }}

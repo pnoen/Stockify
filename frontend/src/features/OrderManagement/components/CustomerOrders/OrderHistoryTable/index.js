@@ -60,7 +60,7 @@ export default function CurrentOrderTable() {
           <TableHead>
             <TableRow>
               <TableCell className="table-header-cell">Order ID</TableCell>
-              <TableCell className="table-header-cell">Order Date</TableCell>
+              <TableCell className="table-header-cell">Completion Date</TableCell>
               <TableCell className="table-header-cell">
                 Total Cost ($)
               </TableCell>
@@ -82,7 +82,7 @@ export default function CurrentOrderTable() {
                   }}
                 >
                   <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.orderDate}</TableCell>
+                  <TableCell>{order.completionDate}</TableCell>
                   <TableCell>{order.totalCost}</TableCell>
                   <TableCell>{order.orderStatus}</TableCell>
                 </TableRow>
