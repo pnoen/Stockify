@@ -68,12 +68,11 @@ export default function LoginPage() {
           }}
         >
           <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-            Log in
+            Login
           </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
-            noValidate
             sx={{ mt: 1 }}
           >
             <TextField
@@ -83,6 +82,7 @@ export default function LoginPage() {
               fullWidth
               id="email"
               label="Email Address"
+              type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
@@ -116,7 +116,7 @@ export default function LoginPage() {
                     },
                   }}
                 >
-                  Log In
+                  LogIn
                 </Button>
               }
             />

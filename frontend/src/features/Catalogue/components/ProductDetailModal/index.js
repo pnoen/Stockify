@@ -130,7 +130,6 @@ export default function ProductDetailModal({
         >
           {product.businessCode}
         </Typography>
-        {/* <Divider /> */}
         {/* Centered Name and Description */}
         <Paper sx={{ margin: "0em", padding: "1em", borderRadius: "5px" }}>
           <Typography variant="h4" gutterBottom align="center">
@@ -167,8 +166,6 @@ export default function ProductDetailModal({
             />
           </Box>
         </Paper>
-
-        {/* <Divider /> */}
 
         <Box
           mt={3}

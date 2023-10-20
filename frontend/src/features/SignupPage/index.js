@@ -87,7 +87,6 @@ export default function SignupPage() {
           <Box
             component="form"
             onSubmit={handleSubmit}
-            noValidate
             sx={{ mt: 1 }}
           >
             <Grid container spacing={2}>
@@ -127,6 +126,7 @@ export default function SignupPage() {
               id="email"
               label="Email Address"
               name="email"
+              type="email"
               value={formData.email}
               onChange={handleInputChange}
             />
@@ -212,7 +212,7 @@ export default function SignupPage() {
                 to="/login"
                 sx={{ color: green[500] }}
               >
-                Already have an account? Log in
+                Already have an account? Login
               </Link>
             </Box>
           </Box>
