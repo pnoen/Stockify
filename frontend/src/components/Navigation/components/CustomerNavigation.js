@@ -8,6 +8,8 @@ import {
   Badge,
   Menu,
   MenuItem,
+  Icon,
+  Avatar,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -17,25 +19,29 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    color: "#ffffff",
+    color: "#ffffff !important",
     "&:hover": {
-      color: "#cbf5d6",
+      color: "#cbf5d6 !important",
     },
     "& .MuiSvgIcon-root": {
-      color: "#ffffff",
+      color: "#ffffff !important",
     },
     "& .MuiSvgIcon-root:hover": {
-      color: "#cbf5d6",
+      color: "#cbf5d6 !important",
     },
   },
   openDropdown: {
-    color: "#cbf5d6",
+    color: "#cbf5d6 !important",
     "& .MuiSvgIcon-root": {
-      color: "#cbf5d6",
+      color: "#cbf5d6 !important",
     },
     "&:hover": {
-      color: "#c4eecf",
+      color: "#c4eecf !important",
     },
+  },
+  logoButton: {
+    textTransform: "none !important",
+    color: "#cbf5d6 !important",
   },
 }));
 
@@ -78,24 +84,23 @@ export default function CustomerNavigation() {
       }}
     >
       <Toolbar sx={{ height: "5vh" }}>
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ maxHeight: "30px", marginRight: "10px" }}
-        />
-        <Typography
-          variant="h6"
-          style={{ marginRight: "10px", color: "#cbf5d6" }}
-        >
-          Stockify
-        </Typography>
         <Button
           color="inherit"
           component={Link}
           to="/home"
-          className={classes.button}
+          className={classes.logoButton}
         >
-          Home
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ maxHeight: "30px", marginRight: "10px" }}
+          />
+          <Typography
+            variant="h6"
+            style={{ marginRight: "10px", color: "#cbf5d6" }}
+          >
+            Stockify
+          </Typography>
         </Button>
         <Button
           color="inherit"

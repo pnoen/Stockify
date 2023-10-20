@@ -69,6 +69,7 @@ export default function EditProductModal({ open, onClose, productId }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px"
   };
 
   return (

@@ -23,31 +23,31 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   itemButton: {
-    color: "#ffffff",
+    color: "#ffffff !important",
     "& .MuiSvgIcon-root": {
-      color: "#ffffff",
+      color: "#ffffff !important",
     },
     "&:hover": {
-      backgroundColor: "#151e2f",
+      backgroundColor: "#151e2f !important",
     },
   },
   openedListButton: {
-    color: "#ffffff",
+    color: "#ffffff !important",
     "& .MuiSvgIcon-root": {
-      color: "#ffffff",
+      color: "#ffffff !important",
     },
     "&:hover": {
-      backgroundColor: "#071021",
+      backgroundColor: "#071021 !important",
     },
-    backgroundColor: "#0e1728",
+    backgroundColor: "#0e1728 !important",
   },
   listCollapsed: {
-    backgroundColor: "#151e2f",
+    backgroundColor: "#151e2f !important",
   },
   itemButtonCollapsed: {
-    color: "#ffffff",
+    color: "#ffffff !important",
     "&:hover": {
-      backgroundColor: "#0e1728",
+      backgroundColor: "#0e1728 !important",
     },
   },
 }));

@@ -88,6 +88,7 @@ export default function EditUserModal({ open, onClose, userId }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (

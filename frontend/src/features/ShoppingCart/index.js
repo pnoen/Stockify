@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Divider, Paper } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import OrderItem from "./components/OrderItem";
 import { getDraftOrder, getOrderItems, updateDraftOrder } from "./api";
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   scrollContainer: {
     maxHeight: "70%",
     overflowY: "auto",
-    marginBottom: 30,
+    padding: "5px",
   },
 }));
 
@@ -84,27 +84,48 @@ export default function ShoppingCart() {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <Box display="flex" justifyContent="center" pt={"5vh"}>
-      <Box width="80%">
-        <Typography variant="h3" gutterBottom className={classes.boldText}>
-          Shopping Cart
-        </Typography>
+    <Box alignItems="center" display="flex" justifyContent="center" pt={"5vh"}>
+      <Box width="90%">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <Typography variant="h3" gutterBottom className={classes.boldText}>
+            Shopping Cart
+          </Typography>
+        </div>
+
         <Typography variant="h6" gutterBottom>
           You have {orderItems.length} item{orderItems.length !== 1 ? "s" : ""}{" "}
           in your cart
         </Typography>
+        <Paper
+          sx={{ borderRadius: "10px", backgroundColor: "#cbf5d6" }}
+        >
+          <Box className={classes.scrollContainer}>
+            {orderItems.map((item) => (
+              <OrderItem key={item.id} product={item} onRemove={handleRemove} />
+            ))}
+          </Box>
+        </Paper>
 
-        <Box className={classes.scrollContainer}>
-          {orderItems.map((item) => (
-            <OrderItem key={item.id} product={item} onRemove={handleRemove} />
-          ))}
-        </Box>
-
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="flex-end" sx={{ margin: "1em" }}>
           <Typography variant="h6">
+            <Divider sx={{ background: "#0000003a" }} />
             Subtotal ({orderItems.length} items): $
             {parseFloat(total.toFixed(2))}
           </Typography>
+        </Box>
+
+        <Box display="flex" justifyContent="flex-end">
+          {/* <Typography variant="h6">
+            Subtotal ({orderItems.length} items): $
+            {parseFloat(total.toFixed(2))}
+          </Typography> */}
           <Button
             variant="contained"
             sx={{
@@ -114,6 +135,7 @@ export default function ShoppingCart() {
                 color: "#1DB954",
                 outlineColor: "#1DB954",
               },
+              marginRight: "1em",
             }}
             onClick={() => setOpenDialog(true)}
           >

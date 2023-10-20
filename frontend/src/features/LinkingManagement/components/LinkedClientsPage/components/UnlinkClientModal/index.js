@@ -73,6 +73,7 @@ export default function UnlinkClientModal({ open, onClose }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (
@@ -89,6 +90,7 @@ export default function UnlinkClientModal({ open, onClose }) {
                 labelId="client-label"
                 value={link.userId}
                 onChange={(e) => setLink({ ...link, userId: e.target.value })}
+                sx={{ width: "6em" }}
               >
                 {clients.map((client) => (
                   <MenuItem key={client.id} value={client.id}>

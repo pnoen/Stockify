@@ -76,7 +76,7 @@ export default function EditDetailsForm() {
 
   return (
     <>
-      <Paper style={{ marginBottom: "32px" }}>
+      <Paper style={{ marginBottom: "32px", borderRadius: "10px" }}>
         <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
             User Details

@@ -7,8 +7,9 @@ import { deleteOrderItem } from "./api";
 const useStyles = makeStyles((theme) => ({
   card: {
     "&.MuiCard-root": {
-      marginBottom: 10,
-      backgroundColor: "rgba(255, 255, 255, 0.7)",
+      margin: "10px 0px",
+      // marginBottom: 10,
+      backgroundColor: "fafafafa6a",
       borderRadius: "4px",
     },
   },

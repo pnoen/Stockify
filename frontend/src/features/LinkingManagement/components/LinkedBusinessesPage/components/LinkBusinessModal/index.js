@@ -56,6 +56,7 @@ export default function LinkBusinessModal({ open, onClose }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (

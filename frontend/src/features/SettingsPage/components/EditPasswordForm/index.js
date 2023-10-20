@@ -57,7 +57,7 @@ export default function EditPasswordForm() {
 
   return (
     <>
-      <Paper>
+      <Paper style={{ borderRadius: "10px" }}>
         <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
             Password

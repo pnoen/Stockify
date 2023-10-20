@@ -76,6 +76,7 @@ export default function AddProductModal({ open, onClose }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (
@@ -133,6 +134,7 @@ export default function AddProductModal({ open, onClose }) {
                 variant="outlined"
                 color="primary"
                 startIcon={<UploadFileIcon />}
+                sx={{ minWidth: "170px", height: "2.5em" }}
               >
                 Upload image
                 <input

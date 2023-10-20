@@ -73,6 +73,7 @@ export default function UnlinkBusinessModal({ open, onClose }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (
@@ -91,6 +92,7 @@ export default function UnlinkBusinessModal({ open, onClose }) {
                 onChange={(e) =>
                   setLink({ ...link, businessCode: e.target.value })
                 }
+                sx={{ minWidth: "8em" }}
               >
                 {businesses.map((business) => (
                   <MenuItem
