@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import "./styles.css";
 import CurrentOrderTable from "../CustomerOrders/CurrentOrderTable";
 import OrderHistoryTable from "../CustomerOrders/OrderHistoryTable";
@@ -39,6 +39,15 @@ export default function CustomerOrderPage() {
         </div>
 
         <CurrentOrderTable />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            margin: "1.5em 0 0 0",
+          }}
+        >
+          <Divider sx={{ width: "75%" }} />
+        </div>
         <OrderHistoryTable />
       </div>
     </div>

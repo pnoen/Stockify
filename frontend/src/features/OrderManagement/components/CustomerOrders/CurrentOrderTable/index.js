@@ -56,7 +56,7 @@ export default function CurrentOrderTable() {
   };
 
   return (
-    <div style={{ width: "100%", marginBottom: "32px" }}>
+    <div style={{ width: "100%", marginBottom: "39px" }}>
       <Typography variant="h6" gutterBottom>
         Open Orders
       </Typography>
