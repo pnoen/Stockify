@@ -5,11 +5,8 @@ import {
   Typography,
   IconButton,
   Button,
-  Badge,
   Menu,
   MenuItem,
-  Icon,
-  Avatar,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";

@@ -9,8 +9,6 @@ import {
   Typography,
   Button,
   Box,
-  Checkbox,
-  ButtonBase,
   TableFooter,
   TablePagination,
 } from "@mui/material";
