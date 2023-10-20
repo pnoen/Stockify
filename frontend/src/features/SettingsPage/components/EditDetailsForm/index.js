@@ -11,11 +11,19 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { checkIfBusiness, getUserId, editUser } from "./api";
 import SuccessSnackBar from "../../../../components/Snackbars/SuccessSnackbar";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 
+const useStyles = makeStyles((theme) => ({
+  input: {
+    background: "#cbf5d68f",
+  },
+}));
+
 export default function EditDetailsForm() {
+  const classes = useStyles();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [user, setUser] = useState({
@@ -68,7 +76,7 @@ export default function EditDetailsForm() {
 
   return (
     <>
-      <Paper style={{ marginBottom: "32px" }}>
+      <Paper style={{ marginBottom: "32px", borderRadius: "10px" }}>
         <div style={{ width: "100%", padding: "16px" }}>
           <Typography variant="h6" gutterBottom>
             User Details
@@ -80,6 +88,7 @@ export default function EditDetailsForm() {
               value={user.firstName}
               onChange={(e) => setUser({ ...user, firstName: e.target.value })}
               margin="normal"
+              InputProps={{ className: classes.input }}
               fullWidth
             />
             <TextField
@@ -87,6 +96,7 @@ export default function EditDetailsForm() {
               value={user.lastName}
               onChange={(e) => setUser({ ...user, lastName: e.target.value })}
               margin="normal"
+              InputProps={{ className: classes.input }}
               fullWidth
             />
             {isBusiness ? (
@@ -95,6 +105,7 @@ export default function EditDetailsForm() {
                 value={user.business}
                 onChange={(e) => setUser({ ...user, business: e.target.value })}
                 margin="normal"
+                InputProps={{ className: classes.input }}
                 fullWidth
               />
             ) : null}

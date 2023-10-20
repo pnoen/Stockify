@@ -13,15 +13,47 @@ import {
   Box,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import logo from "../../../assets/logo.png"; // Import your logo here
+import logo from "../../../assets/logoGreen.png"; // Import your logo here
 import { Link, useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  itemButton: {
+    color: "#ffffff !important",
+    "& .MuiSvgIcon-root": {
+      color: "#ffffff !important",
+    },
+    "&:hover": {
+      backgroundColor: "#151e2f !important",
+    },
+  },
+  openedListButton: {
+    color: "#ffffff !important",
+    "& .MuiSvgIcon-root": {
+      color: "#ffffff !important",
+    },
+    "&:hover": {
+      backgroundColor: "#071021 !important",
+    },
+    backgroundColor: "#0e1728 !important",
+  },
+  listCollapsed: {
+    backgroundColor: "#151e2f !important",
+  },
+  itemButtonCollapsed: {
+    color: "#ffffff !important",
+    "&:hover": {
+      backgroundColor: "#0e1728 !important",
+    },
+  },
+}));
 
 export default function SupplierNavigation() {
+  const classes = useStyles();
   const [openDropdowns, setOpenDropdowns] = useState({
     profile: false,
     admin: false,
@@ -50,6 +82,7 @@ export default function SupplierNavigation() {
           "& .MuiDrawer-paper": {
             width: "15vw",
             boxSizing: "border-box",
+            backgroundColor: "#1c2536",
           },
         }}
       >
@@ -61,40 +94,63 @@ export default function SupplierNavigation() {
               alt="Logo"
               style={{ maxHeight: "30px", marginRight: "10px" }}
             />
-            <Typography variant="h6">Stockify</Typography>
+            <Typography variant="h6" style={{ color: "#cbf5d6" }}>
+              Stockify
+            </Typography>
           </ListItem>
-          <Divider />
-          <ListItemButton>
+          <Divider sx={{ background: "#ffffff5d" }} />
+          <ListItemButton className={classes.itemButton}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/orders">
+          <ListItemButton
+            component={Link}
+            to="/orders"
+            className={classes.itemButton}
+          >
             <ListItemIcon>
               <ShoppingCartIcon />
             </ListItemIcon>
             <ListItemText primary="Orders" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/inventory">
+          <ListItemButton
+            component={Link}
+            to="/inventory"
+            className={classes.itemButton}
+          >
             <ListItemIcon>
               <InventoryIcon />
             </ListItemIcon>
             <ListItemText primary="Inventory" />
           </ListItemButton>
-          <ListItemButton onClick={() => handleDropdownClick("admin")}>
+          <ListItemButton
+            onClick={() => handleDropdownClick("admin")}
+            className={
+              openDropdowns.admin
+                ? classes.openedListButton
+                : classes.itemButton
+            }
+          >
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
             <ListItemText primary="Admin" />
             {openDropdowns.admin ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={openDropdowns.admin} timeout="auto" unmountOnExit>
+          <Collapse
+            in={openDropdowns.admin}
+            timeout="auto"
+            unmountOnExit
+            className={classes.listCollapsed}
+          >
             <List component="div" disablePadding>
               <ListItemButton
                 sx={{ paddingLeft: 4 }}
                 component={Link}
                 to="/users"
+                className={classes.itemButtonCollapsed}
               >
                 <ListItemText primary="Users" />
               </ListItemButton>
@@ -102,24 +158,46 @@ export default function SupplierNavigation() {
                 sx={{ paddingLeft: 4 }}
                 component={Link}
                 to="/links"
+                className={classes.itemButtonCollapsed}
               >
                 <ListItemText primary="Linked Clients" />
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton onClick={() => handleDropdownClick("profile")}>
+          <ListItemButton
+            onClick={() => handleDropdownClick("profile")}
+            className={
+              openDropdowns.profile
+                ? classes.openedListButton
+                : classes.itemButton
+            }
+          >
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
             <ListItemText primary="Profile" />
             {openDropdowns.profile ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={openDropdowns.profile} timeout="auto" unmountOnExit>
+          <Collapse
+            in={openDropdowns.profile}
+            timeout="auto"
+            unmountOnExit
+            className={classes.listCollapsed}
+          >
             <List component="div" disablePadding>
-              <ListItemButton sx={{ paddingLeft: 4 }} to="/settings">
+              <ListItemButton
+                sx={{ paddingLeft: 4 }}
+                component={Link}
+                to="/settings"
+                className={classes.itemButtonCollapsed}
+              >
                 <ListItemText primary="Settings" />
               </ListItemButton>
-              <ListItemButton sx={{ paddingLeft: 4 }} onClick={handleLogout}>
+              <ListItemButton
+                sx={{ paddingLeft: 4 }}
+                onClick={handleLogout}
+                className={classes.itemButtonCollapsed}
+              >
                 <ListItemText primary="Logout" />
               </ListItemButton>
             </List>

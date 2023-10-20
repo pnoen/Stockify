@@ -70,6 +70,7 @@ export default function RemoveProductModal({ open, onClose }) {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    borderRadius: "20px",
   };
 
   return (
@@ -86,6 +87,7 @@ export default function RemoveProductModal({ open, onClose }) {
                 labelId="product-label"
                 value={product.id}
                 onChange={(e) => setProduct({ ...product, id: e.target.value })}
+                sx={{ minWidth: "7em" }}
               >
                 {products.map((inventoryProduct) => (
                   <MenuItem

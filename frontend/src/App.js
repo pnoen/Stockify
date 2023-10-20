@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "./features/LoginPage";
 import SignupPage from "./features/SignupPage";
 import Navigation from "./components/Navigation";
+import "./styles.css";
 
 export const AuthContext = createContext();
 
