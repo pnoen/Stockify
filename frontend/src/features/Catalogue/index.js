@@ -14,6 +14,7 @@ import { getProductsForCustomer } from "./api";
 import SuccessSnackBar from "../../components/Snackbars/SuccessSnackbar";
 import FailureSnackbar from "../../components/Snackbars/FailureSnackbar";
 import "./styles.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -27,30 +28,28 @@ export default function Catalogue() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarErrorOpen, setSnackbarErrorOpen] = useState(false);
   const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setIsLoading(true);
         const data = await getProductsForCustomer();
         setProducts(data);
-        setLoading(false);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>; // Or any loading spinner
-  }
 
   return (
     <div
@@ -108,6 +107,7 @@ export default function Catalogue() {
               }}
             />
           )}
+          <LoadingSpinner isLoading={isLoading} />
         </Box>
       </div>
       <SuccessSnackBar
