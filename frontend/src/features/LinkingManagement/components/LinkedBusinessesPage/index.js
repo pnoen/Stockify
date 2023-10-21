@@ -116,11 +116,7 @@ export default function LinkedBusinessesPage() {
               {businesses
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((business) => (
-                  <TableRow
-                    hover
-                    key={business.businessCode}
-                    style={{ cursor: "pointer" }}
-                  >
+                  <TableRow hover key={business.businessCode}>
                     <TableCell>{business.businessCode}</TableCell>
                     <TableCell>{business.businessName}</TableCell>
                   </TableRow>

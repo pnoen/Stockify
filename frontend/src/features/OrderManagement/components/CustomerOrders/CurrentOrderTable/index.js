@@ -78,14 +78,10 @@ export default function CurrentOrderTable() {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((order) => (
                 <TableRow
+                  hover
                   key={order.id}
                   onClick={() => handleOpenDialog(order.id)}
-                  sx={{
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "lightgray",
-                    },
-                  }}
+                  style={{ cursor: "pointer" }}
                 >
                   <TableCell>{order.id}</TableCell>
                   <TableCell>{order.orderDate}</TableCell>

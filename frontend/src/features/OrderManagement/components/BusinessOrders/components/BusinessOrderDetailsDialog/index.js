@@ -190,7 +190,7 @@ export default function BusinessOrderDetailsDialog({
                 {orderItems
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((item) => (
-                    <TableRow key={item.id}>
+                    <TableRow hover key={item.id}>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>{item.price}</TableCell>
