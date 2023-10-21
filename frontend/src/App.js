@@ -26,6 +26,14 @@ const LoginHandler = () => {
   return <LoginPage />;
 };
 
+const SignupHandler = () => {
+  useEffect(() => {
+    localStorage.removeItem("userToken");
+  }, []);
+
+  return <SignupPage />;
+};
+
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,7 +50,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginHandler />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signup" element={<SignupHandler />} />
         <Route path="/*" element={<AuthenticatedNavigationWrapper />} />
       </Routes>
     </AuthContext.Provider>
