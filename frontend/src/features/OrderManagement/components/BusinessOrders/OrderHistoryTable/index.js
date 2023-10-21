@@ -77,14 +77,10 @@ export default function OrderHistoryTable() {
           <TableBody>
             {completedOrders.map((order) => (
               <TableRow
+                hover
                 key={order.id}
                 onClick={() => handleOpenDialog(order.id)}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "lightgray",
-                  },
-                }}
+                style={{ cursor: "pointer" }}
               >
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.completionDate}</TableCell>

@@ -116,7 +116,7 @@ export default function LinkedClientsPage() {
               {clients
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((client) => (
-                  <TableRow hover key={client.id} style={{ cursor: "pointer" }}>
+                  <TableRow hover key={client.id}>
                     <TableCell>{client.id}</TableCell>
                     <TableCell>{client.firstName}</TableCell>
                     <TableCell>{client.lastName}</TableCell>
