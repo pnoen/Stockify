@@ -12,6 +12,7 @@ import Catalogue from "../../features/Catalogue";
 import ShoppingCart from "../../features/ShoppingCart";
 import SettingsPage from "../../features/SettingsPage";
 import PageNotFound from "../PageNotFound";
+import Dashboard from "../../features/Dashboard";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -112,6 +113,14 @@ const Navigation = () => {
             element={
               <ProtectedRoute>
                 <Catalogue />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
               </ProtectedRoute>
             }
           />

@@ -1,128 +1,47 @@
-import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import {
-  Box,
-  TextField,
-  Button,
-  CssBaseline,
-  Typography,
-  Grid,
-  Link,
-} from "@mui/material";
-import { green } from "@mui/material/colors";
-import logo from "../../assets/logo.png"; // Import your logo here
+import React from "react";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const StatCard = ({ title, value }) => (
+  <Card sx={{ minWidth: 275 }}>
+    <CardContent>
+      <Typography variant="h5" component="div">
+        {title}
+      </Typography>
+      <Typography variant="body2">{value}</Typography>
+    </CardContent>
+  </Card>
+);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+const Dashboard = () => {
+  // Mock data
+  const businessInfo = {
+    name: "Your Business Name",
+    code: "YBN123",
   };
 
+  const totalOrders = 200;
+  const openOrders = 50;
+  const totalRevenue = 10000;
+
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={12}
-        sm={8}
-        md={6}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-            Log in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: green[500],
-                "&:hover": {
-                  backgroundColor: green[700],
-                },
-              }}
-            >
-              Log In
-            </Button>
-            <Box sx={{ mt: 2, alignSelf: "flex-start" }}>
-              <Link
-                component={RouterLink}
-                to="/signup"
-                sx={{ color: green[500] }}
-              >
-                Dont have an account? Sign up
-              </Link>
-            </Box>
-          </Box>
-        </Box>
+    <Box sx={{ flexGrow: 1, m: 3, maxWidth: "60%" }}>
+      <Typography variant="h4" mb={3}>
+        {businessInfo.name} ({businessInfo.code})
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <StatCard title="Total Orders" value={totalOrders} />
+        </Grid>
+        <Grid item xs={4}>
+          <StatCard title="Open Orders" value={openOrders} />
+        </Grid>
+        <Grid item xs={4}>
+          <StatCard title="Total Revenue" value={`$${totalRevenue}`} />
+        </Grid>
+        {/* ...other stat cards */}
       </Grid>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={4}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ maxHeight: "100%", maxWidth: "100%" }}
-        />
-        <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-          tockify
-        </Typography>
-      </Grid>
-    </Grid>
+    </Box>
   );
-}
+};
+
+export default Dashboard;

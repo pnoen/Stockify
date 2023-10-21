@@ -12,9 +12,8 @@ import {
   Collapse,
   Box,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Dashboard, ExpandLess, ExpandMore } from "@mui/icons-material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import logo from "../../../assets/logoGreen.png"; // Import your logo here
@@ -99,11 +98,15 @@ export default function SupplierNavigation() {
             </Typography>
           </ListItem>
           <Divider sx={{ background: "#ffffff5d" }} />
-          <ListItemButton className={classes.itemButton}>
+          <ListItemButton
+            component={Link}
+            to="/dashboard"
+            className={classes.itemButton}
+          >
             <ListItemIcon>
-              <HomeIcon />
+              <Dashboard />
             </ListItemIcon>
-            <ListItemText primary="Home" />
+            <ListItemText primary="Dashboard" />
           </ListItemButton>
           <ListItemButton
             component={Link}
