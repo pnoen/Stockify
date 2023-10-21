@@ -11,6 +11,7 @@ import InventoryManagementPage from "../../features/InventoryManagement";
 import Catalogue from "../../features/Catalogue";
 import ShoppingCart from "../../features/ShoppingCart";
 import SettingsPage from "../../features/SettingsPage";
+import PageNotFound from "../PageNotFound";
 
 const LayoutWrapper = ({ isBusiness, children }) => (
   <Box
@@ -130,6 +131,7 @@ const Navigation = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </LayoutWrapper>
     </>
