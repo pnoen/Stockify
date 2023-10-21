@@ -220,7 +220,16 @@ export default function SupplierNavigation() {
             </List>
           </Collapse>
         </List>
-        <Box sx={{ mt: "auto", mb: 2, ml: 2, color: "#cbf5d6" }}>
+        <Box
+          sx={{
+            mt: "auto",
+            mb: 2,
+            color: "#cbf5d6",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           Business Code: {businessCode}
         </Box>
       </Drawer>
