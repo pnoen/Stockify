@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Toolbar,
   Typography,
@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import { Dashboard, ExpandLess, ExpandMore } from "@mui/icons-material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import logo from "../../../assets/logoGreen.png"; // Import your logo here
+import logo from "../../../assets/logoGreen.png";
+import { getBusinessCode } from "./api";
 import { Link, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 
@@ -53,12 +55,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SupplierNavigation() {
   const classes = useStyles();
+  const [businessCode, setBusinessCode] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState({
     profile: false,
     admin: false,
   });
   const navigate = useNavigate();
+  useEffect(() => {
+    const fetchBusinessCode = async () => {
+      try {
+        const code = await getBusinessCode();
+        setBusinessCode(code);
+      } catch (error) {
+        console.error("Failed to fetch business code:", error);
+      }
+    };
 
+    fetchBusinessCode();
+  }, []);
   const handleDropdownClick = (dropdown) => {
     setOpenDropdowns({
       ...openDropdowns,
@@ -137,7 +151,7 @@ export default function SupplierNavigation() {
             }
           >
             <ListItemIcon>
-              <AccountCircleIcon />
+              <AdminPanelSettingsIcon />
             </ListItemIcon>
             <ListItemText primary="Admin" />
             {openDropdowns.admin ? <ExpandLess /> : <ExpandMore />}
@@ -206,6 +220,9 @@ export default function SupplierNavigation() {
             </List>
           </Collapse>
         </List>
+        <Box sx={{ mt: "auto", mb: 2, ml: 2, color: "#cbf5d6" }}>
+          Business Code: {businessCode}
+        </Box>
       </Drawer>
     </Box>
   );

@@ -1,44 +1,53 @@
-import React from "react";
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+// Dashboard.js
 
-const StatCard = ({ title, value }) => (
-  <Card sx={{ minWidth: 275 }}>
-    <CardContent>
-      <Typography variant="h5" component="div">
-        {title}
-      </Typography>
-      <Typography variant="body2">{value}</Typography>
-    </CardContent>
-  </Card>
-);
+import React, { useState, useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import StatCard from "./components/StatCard";
+import { getBusinessDetails, getBusinessStats } from "./api";
 
 const Dashboard = () => {
-  // Mock data
-  const businessInfo = {
-    name: "Your Business Name",
-    code: "YBN123",
-  };
+  const [businessInfo, setBusinessInfo] = useState({
+    businessName: "",
+    businessCode: "",
+  });
 
-  const totalOrders = 200;
-  const openOrders = 50;
-  const totalRevenue = 10000;
+  const [stats, setStats] = useState({});
+
+  useEffect(() => {
+    const fetchBusinessDetails = async () => {
+      try {
+        const info = await getBusinessDetails();
+        setBusinessInfo(info);
+      } catch (error) {
+        console.error("Failed to fetch business details:", error);
+      }
+    };
+
+    const fetchBusinessStats = async () => {
+      try {
+        const statsData = await getBusinessStats();
+        setStats(statsData);
+      } catch (error) {
+        console.error("Failed to fetch business stats:", error);
+      }
+    };
+
+    fetchBusinessDetails();
+    fetchBusinessStats();
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1, m: 3, maxWidth: "60%" }}>
-      <Typography variant="h4" mb={3}>
-        {businessInfo.name} ({businessInfo.code})
+      <Typography variant="h2">Dashboard</Typography>
+      <Typography variant="h6" mb={3}>
+        Welcome {businessInfo.businessName}!
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <StatCard title="Total Orders" value={totalOrders} />
-        </Grid>
-        <Grid item xs={4}>
-          <StatCard title="Open Orders" value={openOrders} />
-        </Grid>
-        <Grid item xs={4}>
-          <StatCard title="Total Revenue" value={`$${totalRevenue}`} />
-        </Grid>
-        {/* ...other stat cards */}
+        {Object.entries(stats).map(([title, value], index) => (
+          <Grid item xs={4} key={index}>
+            <StatCard title={title} value={value} />
+          </Grid>
+        ))}
       </Grid>
     </Box>
   );
