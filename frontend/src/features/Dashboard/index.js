@@ -3,6 +3,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import StatCard from "./components/StatCard";
 import { getBusinessDetails, getBusinessStats } from "./api";
 import { makeStyles } from "@mui/styles";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const useStyles = makeStyles((theme) => ({
   boldText: {
@@ -19,6 +20,7 @@ const Dashboard = () => {
   });
 
   const [stats, setStats] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchBusinessDetails = async () => {
@@ -34,11 +36,14 @@ const Dashboard = () => {
       try {
         const statsData = await getBusinessStats();
         setStats(statsData);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch business stats:", error);
+        setIsLoading(false);
       }
     };
 
+    setIsLoading(true);
     fetchBusinessDetails();
     fetchBusinessStats();
   }, []);
@@ -71,15 +76,20 @@ const Dashboard = () => {
         </Typography>
 
         <Paper style={{ borderRadius: "10px", padding: "16px" }}>
-          <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={3}>
-              {Object.entries(stats).map(([title, value], index) => (
-                <Grid item xs={4} key={index}>
-                  <StatCard title={title} value={value} />
+          <LoadingSpinner
+            isLoading={isLoading}
+            props={
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={3}>
+                  {Object.entries(stats).map(([title, value], index) => (
+                    <Grid item xs={4} key={index}>
+                      <StatCard title={title} value={value} />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          </Box>
+              </Box>
+            }
+          />
         </Paper>
       </div>
     </div>
