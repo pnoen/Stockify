@@ -149,7 +149,6 @@ export default function LinkedBusinessesPage() {
             </TableFooter>
           </Table>
         </Paper>
-        <LoadingSpinner isLoading={isLoading} />
         <LinkBusinessModal
           open={isLinkBusinessModalOpen}
           onClose={() => setIsLinkBusinessModalOpen(false)}
