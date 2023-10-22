@@ -224,7 +224,7 @@ public class MainController {
     @GetMapping("/getBusinessName")
     public String getBusinessName(@RequestParam int businessCode) {
 
-        Optional<User> existingUser = userRepository.findByBusinessCode(businessCode);
+        Optional<User> existingUser = userRepository.findByBusinessCodeAndBusinessIsNotNull(businessCode);
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
