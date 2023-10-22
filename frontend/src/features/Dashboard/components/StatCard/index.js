@@ -1,11 +1,20 @@
 import { Card, CardContent, Typography } from "@mui/material";
 const StatCard = ({ title, value }) => (
-  <Card sx={{ minWidth: 275 }}>
+  <Card sx={{ backgroundColor: "#cbf5d6" }}>
     <CardContent>
-      <Typography variant="h5" component="div">
+      <Typography component="div" fontWeight="bold">
         {title}
       </Typography>
-      <Typography variant="body2">{value}</Typography>
+      <Typography
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.6)",
+          padding: "0.5em",
+          borderRadius: "5px",
+          margin: "0.5em 0",
+        }}
+      >
+        {value}
+      </Typography>
     </CardContent>
   </Card>
 );
