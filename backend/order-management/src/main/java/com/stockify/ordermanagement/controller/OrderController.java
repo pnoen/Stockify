@@ -152,8 +152,29 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/getBusinessStats")
+    public ResponseEntity<Map<String, Integer>> getBusinessStats(@RequestParam String email) {
+        try {
+            int businessCode = getBusinessCodeByEmail(email);
+            if (businessCode <= 0) {
+                return ResponseEntity.badRequest().body(null);
+            }
 
+            Map<String, Integer> stats = new HashMap<>();
+            stats.put("New Orders", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.PURCHASED));
+            stats.put("Completed Orders", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.COMPLETE));
+            stats.put("Total Revenue ($)", orderRepository.sumTotalCostByBusinessCode(businessCode));
+            stats.put("Orders Awaiting Shipment", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.AWAITING_SHIPMENT));
+            stats.put("Orders Cancelled", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.CANCELLED));
+            stats.put("Total Orders", orderRepository.countByBusinessCode(businessCode));
 
+            return ResponseEntity.ok(stats);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
 
     // Get an order by its ID
     @GetMapping("/getOrderById")

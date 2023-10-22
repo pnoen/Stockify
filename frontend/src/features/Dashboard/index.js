@@ -1,128 +1,56 @@
-import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import {
-  Box,
-  TextField,
-  Button,
-  CssBaseline,
-  Typography,
-  Grid,
-  Link,
-} from "@mui/material";
-import { green } from "@mui/material/colors";
-import logo from "../../assets/logo.png"; // Import your logo here
+// Dashboard.js
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import React, { useState, useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import StatCard from "./components/StatCard";
+import { getBusinessDetails, getBusinessStats } from "./api";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Email:", email, "Password:", password);
-  };
+const Dashboard = () => {
+  const [businessInfo, setBusinessInfo] = useState({
+    businessName: "",
+    businessCode: "",
+  });
+
+  const [stats, setStats] = useState({});
+
+  useEffect(() => {
+    const fetchBusinessDetails = async () => {
+      try {
+        const info = await getBusinessDetails();
+        setBusinessInfo(info);
+      } catch (error) {
+        console.error("Failed to fetch business details:", error);
+      }
+    };
+
+    const fetchBusinessStats = async () => {
+      try {
+        const statsData = await getBusinessStats();
+        setStats(statsData);
+      } catch (error) {
+        console.error("Failed to fetch business stats:", error);
+      }
+    };
+
+    fetchBusinessDetails();
+    fetchBusinessStats();
+  }, []);
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={12}
-        sm={8}
-        md={6}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-            Log in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: green[500],
-                "&:hover": {
-                  backgroundColor: green[700],
-                },
-              }}
-            >
-              Log In
-            </Button>
-            <Box sx={{ mt: 2, alignSelf: "flex-start" }}>
-              <Link
-                component={RouterLink}
-                to="/signup"
-                sx={{ color: green[500] }}
-              >
-                Dont have an account? Sign up
-              </Link>
-            </Box>
-          </Box>
-        </Box>
+    <Box sx={{ flexGrow: 1, m: 3, maxWidth: "60%" }}>
+      <Typography variant="h2">Dashboard</Typography>
+      <Typography variant="h6" mb={3}>
+        Welcome {businessInfo.businessName}!
+      </Typography>
+      <Grid container spacing={3}>
+        {Object.entries(stats).map(([title, value], index) => (
+          <Grid item xs={4} key={index}>
+            <StatCard title={title} value={value} />
+          </Grid>
+        ))}
       </Grid>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={4}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ maxHeight: "100%", maxWidth: "100%" }}
-        />
-        <Typography component="h1" variant="h2" fontFamily={"monospace"}>
-          tockify
-        </Typography>
-      </Grid>
-    </Grid>
+    </Box>
   );
-}
+};
+
+export default Dashboard;

@@ -191,6 +191,20 @@ public class MainController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/getBusinessDetails")
+    public ResponseEntity<?> getBusinessDetails(@RequestParam String email) {
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            return ResponseEntity.ok(new BusinessDetailsResponse(200, existingUser.get().getBusiness(), existingUser.get().getBusinessCode() ));
+
+
+        } else {
+            return ResponseEntity.ok(new ApiResponse(200, "Business Details failed to retrieve" ));
+        }
+
+    }
     @GetMapping("/getBusinessCode")
     public int getBusinessCode(@RequestParam String email) {
 

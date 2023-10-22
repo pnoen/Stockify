@@ -18,14 +18,29 @@ const AuthenticatedNavigationWrapper = () => {
 
   return <Navigation />;
 };
+const LoginHandler = () => {
+  useEffect(() => {
+    localStorage.removeItem("userToken");
+  }, []);
+
+  return <LoginPage />;
+};
+
+const SignupHandler = () => {
+  useEffect(() => {
+    localStorage.removeItem("userToken");
+  }, []);
+
+  return <SignupPage />;
+};
 
 const App = () => {
   return (
     <AuthContext.Provider>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginHandler />} />
+        <Route path="/signup" element={<SignupHandler />} />
         <Route path="/*" element={<AuthenticatedNavigationWrapper />} />
       </Routes>
     </AuthContext.Provider>
