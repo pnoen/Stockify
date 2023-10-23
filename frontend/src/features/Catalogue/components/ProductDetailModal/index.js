@@ -122,33 +122,33 @@ export default function ProductDetailModal({
             position: "relative",
           }}
         >
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={product.name}
-              style={{
-                width: "100%",
-                height: "35vh",
-                objectFit: "cover",
-                marginBottom: "3px",
-                borderRadius: "10px",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "35vh",
-                backgroundColor: "#e0e0e0",
-                marginBottom: "3px",
-                borderRadius: "10px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+          <div
+            style={{
+              width: "100%",
+              height: "35vh",
+              backgroundColor: "rgba(255, 255, 255, 0.6)",
+              marginBottom: "3px",
+              borderRadius: "10px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt={product.name}
+                style={{
+                  width: "100%",
+                  height: "35vh",
+                  objectFit: "contain",
+                  marginBottom: "3px",
+                  borderRadius: "10px",
+                }}
+              />
+            ) : (
               <LoadingSpinner isLoading={isImageLoading} />
-            </div>
-          )}
+            )}
+          </div>
         </Box>
 
         <Typography

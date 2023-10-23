@@ -151,7 +151,6 @@ export default function LinkedClientsPage() {
             </TableFooter>
           </Table>
         </Paper>
-        <LoadingSpinner isLoading={isLoading} />
         <LinkClientModal
           open={isLinkClientModalOpen}
           onClose={() => setIsLinkClientModalOpen(false)}

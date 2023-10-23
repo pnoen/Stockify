@@ -224,7 +224,7 @@ public class MainController {
     @GetMapping("/getBusinessName")
     public String getBusinessName(@RequestParam int businessCode) {
 
-        Optional<User> existingUser = userRepository.findByBusinessCode(businessCode);
+        Optional<User> existingUser = userRepository.findByBusinessCodeAndBusinessIsNotNull(businessCode);
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
@@ -273,7 +273,7 @@ public class MainController {
         List<BusinessDto> businesses = new ArrayList<>();
 
         for (int businessCode : businessCodes) {
-            Optional<User> userOptional = userRepository.findByBusinessCode(businessCode);
+            Optional<User> userOptional = userRepository.findByBusinessCodeAndBusinessIsNotNull(businessCode);
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
@@ -284,7 +284,7 @@ public class MainController {
         if (!businesses.isEmpty()) {
             return ResponseEntity.ok(new BusinessesResponse(200, businesses));
         } else {
-            return ResponseEntity.ok(new BusinessesResponse(404, new ArrayList<>()));
+            return ResponseEntity.ok(new BusinessesResponse(200, new ArrayList<>()));
         }
     }
 

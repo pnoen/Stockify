@@ -26,6 +26,9 @@ public class BusinessLinkController {
             if (msg.equals("Unable to find user.")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
             }
+            else if (msg.equals("Unable to find business.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("");
