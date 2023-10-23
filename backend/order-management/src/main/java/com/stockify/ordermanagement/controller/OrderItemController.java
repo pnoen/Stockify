@@ -25,8 +25,10 @@ public class OrderItemController {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+
     @Autowired
     private OrderRepository orderRepository;
+
     private OrderItemService orderItemService = new OrderItemService();
 
     @PostMapping("/create")
@@ -77,14 +79,12 @@ public class OrderItemController {
             orderItemRepository.save(newOrderItem);
         }
 
-        GetProductResponse getProductResponse = fetchProduct(orderItemRequest.getProductId());
+        GetProductResponse getProductResponse = orderItemService.fetchProduct(orderItemRequest.getProductId());
 
         if (getProductResponse != null) {
             int newQuantity = getProductResponse.getQuantity() - orderItemRequest.getQuantity();
             updateProductQuantity(orderItemRequest.getProductId(), newQuantity);
         }
-
-
 
         return ResponseEntity.ok(new ApiResponse(200, "Order item processed successfully."));
     }
@@ -96,7 +96,7 @@ public class OrderItemController {
         if (orderItemOptional.isPresent()) {
             OrderItem orderItemToDelete = orderItemOptional.get();
 
-            GetProductResponse getProductResponse = fetchProduct(orderItemToDelete.getProductId());
+            GetProductResponse getProductResponse = orderItemService.fetchProduct(orderItemToDelete.getProductId());
             int newQuantity = getProductResponse.getQuantity() + orderItemToDelete.getQuantity();
             updateProductQuantity(orderItemToDelete.getProductId(), newQuantity);
             int associatedOrderId = orderItemToDelete.getOrderId();
@@ -163,12 +163,6 @@ public class OrderItemController {
         } else {
             return ResponseEntity.ok(new OrderItemResponse(404, null));
         }
-    }
-
-    private GetProductResponse fetchProduct(int productId) {
-        RestTemplate restTemplate = new RestTemplate();
-        String getProductUrl = "http://localhost:8083/api/product/get?id=" + productId;
-        return restTemplate.getForObject(getProductUrl, GetProductResponse.class);
     }
 
     // Update product quantity using RestTemplate

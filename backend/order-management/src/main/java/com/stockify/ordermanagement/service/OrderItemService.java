@@ -3,6 +3,7 @@ package com.stockify.ordermanagement.service;
 import com.stockify.ordermanagement.model.*;
 import com.stockify.ordermanagement.dto.*;
 
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,13 @@ import java.util.List;
 public class OrderItemService {
 
     private final WebClient webClient = WebClient.create("http://localhost:8084");
+
+    public GetProductResponse fetchProduct(int productId) {
+        RestTemplate restTemplate = new RestTemplate();
+        String getProductUrl = "http://localhost:8083/api/product/get?id=" + productId;
+        return restTemplate.getForObject(getProductUrl, GetProductResponse.class);
+    }
+
     public void updateOrderTotalCost(OrderItem orderItem) {
         OrderCostUpdateRequest request = new OrderCostUpdateRequest(orderItem.getOrderId(), orderItem.getPrice() * orderItem.getQuantity());
 

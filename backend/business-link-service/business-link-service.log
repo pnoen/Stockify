@@ -1,0 +1,22 @@
+Starting a Gradle Daemon, 12 busy Daemons could not be reused, use --status for details>> Task :compileJava
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :resolveMainClassName UP-TO-DATE
+> Task :bootRun FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':bootRun'.
+> Failed to calculate the value of task ':bootRun' property 'mainClass'.
+   > Main class name has not been configured and it could not be resolved from classpath build/classes/java/main,build/resources/main
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 23s
+4 actionable tasks: 1 executed, 3 up-to-date
