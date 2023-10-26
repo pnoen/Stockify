@@ -53,7 +53,7 @@ Major frameworks/libraries used in Stockify along with their version:
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
@@ -72,7 +72,7 @@ Please install the following libraries in order to get started:
    
 ### Running the Service
 
-Please ensure that node, java and react is installed on your system.
+Please ensure that Node and Java installed on your system.
 
 1. Clone the repo
    ```sh
