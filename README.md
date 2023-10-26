@@ -15,7 +15,18 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#built-with">Built With</a>
+          <ul>
+            <li><a href="#backend">Backend</a></li>
+            <li><a href="#frontend">Frontend</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#working-functionalities">Working Functionalities</a>
+      <ul>
+        <li><a href="#services-and-functionalities">Services and Functionalities</a></li>
       </ul>
     </li>
     <li>
@@ -27,6 +38,7 @@
     </li>
   </ol>
 </details>
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -48,6 +60,20 @@ Major frameworks/libraries used in Stockify along with their version:
 * [![React][React.js]][React-url] ![React Version][React-Version]
 * [![MaterialUI][MaterialUI.js]][MaterialUI-url] ![MaterialUI Version][MaterialUI-Version]
 * [![Firebase][Firebase.js]][Firebase-url] ![Firebase Version][Firebase-Version]
+
+
+<!-- Working Functionalities -->
+## Working Functionalities
+
+### Services and Functionalities
+1. Register and Login - Users can register as a Supplier or a normal Customer. Their account will be associated with their role, and when they log in, will be redirected to either the Supplier or Customer dashboard.
+2. Edit and Update User Details - Suppliers can manage their employees on Stockify by adding, deleting, editing employees under their business.
+3. Inventory Browsing - Customers can be linked to a Supplier and view their current inventory and available stocks.
+4. Update Their Inventory - Suppliers can update their inventory by changing their stocks, adding new products, removing current products and edit existing inventory details.
+5. Shopping Basket - Customers add a product and amount they would like to purchase into a shopping basket. The purchase will not be made until they check out from their shopping basket.
+6. Order Payment Confirmation and Invoice - Once a customer checks out from their basket, an completed payment invoice is sent both to the Supplier and the Customer via email.
+7. View Order History - Customers can view their previous order history.
+8. View Statistics - Suppliers can view their open orders and completed orders, as well as their total revenue.
 
 
 <!-- GETTING STARTED -->
