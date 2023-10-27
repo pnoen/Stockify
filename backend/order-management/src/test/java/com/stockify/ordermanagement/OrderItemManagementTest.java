@@ -1,6 +1,5 @@
 package com.stockify.ordermanagement;
 
-import com.stockify.ordermanagement.constants.OrderStatus;
 import com.stockify.ordermanagement.controller.OrderItemController;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.model.Order;
@@ -22,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 public class OrderItemManagementTest {
@@ -41,81 +41,113 @@ public class OrderItemManagementTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        Order mockOrder = new Order();
-        mockOrder.setOrganisation(1);
-        mockOrder.setCustomerId(1);
-        mockOrder.setBusinessCode(1); // example valid order for the tests
-        mockOrder.setInvoiceId(1);
-        mockOrder.setOrderDate(LocalDate.of(2023, 10, 9));
-        mockOrder.setCompletionDate(LocalDate.of(2023, 10, 9));
-        mockOrder.setTotalCost(1.0);
-        mockOrder.setOrderStatus(OrderStatus.COMPLETE);
-        mockOrder.setBusinessName("Stockify");
-        when(orderRepository.findById(1)).thenReturn(Optional.of(mockOrder));
-
         when(orderItemRepository.save(any(OrderItem.class))).thenReturn(new OrderItem());
     }
 
     @Test
-    public void testValidCreateOrderItem() {
-        // Create Valid Order Item
-        OrderItemRequest orderItemRequest = new OrderItemRequest();
-        orderItemRequest.setOrderId(1);
-        orderItemRequest.setProductId(1);
-        orderItemRequest.setBusinessCode(1);
-        orderItemRequest.setQuantity(1);
-        orderItemRequest.setLastUpdated(LocalDate.of(2023, 10, 9));
-        orderItemRequest.setPrice(1);
+    public void testCreateOrderItem_Success() {
+        Order mockOrder = new Order();
+        mockOrder.setBusinessCode(1);
 
-        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(orderItemRequest);
+        OrderItemRequest mockRequest = new OrderItemRequest();
+        mockRequest.setOrderId(1);
+        mockRequest.setProductId(1);
+        mockRequest.setBusinessCode(1);
+        mockRequest.setQuantity(1);
+        mockRequest.setLastUpdated(LocalDate.of(2023, 10, 9));
+        mockRequest.setPrice(1);
+
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(mockOrder));
+        when(orderItemRepository.findByOrderIdAndProductId(anyInt(), anyInt())).thenReturn(Optional.empty());
+
+        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(mockRequest);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Order item processed successfully.", response.getBody().getMessage());
     }
 
     @Test
-    public void testInvalidCreateOrderItem() {
-        // Create Order Item Without Valid Existing Order
-        OrderItemRequest orderItemRequest = new OrderItemRequest();
-        orderItemRequest.setOrderId(0);
-        orderItemRequest.setProductId(1);
-        orderItemRequest.setBusinessCode(1);
-        orderItemRequest.setQuantity(1);
-        orderItemRequest.setLastUpdated(LocalDate.of(2023, 10, 9));
-        orderItemRequest.setPrice(1);
+    public void testCreateOrderItem_OrderDoesNotExist() {
+        OrderItemRequest mockRequest = new OrderItemRequest();
+        mockRequest.setOrderId(100);
+        mockRequest.setBusinessCode(1);
 
-        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(orderItemRequest);
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(mockRequest);
+
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        assertEquals("Order does not exist.", response.getBody().getMessage());
     }
 
     @Test
-    public void testInvalidCreateOrderItemPriceZero() {
-        // Create Order Item Without Valid Order Item Quantity
-        OrderItemRequest orderItemRequest = new OrderItemRequest();
-        orderItemRequest.setOrderId(1);
-        orderItemRequest.setProductId(1);
-        orderItemRequest.setBusinessCode(1);
-        orderItemRequest.setQuantity(0);
-        orderItemRequest.setLastUpdated(LocalDate.of(2023, 10, 9));
-        orderItemRequest.setPrice(1);
+    public void testCreateOrderItem_ZeroQuantity() {
+        OrderItemRequest mockRequest = new OrderItemRequest();
+        mockRequest.setQuantity(0);
 
-        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(orderItemRequest);
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(new Order()));
+
+        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(mockRequest);
+
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        assertEquals("Sorry, Order Quantity cannot be 0.", Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
-    public void testInvalidCreateOrderItemWrongCode() {
-        // Create Order Item with Invalid Business Code
-        OrderItemRequest orderItemRequest = new OrderItemRequest();
-        orderItemRequest.setOrderId(1);
-        orderItemRequest.setProductId(1);
-        orderItemRequest.setBusinessCode(2);
-        orderItemRequest.setQuantity(1);
-        orderItemRequest.setLastUpdated(LocalDate.of(2023, 10, 9));
-        orderItemRequest.setPrice(1);
+    public void testDeleteOrderItem_Success() {
+        OrderItem mockOrderItem = new OrderItem();
 
-        ResponseEntity<ApiResponse> response = orderItemController.createOrderItem(orderItemRequest);
-        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        GetProductResponse mockProductResponse = new GetProductResponse();
+        mockProductResponse.setQuantity(10);
+        doReturn(mockProductResponse).when(orderItemService).fetchProduct(anyInt());
+
+        doNothing().when(orderItemService).updateOrderTotalCost(any(OrderItem.class));
+
+        doNothing().when(orderItemService).updateProductQuantity(anyInt(), anyInt());
+
+        doNothing().when(orderItemRepository).deleteById(anyInt());
+
+        when(orderItemRepository.findById(anyInt())).thenReturn(Optional.of(mockOrderItem));
+
+        OrderItemIdRequest deleteRequest = new OrderItemIdRequest();
+        deleteRequest.setOrderItemId(1);
+
+        ResponseEntity<ApiResponse> response = orderItemController.deleteOrderItem(deleteRequest);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Order Item deleted successfully.", Objects.requireNonNull(response.getBody()).getMessage());
     }
+
+    @Test
+    public void testDeleteOrderItem_ItemDoesNotExist() {
+        when(orderItemRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        OrderItemIdRequest deleteRequest = new OrderItemIdRequest();
+        deleteRequest.setOrderItemId(999); // Non-existent ID
+
+        ResponseEntity<ApiResponse> response = orderItemController.deleteOrderItem(deleteRequest);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Order Item does not exist.", Objects.requireNonNull(response.getBody()).getMessage());
+    }
+
+    @Test
+    public void testDeleteOrderItem_ServerError() {
+        when(orderItemRepository.findById(anyInt())).thenAnswer(invocation -> {
+            throw new RuntimeException("Database server error"); // Simulate a database/server failure
+        });
+
+        OrderItemIdRequest deleteRequest = new OrderItemIdRequest();
+        deleteRequest.setOrderItemId(1);
+
+        assertThrows(
+                RuntimeException.class,
+                () -> orderItemController.deleteOrderItem(deleteRequest),
+                "Database server error"
+        );
+    }
+
+    // Still need to test getAllOrders, want to refactor the code so that RestTemplate is injected and not instantiated in the method.
 
     @Test
     public void testValidGetOrderById() {
