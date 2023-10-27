@@ -1,7 +1,7 @@
 <!-- HEADER -->
 <br/>
 <div align="center">
-  <img src="StockifyLogo.png" alt="Logo" width="80" height="80">
+  <img src="frontend/src/assets/logoGreen.png" alt="Logo" width="80" height="80">
 
   <h3 align="center">Stockify</h3>
 
