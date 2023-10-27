@@ -83,7 +83,7 @@ public class OrderItemController {
 
         if (getProductResponse != null) {
             int newQuantity = getProductResponse.getQuantity() - orderItemRequest.getQuantity();
-            updateProductQuantity(orderItemRequest.getProductId(), newQuantity);
+            orderItemService.updateProductQuantity(orderItemRequest.getProductId(), newQuantity);
         }
 
         return ResponseEntity.ok(new ApiResponse(200, "Order item processed successfully."));
@@ -98,7 +98,7 @@ public class OrderItemController {
 
             GetProductResponse getProductResponse = orderItemService.fetchProduct(orderItemToDelete.getProductId());
             int newQuantity = getProductResponse.getQuantity() + orderItemToDelete.getQuantity();
-            updateProductQuantity(orderItemToDelete.getProductId(), newQuantity);
+            orderItemService.updateProductQuantity(orderItemToDelete.getProductId(), newQuantity);
             int associatedOrderId = orderItemToDelete.getOrderId();
             orderItemRepository.deleteById(orderItemIdRequest.getOrderItemId());
             List<OrderItem> remainingOrderItems = orderItemRepository.findAllByOrderId(associatedOrderId);
@@ -152,6 +152,7 @@ public class OrderItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
     // Get an order item by the orderItem ID
     @GetMapping("/getOrderItemById")
     public ResponseEntity<OrderItemResponse> getOrderById(@RequestParam int orderItemId) {
@@ -163,20 +164,5 @@ public class OrderItemController {
         } else {
             return ResponseEntity.ok(new OrderItemResponse(404, null));
         }
-    }
-
-    // Update product quantity using RestTemplate
-    private void updateProductQuantity(int productId, int newQuantity) {
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("id", productId);
-        requestMap.put("quantity", newQuantity);
-        requestMap.put("name", "");
-        requestMap.put("description", "");
-        requestMap.put("imageUrl", "");
-        requestMap.put("price", 0);
-
-        RestTemplate restTemplate = new RestTemplate();
-        String editProductUrl = "http://localhost:8083/api/product/edit";
-        restTemplate.postForEntity(editProductUrl, requestMap, ApiResponse.class);
     }
 }
