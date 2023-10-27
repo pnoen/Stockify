@@ -8,7 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderItemService {
@@ -40,5 +42,20 @@ public class OrderItemService {
         }
 
         return total;
+    }
+
+    // Update product quantity using RestTemplate
+    public void updateProductQuantity(int productId, int newQuantity) {
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("id", productId);
+        requestMap.put("quantity", newQuantity);
+        requestMap.put("name", "");
+        requestMap.put("description", "");
+        requestMap.put("imageUrl", "");
+        requestMap.put("price", 0);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String editProductUrl = "http://localhost:8083/api/product/edit";
+        restTemplate.postForEntity(editProductUrl, requestMap, ApiResponse.class);
     }
 }
