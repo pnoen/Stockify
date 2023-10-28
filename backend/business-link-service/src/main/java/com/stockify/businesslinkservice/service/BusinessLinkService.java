@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,24 @@ public class BusinessLinkService {
 
         if (userId == -1) {
             return "Unable to find user.";
+        }
+
+        List<Integer> businessCodes = new ArrayList<>();
+        businessCodes.add(businessLinkRequest.getBusinessCode());
+        uriBuilder = fromHttpUrl("http://localhost:8080/account/getBusinesses");
+        uriBuilder.queryParam("businessCodes",
+                businessCodes
+        );
+        uri = uriBuilder.build().encode().toUri();
+
+        BusinessesResponse responseEntity = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(BusinessesResponse.class)
+                .block();
+
+        if (responseEntity.getBusinesses().isEmpty()) {
+            return "Unable to find business.";
         }
 
         List<BusinessLink> businessLinks = businessLinkRepository.findByBusinessCodeAndUserId(

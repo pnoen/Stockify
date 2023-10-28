@@ -27,7 +27,7 @@ export default function ProductItem({ product }) {
   return (
     <Box
       sx={{
-        backgroundColor: "rgba(29, 185, 84, 0.15)",
+        backgroundColor: "#cbf5d6",
         borderRadius: "10px",
         padding: "1rem",
         cursor: "pointer",

@@ -4,15 +4,18 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ELEC5619-Stockify.iml" filepath="$PROJECT_DIR$/.idea/ELEC5619-Stockify.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/business-link-service/src/main/main.iml" filepath="$PROJECT_DIR$/backend/business-link-service/src/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/backend/user-account-service/src/main/main1.iml" filepath="$PROJECT_DIR$/backend/user-account-service/src/main/main1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/user-account-service/src/main/main.iml" filepath="$PROJECT_DIR$/backend/user-account-service/src/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/product-service/src/main/main2.iml" filepath="$PROJECT_DIR$/backend/product-service/src/main/main2.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/order-management/src/main/main3.iml" filepath="$PROJECT_DIR$/backend/order-management/src/main/main3.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/user-management-service/src/main/main4.iml" filepath="$PROJECT_DIR$/backend/user-management-service/src/main/main4.iml" />
-      <module fileurl="file://$PROJECT_DIR$/backend/user-management-service/src/test/test.iml" filepath="$PROJECT_DIR$/backend/user-management-service/src/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ordermanagement.iml" filepath="$PROJECT_DIR$/.idea/modules/ordermanagement.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ordermanagement_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ordermanagement_main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ordermanagement_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ordermanagement_test.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/product-service/src/test/test1.iml" filepath="$PROJECT_DIR$/backend/product-service/src/test/test1.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/user-account-service/src/test/test2.iml" filepath="$PROJECT_DIR$/backend/user-account-service/src/test/test2.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/business-link-service/src/test/test3.iml" filepath="$PROJECT_DIR$/backend/business-link-service/src/test/test3.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/order-management/src/test/test4.iml" filepath="$PROJECT_DIR$/backend/order-management/src/test/test4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/product-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/product-service.main.iml" />
     </modules>
   </component>
 </project>

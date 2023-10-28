@@ -1,10 +1,16 @@
 package com.stockify.productservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockify.productservice.controller.ProductController;
 import com.stockify.productservice.dto.*;
 import com.stockify.productservice.model.Product;
 import com.stockify.productservice.repository.ProductRepository;
 import com.stockify.productservice.service.ProductService;
+import jdk.security.jarsigner.JarSignerException;
+import okhttp3.Response;
+import okhttp3.mockwebserver.MockResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,8 +18,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.swing.text.html.Option;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,19 +30,41 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import okhttp3.mockwebserver.MockWebServer;
 
 public class ProductServiceTests {
 
     @InjectMocks
     private ProductService productService;
+
+    private MockWebServer mockWebServer;
+    private MockWebServer mockWebServer8082;
+    private ObjectMapper objectMapper;
     @Mock
     private ProductRepository productRepository;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException{
         MockitoAnnotations.openMocks(this);
         when(productRepository.save(any(Product.class))).thenReturn(new Product());
+
+        mockWebServer = new MockWebServer();
+        mockWebServer.start(8080);
+        mockWebServer8082 = new MockWebServer();
+        mockWebServer8082.start(8082);
+        objectMapper = new ObjectMapper();
+
+
+
+    }
+
+    @AfterEach
+    void stop() throws IOException {
+        mockWebServer.shutdown();
+        mockWebServer8082.shutdown();
     }
 
     @Test
@@ -180,6 +211,9 @@ public class ProductServiceTests {
                 "TEMP COMPANY"
         );
 
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader("Content_Type", "application/json")
+                .setBody("1"));
         ResponseEntity<GetProductResponse> response = productService.getProduct(2);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -226,6 +260,10 @@ public class ProductServiceTests {
 
         when(productRepository.findAll()).thenReturn(productList);
 
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader("Content_Type", "application/json")
+                .setBody("1"));
+
         ResponseEntity<ProductListResponse> response = productService.getProductList();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().getProducts().size());
@@ -269,7 +307,7 @@ public class ProductServiceTests {
                 2,
                 "",
                 "",
-                0,
+                null,
                 0,
                 ""
         );
@@ -916,9 +954,5 @@ public class ProductServiceTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Product", response.getBody().getProducts().get(0).getName());
     }
-
-
-
-
 
 }
