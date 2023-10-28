@@ -69,10 +69,10 @@ public class OrderController {
     }
 
     // Get a list of all the orders
-    @GetMapping("/getAllCurrentCustomerOrders")
+    @GetMapping("/çç")
     public ResponseEntity<?> getAllCurrentCustomerOrders(@RequestParam String email) {
         try {
-            int customerId = getUserIdByEmail(email);
+            int customerId = orderService.getUserIdByEmail(email);
             if (customerId <= 0) {
                 return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
             }
@@ -93,7 +93,7 @@ public class OrderController {
     @GetMapping("/getAllCompletedCustomerOrders")
     public ResponseEntity<?> getAllCompletedCustomerOrders(@RequestParam String email) {
         try {
-            int customerId = getUserIdByEmail(email);
+            int customerId = orderService.getUserIdByEmail(email);
             if (customerId <= 0) {
                 return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
             }
@@ -113,7 +113,7 @@ public class OrderController {
     @GetMapping("/getAllCurrentBusinessOrders")
     public ResponseEntity<?> getAllCurrentBusinessOrders(@RequestParam String email) {
         try {
-            int businessCode = getBusinessCodeByEmail(email);
+            int businessCode = orderService.getBusinessCodeByEmail(email);
             if (businessCode <= 0) {
                 return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
             }
@@ -134,7 +134,7 @@ public class OrderController {
     @GetMapping("/getAllCompletedBusinessOrders")
     public ResponseEntity<?> getAllCompletedBusinessOrders(@RequestParam String email) {
         try {
-            int businessCode = getBusinessCodeByEmail(email);
+            int businessCode = orderService.getBusinessCodeByEmail(email);
             if (businessCode <= 0) {
                 return ResponseEntity.badRequest().body(new ApiResponse(400, "Invalid email or user not found."));
             }
@@ -183,7 +183,7 @@ public class OrderController {
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.setBusinessName(getBusinessNameByBusinessCode(order.getBusinessCode()));
+            order.setBusinessName(orderService.getBusinessNameByBusinessCode(order.getBusinessCode()));
             return ResponseEntity.ok(new OrderResponse(200, order));
         } else {
             return ResponseEntity.ok(new OrderResponse(404, null));
@@ -227,7 +227,7 @@ public class OrderController {
     }
     @PostMapping("/createDraftOrder")
     public ResponseEntity<ApiResponse> createDraftOrder(@RequestParam String email) {
-        int customerId = getUserIdByEmail(email);
+        int customerId = orderService.getUserIdByEmail(email);
         Optional<Order> draftOrderOptional = orderRepository.findByOrderStatusAndCustomerId(OrderStatus.DRAFT, customerId);
 
         Order draftOrder;
@@ -243,7 +243,7 @@ public class OrderController {
     }
     @GetMapping("/getDraftOrder")
     public ResponseEntity<ApiResponse> getDraftOrder(@RequestParam String email) {
-        int customerId = getUserIdByEmail(email);
+        int customerId = orderService.getUserIdByEmail(email);
         Optional<Order> draftOrderOptional = orderRepository.findByOrderStatusAndCustomerId(OrderStatus.DRAFT, customerId);
         Order draftOrder;
         if (!draftOrderOptional.isPresent()) {
@@ -266,17 +266,17 @@ public class OrderController {
         draftOrder.setOrderStatus(OrderStatus.PURCHASED);
         draftOrder.setTotalCost(updateDraftOrderRequest.getTotalCost());
         draftOrder.setOrderDate(LocalDate.now());
-        draftOrder.setBusinessName(getBusinessNameByBusinessCode(draftOrder.getBusinessCode()));
+        draftOrder.setBusinessName(orderService.getBusinessNameByBusinessCode(draftOrder.getBusinessCode()));
         orderRepository.save(draftOrder);
 
         return ResponseEntity.ok(new ApiResponse(200, "Order successfully placed."));
     }
 
     @PostMapping("/updateOrderStatus")
-    public ResponseEntity<ApiResponse> updateDraftOrder(@RequestBody UpdateOrderStatusRequest updateOrderStatusRequest) {
+    public ResponseEntity<ApiResponse> updateOrderStatus(@RequestBody UpdateOrderStatusRequest updateOrderStatusRequest) {
         Optional<Order> orderOptional = orderRepository.findById(updateOrderStatusRequest.getOrderId());
 
-        if (!orderOptional.isPresent()) {
+        if (orderOptional.isEmpty()) {
             return ResponseEntity.accepted().body(new ApiResponse(202, "Cannot find order."));
         }
         Order order = orderOptional.get();
@@ -288,7 +288,7 @@ public class OrderController {
             List<ProductItem> productItems = fetchProductDetails(orderItems);
 
             String emailContent = generateEmailContent(order, productItems);
-            String customerEmail = getUserEmailByCustomerId(order.getCustomerId());
+            String customerEmail = orderService.getUserEmailByCustomerId(order.getCustomerId());
             String emailSubject = "Stockify - Order #" + updateOrderStatusRequest.getOrderId() + " Invoice";
             emailService.sendEmail(customerEmail, emailSubject, emailContent);
         }
@@ -300,37 +300,8 @@ public class OrderController {
 
 
 
-    public int getUserIdByEmail(String email) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/account/getUserIdByEmail?email=" + email;
-        return restTemplate.getForObject(url, Integer.class);
-    }
-    public int getBusinessCodeByEmail(String email) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/account/getBusinessCode?email=" + email;
-        return restTemplate.getForObject(url, Integer.class);
-    }
 
-    public String getBusinessNameByBusinessCode(int businessCode) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/account/getBusinessName?businessCode=" + businessCode;
-        return restTemplate.getForObject(url, String.class);
-    }
-    public String getUserEmailByCustomerId(int customerId) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/account/getUserEmail?userId=" + customerId;
-        String jsonResponse = restTemplate.getForObject(url, String.class);
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> responseMap = mapper.readValue(jsonResponse, Map.class);
 
-            String email = (String) responseMap.get("email");
-            return email;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     private List<ProductItem> fetchProductDetails(List<OrderItem> orderItems) {
         List<Integer> productIds = orderItems.stream()
                 .map(OrderItem::getProductId)

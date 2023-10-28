@@ -25,9 +25,14 @@ public class OrderItemController {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+
     @Autowired
     private OrderRepository orderRepository;
+
     private OrderItemService orderItemService = new OrderItemService();
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createOrderItem(@RequestBody OrderItemRequest orderItemRequest) {
@@ -77,14 +82,12 @@ public class OrderItemController {
             orderItemRepository.save(newOrderItem);
         }
 
-        GetProductResponse getProductResponse = fetchProduct(orderItemRequest.getProductId());
+        GetProductResponse getProductResponse = orderItemService.fetchProduct(orderItemRequest.getProductId());
 
         if (getProductResponse != null) {
             int newQuantity = getProductResponse.getQuantity() - orderItemRequest.getQuantity();
-            updateProductQuantity(orderItemRequest.getProductId(), newQuantity);
+            orderItemService.updateProductQuantity(orderItemRequest.getProductId(), newQuantity);
         }
-
-
 
         return ResponseEntity.ok(new ApiResponse(200, "Order item processed successfully."));
     }
@@ -96,9 +99,9 @@ public class OrderItemController {
         if (orderItemOptional.isPresent()) {
             OrderItem orderItemToDelete = orderItemOptional.get();
 
-            GetProductResponse getProductResponse = fetchProduct(orderItemToDelete.getProductId());
+            GetProductResponse getProductResponse = orderItemService.fetchProduct(orderItemToDelete.getProductId());
             int newQuantity = getProductResponse.getQuantity() + orderItemToDelete.getQuantity();
-            updateProductQuantity(orderItemToDelete.getProductId(), newQuantity);
+            orderItemService.updateProductQuantity(orderItemToDelete.getProductId(), newQuantity);
             int associatedOrderId = orderItemToDelete.getOrderId();
             orderItemRepository.deleteById(orderItemIdRequest.getOrderItemId());
             List<OrderItem> remainingOrderItems = orderItemRepository.findAllByOrderId(associatedOrderId);
@@ -121,13 +124,13 @@ public class OrderItemController {
                     .map(OrderItem::getProductId)
                     .collect(Collectors.toList());
 
-            if (productIds.size() == 0){
+            if (productIds.isEmpty()) {
                 ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), new ArrayList<>());
                 return ResponseEntity.ok(finalResponse);
             }
 
             String productUrl = "http://localhost:8083/api/product/getProducts?ids=" + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-            ProductItemListResponse fetchedProductItemListResponse = new RestTemplate().getForObject(productUrl, ProductItemListResponse.class);
+            ProductItemListResponse fetchedProductItemListResponse = restTemplate.getForObject(productUrl, ProductItemListResponse.class);
 
             if (fetchedProductItemListResponse != null) {
                 for (ProductItem product : fetchedProductItemListResponse.getProducts()) {
@@ -141,7 +144,6 @@ public class OrderItemController {
                 }
 
                 ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), fetchedProductItemListResponse.getProducts());
-
                 return ResponseEntity.ok(finalResponse);
             } else {
                 ProductItemListResponse errorResponse = new ProductItemListResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList());
@@ -152,6 +154,8 @@ public class OrderItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+
     // Get an order item by the orderItem ID
     @GetMapping("/getOrderItemById")
     public ResponseEntity<OrderItemResponse> getOrderById(@RequestParam int orderItemId) {
@@ -163,26 +167,5 @@ public class OrderItemController {
         } else {
             return ResponseEntity.ok(new OrderItemResponse(404, null));
         }
-    }
-
-    private GetProductResponse fetchProduct(int productId) {
-        RestTemplate restTemplate = new RestTemplate();
-        String getProductUrl = "http://localhost:8083/api/product/get?id=" + productId;
-        return restTemplate.getForObject(getProductUrl, GetProductResponse.class);
-    }
-
-    // Update product quantity using RestTemplate
-    private void updateProductQuantity(int productId, int newQuantity) {
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("id", productId);
-        requestMap.put("quantity", newQuantity);
-        requestMap.put("name", "");
-        requestMap.put("description", "");
-        requestMap.put("imageUrl", "");
-        requestMap.put("price", 0);
-
-        RestTemplate restTemplate = new RestTemplate();
-        String editProductUrl = "http://localhost:8083/api/product/edit";
-        restTemplate.postForEntity(editProductUrl, requestMap, ApiResponse.class);
     }
 }
