@@ -4,6 +4,7 @@ import com.stockify.ordermanagement.controller.OrderItemController;
 import com.stockify.ordermanagement.dto.*;
 import com.stockify.ordermanagement.model.Order;
 import com.stockify.ordermanagement.model.OrderItem;
+import com.stockify.ordermanagement.model.ProductItem;
 import com.stockify.ordermanagement.repository.OrderItemRepository;
 import com.stockify.ordermanagement.repository.OrderRepository;
 import com.stockify.ordermanagement.service.OrderItemService;
@@ -19,10 +20,11 @@ import static org.mockito.Mockito.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class OrderItemManagementTest {
 
@@ -37,6 +39,9 @@ public class OrderItemManagementTest {
 
     @Mock
     private OrderItemService orderItemService;
+
+    @Mock
+    private RestTemplate restTemplate;
 
     @BeforeEach
     public void setUp() {
@@ -147,7 +152,102 @@ public class OrderItemManagementTest {
         );
     }
 
-    // Still need to test getAllOrders, want to refactor the code so that RestTemplate is injected and not instantiated in the method.
+    @Test
+    public void testGetAllOrdersSuccess() {
+        int orderId = 1;
+
+        OrderItem orderItem1 = new OrderItem();
+        orderItem1.setQuantity(3);
+
+        orderItem1.setProductId(1);
+
+        OrderItem orderItem2 = new OrderItem();
+        orderItem2.setQuantity(5);
+
+        orderItem2.setProductId(2);
+
+        List<OrderItem> orderItemList = Arrays.asList(orderItem1, orderItem2);
+
+        when(orderItemRepository.findAllByOrderId(orderId)).thenReturn(orderItemList);
+
+        ProductItem product1 = new ProductItem();
+        product1.setId(1);
+
+        ProductItem product2 = new ProductItem();
+        product2.setId(2);
+
+        ProductItemListResponse productResponse = new ProductItemListResponse();
+        productResponse.setStatusCode(200);
+        productResponse.setProducts(Arrays.asList(product1, product2));
+
+        when(restTemplate.getForObject(anyString(), eq(ProductItemListResponse.class)))
+                .thenReturn(productResponse);
+
+        ResponseEntity<ProductItemListResponse> response = orderItemController.getAllOrders(orderId);
+
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+
+        ProductItemListResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(200, responseBody.getStatusCode());
+        assertEquals(2, responseBody.getProducts().size());
+    }
+
+    @Test
+    public void testGetAllOrders_NoOrderItemsFound() {
+        int orderId = 1;
+
+        when(orderItemRepository.findAllByOrderId(orderId)).thenReturn(Collections.emptyList());
+
+        ResponseEntity<ProductItemListResponse> response = orderItemController.getAllOrders(orderId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+
+        ProductItemListResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.getProducts().isEmpty());
+    }
+
+    @Test
+    public void testGetAllOrders_ExternalServiceFailure() {
+        int orderId = 1;
+
+        List<OrderItem> mockOrderItems = new ArrayList<>();
+        mockOrderItems.add(new OrderItem());
+        when(orderItemRepository.findAllByOrderId(orderId)).thenReturn(mockOrderItems);
+
+        // Simulating an external service failure
+        when(restTemplate.getForObject(anyString(), eq(ProductItemListResponse.class)))
+                .thenThrow(new RestClientException("External service failed"));
+
+        ResponseEntity<ProductItemListResponse> response = orderItemController.getAllOrders(orderId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
+
+        ProductItemListResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseBody.getStatusCode());
+    }
+
+    @Test
+    public void testGetAllOrders_ExceptionOccurred() {
+        int orderId = 1;
+
+        // Simulating a database/unknown error
+        when(orderItemRepository.findAllByOrderId(anyInt())).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<ProductItemListResponse> response = orderItemController.getAllOrders(orderId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
+
+        ProductItemListResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseBody.getStatusCode());
+    }
 
     @Test
     public void testValidGetOrderById() {

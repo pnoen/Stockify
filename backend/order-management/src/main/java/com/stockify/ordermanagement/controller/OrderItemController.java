@@ -31,6 +31,9 @@ public class OrderItemController {
 
     private OrderItemService orderItemService = new OrderItemService();
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createOrderItem(@RequestBody OrderItemRequest orderItemRequest) {
         int orderId = orderItemRequest.getOrderId();
@@ -121,13 +124,13 @@ public class OrderItemController {
                     .map(OrderItem::getProductId)
                     .collect(Collectors.toList());
 
-            if (productIds.size() == 0){
+            if (productIds.isEmpty()) {
                 ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), new ArrayList<>());
                 return ResponseEntity.ok(finalResponse);
             }
 
             String productUrl = "http://localhost:8083/api/product/getProducts?ids=" + productIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-            ProductItemListResponse fetchedProductItemListResponse = new RestTemplate().getForObject(productUrl, ProductItemListResponse.class);
+            ProductItemListResponse fetchedProductItemListResponse = restTemplate.getForObject(productUrl, ProductItemListResponse.class);
 
             if (fetchedProductItemListResponse != null) {
                 for (ProductItem product : fetchedProductItemListResponse.getProducts()) {
@@ -141,7 +144,6 @@ public class OrderItemController {
                 }
 
                 ProductItemListResponse finalResponse = new ProductItemListResponse(HttpStatus.OK.value(), fetchedProductItemListResponse.getProducts());
-
                 return ResponseEntity.ok(finalResponse);
             } else {
                 ProductItemListResponse errorResponse = new ProductItemListResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList());
@@ -152,6 +154,7 @@ public class OrderItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 
     // Get an order item by the orderItem ID
     @GetMapping("/getOrderItemById")
