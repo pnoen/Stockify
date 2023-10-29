@@ -87,18 +87,23 @@ Please install the following libraries in order to get started:
 
 1. Node.js and NPM
    ```sh
-   # Using Homebrew:
-   brew install node
+   
+   MUST be version 14+, instructions can be found on node's website specific to your system
    ```
 2. Java Version 17
    ```sh
-   # Using Homebrew:
-   brew install openjdk@17 
+   
+   MUST be version 17, refer to java documents for your specifc machine
+   ```
+3. Gradle
+   ```sh
+   
+   MUST be for your system
    ```
    
-### Running the Service
+### Running the Backend Microservices
 
-Please ensure that Node and Java installed on your system.
+Please ensure that Node and Java installed on your system. Run backend before running frontend.
 
 1. Clone the repo
    ```sh
@@ -113,7 +118,10 @@ Please ensure that Node and Java installed on your system.
    chmod +x start_microservices.sh # Make your script executable in Terminal
    ./start_microservices.sh # Run this in the backend folder
    ```
-3. Run the following commands in the frontend folder to start up the GUI
+### Running the Frontend
+
+
+1. Run the following commands in the frontend folder to start up the GUI
    ```sh
    npm install
    npm run start
