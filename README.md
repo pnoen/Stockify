@@ -86,20 +86,20 @@ To get a local copy up and running, follow these simple steps.
 Please install the following libraries in order to get started:
 
 1. Node.js and NPM
-   ```sh
+ 
    
    MUST be version 14+, instructions can be found on node's website specific to your system
-   ```
+  
 2. Java Version 17
-   ```sh
+
    
    MUST be version 17, refer to java documents for your specifc machine
-   ```
+
 3. Gradle
-   ```sh
+
    
    MUST be for your system
-   ```
+ 
    
 ### Running the Backend Microservices
 
