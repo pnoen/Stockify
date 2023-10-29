@@ -4,23 +4,23 @@ REM This script will run all the Spring Boot microservices with Gradle and log t
 REM Navigate to each service directory, start the Spring Boot application, and log the output.
 
 cd business-link-service
-start cmd /k gradlew bootRun > business-link-service.log
+start cmd /k gradlew bootRun
 cd ..
 
 cd order-management
-start cmd /k gradlew bootRun > order-management.log
+start cmd /k gradlew bootRun 
 cd ..
 
 cd product-service
-start cmd /k gradlew bootRun > product-service.log
+start cmd /k gradlew bootRun
 cd ..
 
 cd user-account-service
-start cmd /k gradlew bootRun > user-account-service.log
+start cmd /k gradlew bootRun
 cd ..
 
 cd user-management-service
-start cmd /k gradlew bootRun > user-management-service.log
+start cmd /k gradlew bootRun 
 cd ..
 
 echo All microservices are starting and logging...
