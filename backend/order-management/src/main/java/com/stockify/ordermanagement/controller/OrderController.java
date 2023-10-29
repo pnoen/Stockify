@@ -69,7 +69,7 @@ public class OrderController {
     }
 
     // Get a list of all the orders
-    @GetMapping("/çç")
+    @GetMapping("/getAllCurrentCustomerOrders")
     public ResponseEntity<?> getAllCurrentCustomerOrders(@RequestParam String email) {
         try {
             int customerId = orderService.getUserIdByEmail(email);
@@ -155,7 +155,7 @@ public class OrderController {
     @GetMapping("/getBusinessStats")
     public ResponseEntity<Map<String, Integer>> getBusinessStats(@RequestParam String email) {
         try {
-            int businessCode = getBusinessCodeByEmail(email);
+            int businessCode = orderService.getBusinessCodeByEmail(email);
             if (businessCode <= 0) {
                 return ResponseEntity.badRequest().body(null);
             }
@@ -200,7 +200,6 @@ public class OrderController {
 
             double newTotalCost = Double.parseDouble(String.format("%.2f", (order.getTotalCost() + orderCostUpdateRequest.getPrice())));
             order.setTotalCost(newTotalCost);
-
             orderRepository.save(order);
 
             return ResponseEntity.ok(new ApiResponse(200, "Order total cost edited successfully."));
