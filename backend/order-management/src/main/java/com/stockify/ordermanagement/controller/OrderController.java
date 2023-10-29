@@ -161,6 +161,17 @@ public class OrderController {
             }
 
             Map<String, Integer> stats = new HashMap<>();
+
+            if (orderRepository.countByBusinessCode(businessCode) == 0) {
+                stats.put("New Orders", 0);
+                stats.put("Completed Orders", 0);
+                stats.put("Total Revenue ($)", 0);
+                stats.put("Orders Awaiting Shipment", 0);
+                stats.put("Orders Cancelled", 0);
+                stats.put("Total Orders", 0);
+                return ResponseEntity.ok(stats);
+            }
+
             stats.put("New Orders", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.PURCHASED));
             stats.put("Completed Orders", orderRepository.countByBusinessCodeAndOrderStatus(businessCode, OrderStatus.COMPLETE));
             stats.put("Total Revenue ($)", orderRepository.sumTotalCostByBusinessCode(businessCode));
